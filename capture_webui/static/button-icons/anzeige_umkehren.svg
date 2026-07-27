@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" role="img" aria-label="Anzeige umkehren">
+  <rect x="2" y="2" width="116" height="66" rx="32" fill="#d7d9dd" stroke="#2f3137" stroke-width="4"/>
+  <text x="26" y="44" font-family="Arial, sans-serif" font-size="22" fill="#2f3137">A</text>
+  <text x="79" y="44" font-family="Arial, sans-serif" font-size="22" fill="#2f3137">A</text>
+  <path d="M47 27c8-8 18-8 26 0" fill="none" stroke="#2f3137" stroke-width="3"/>
+  <path d="M73 43c-8 8-18 8-26 0" fill="none" stroke="#2f3137" stroke-width="3"/>
+  <path d="M52 24l-6 1 2 5" fill="none" stroke="#2f3137" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M68 46l6-1-2-5" fill="none" stroke="#2f3137" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

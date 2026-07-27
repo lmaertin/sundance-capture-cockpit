@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sundance Capture Cockpit</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+
+    <header class="topbar">
+      <h1>Sundance Capture Cockpit</h1>
+      <div class="statusline">
+        <span id="statusBadge" class="badge idle">Idle</span>
+        <span id="statusText">No active recording</span>
+        <label class="lang-select">
+          Language
+          <select id="languageSelect">
+            <option value="en" selected>English</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="card card-recording">
+        <h2 id="recordingTitle">Recording</h2>
+        <div class="form-grid compact-form">
+          <label>
+            Session Name
+            <input id="name" value="panel-session" />
+          </label>
+          <label>
+            Driver
+            <select id="driverSelect">
+              <option value="fx2lafw" selected>fx2lafw</option>
+              <option value="saleae-logic16">saleae-logic16</option>
+              <option value="saleae-logic-pro">saleae-logic-pro</option>
+              <option value="dreamsourcelab-dslogic">dreamsourcelab-dslogic</option>
+              <option value="ols">ols</option>
+              <option value="sysclk-lwla">sysclk-lwla</option>
+              <option value="demo">demo</option>
+              <option value="__custom__">Custom...</option>
+            </select>
+            <input id="driverCustom" class="driver-custom hidden" placeholder="custom driver id" />
+          </label>
+          <label>
+            Channels
+            <div id="channelsGroup" class="channels-grid">
+              <label class="channel-option"><input type="checkbox" value="D1" />1</label>
+              <label class="channel-option"><input type="checkbox" value="D2" />2</label>
+              <label class="channel-option"><input type="checkbox" value="D3" />3</label>
+              <label class="channel-option"><input type="checkbox" value="D4" checked />4</label>
+              <label class="channel-option"><input type="checkbox" value="D5" checked />5</label>
+              <label class="channel-option"><input type="checkbox" value="D6" checked />6</label>
+              <label class="channel-option"><input type="checkbox" value="D7" checked />7</label>
+              <label class="channel-option"><input type="checkbox" value="D8" />8</label>
+            </div>
+          </label>
+          <div class="stacked-controls">
+            <label>
+              Samplerate
+              <select id="samplerate">
+                <option value="1MHz">1MHz</option>
+                <option value="2MHz">2MHz</option>
+                <option value="4MHz">4MHz</option>
+                <option value="8MHz">8MHz</option>
+                <option value="12MHz">12MHz</option>
+                <option value="16MHz">16MHz</option>
+                <option value="24MHz" selected>24MHz</option>
+              </select>
+            </label>
+            <label>
+              Duration (seconds)
+              <input id="durationSeconds" value="10" type="number" min="1" max="600" />
+            </label>
+          </div>
+          <label class="full">
+            Optional end comment
+            <input id="endComment" placeholder="e.g. unusual panel behavior" />
+          </label>
+        </div>
+        <div class="button-row">
+          <button id="startBtn" class="btn primary">Recording Start</button>
+          <button id="stopBtn" class="btn danger">Recording Stop</button>
+          <button id="refreshBtn" class="btn">Reload recordings</button>
+          <button id="clearSigrokLogBtn" class="btn">Clear log</button>
+        </div>
+        <div class="sigrok-log-wrap">
+          <div class="sigrok-log-title">Sigrok Command Log</div>
+          <pre id="sigrokLog" class="sigrok-log">PS> waiting for first capture command...</pre>
+        </div>
+        <div id="syncInfo" class="sync-info">Not refreshed yet</div>
+        <div class="recording-tail">
+          <label class="simulate-mini">
+            <input id="simulate" type="checkbox" checked />
+            Simulate without hardware
+          </label>
+        </div>
+      </section>
+
+      <section class="card card-annotation">
+        <h2>Mobile Annotation</h2>
+        <p class="hint">Flow: Start recording, tap only the real panel buttons, then stop recording. Optional: add one end comment.</p>
+
+        <div class="panel-grid">
+          <div class="panel-keys">
+            <h3>Panel Buttons</h3>
+            <p class="hint">No manual annotation fields. Taps are saved automatically for the active recording.</p>
+            <div class="panel-visual" id="panelVisual">
+              <div class="panel-shell"></div>
+              <div class="panel-screen">
+                <div id="displayBoard" class="display-board"></div>
+                <div id="displayValuePreview" class="display-value-preview">88:8.8</div>
+              </div>
+              <div id="panelHotspots" class="panel-hotspots"></div>
+            </div>
+            <div class="key-guide-wrap">
+              <h4>Main Control Functions</h4>
+              <div id="keyGuide" class="key-guide"></div>
+            </div>
+          </div>
+
+          <div class="display-state">
+            <h3>Display and Symbols</h3>
+            <p class="hint">Tap symbols directly in the center display. Add value or cycle number only if needed, then save.</p>
+            <div class="display-fields">
+              <label class="full">
+                Display value
+                <input id="displayValue" placeholder="e.g. 29.9C or 12:45" />
+              </label>
+              <label class="full cycle-number-field">
+                <span class="cycle-inline">
+                  <input id="showCycleNumber" type="checkbox" />
+                  <span>Filter cycle number (top 8 symbol)</span>
+                </span>
+                <input id="cycleNumber" type="number" min="0" max="9" placeholder="e.g. 1" />
+              </label>
+            </div>
+            <div class="button-row compact">
+              <button id="clearDisplaySymbolsBtn" class="btn">Reset symbols</button>
+            </div>
+            <div id="activeDisplaySymbols" class="active-display-symbols">No symbols active</div>
+            <div class="symbol-legend-wrap">
+              <h4>LCD Screen Functions</h4>
+              <div id="symbolLegend" class="symbol-legend"></div>
+            </div>
+            <div class="button-row compact">
+              <button id="saveDisplayBtn" class="btn primary">Save display state</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card-list">
+        <h2>Recordings</h2>
+        <div class="button-row compact">
+          <button id="deleteAllBtn" class="btn danger">Delete all</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Measured At</th>
+                <th>Duration</th>
+                <th>Samplerate</th>
+                <th>Channels</th>
+                <th>Annotations</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recordingsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
