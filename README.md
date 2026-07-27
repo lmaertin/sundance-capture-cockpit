@@ -1,6 +1,8 @@
-# Sundance Capture WebUI
+# Capture WebUI
 
-Local web UI for recording Sundance panel traffic with sigrok and annotating interactions.
+Local web UI for recording panel traffic with sigrok and annotating interactions.
+
+This project is a non-profit, community-oriented tool created to help bring information from older Sundance Series 880 spas from before 2016 into home automation and monitoring systems. It is not affiliated with Sundance or Jacuzzi, and it exists because those older spas do not offer any kind of smart interface or supported modern control platform.
 
 ## Features
 
@@ -205,11 +207,11 @@ Open from another machine in your LAN:
 
 ### 4. Create a systemd service
 
-Create a systemd service file named `sundance-capture-webui.service` in your systemd unit directory:
+Create a systemd service file named `capture-webui.service` in your systemd unit directory:
 
 ```ini
 [Unit]
-Description=Sundance Capture WebUI
+Description=Capture WebUI
 After=network.target
 
 [Service]
@@ -228,19 +230,19 @@ Enable and start:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable sundance-capture-webui
-sudo systemctl start sundance-capture-webui
-sudo systemctl status sundance-capture-webui
+sudo systemctl enable capture-webui
+sudo systemctl start capture-webui
+sudo systemctl status capture-webui
 ```
 
 ### 5. Optional: custom recordings directory
 
-You can set a dedicated storage path with environment variable `SUNDANCE_RECORDINGS_DIR`.
+You can set a dedicated storage path with environment variable `CAPTURE_RECORDINGS_DIR` (the older `SUNDANCE_RECORDINGS_DIR` name is still accepted for compatibility).
 
 For systemd, add under `[Service]`:
 
 ```ini
-Environment=SUNDANCE_RECORDINGS_DIR=/mnt/data/sundance-recordings
+Environment=CAPTURE_RECORDINGS_DIR=/mnt/data/capture-recordings
 ```
 
 Then reload and restart the service.
@@ -282,7 +284,7 @@ This setup keeps everything local in your network without cloud dependency.
 
 1. Observability and maintenance
 
-- Check service logs with journalctl -u sundance-capture-webui.
+- Check service logs with journalctl -u capture-webui.
 - Keep OS updated: sudo apt update && sudo apt upgrade.
 - Reboot test after updates to verify auto-start behavior.
 
