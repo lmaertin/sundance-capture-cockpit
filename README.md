@@ -4,6 +4,9 @@ Local web UI for recording panel traffic with sigrok and annotating interactions
 
 This project is a non-profit, community-oriented tool created to help bring information from older Sundance Series 880 spas from before 2016 into home automation and monitoring systems. It is not affiliated with Sundance or Jacuzzi, and it exists because those older spas do not offer any kind of smart interface or supported modern control platform.
 
+<img width="1253" height="565" alt="image" src="https://github.com/user-attachments/assets/bbe40179-e06b-4485-8bd3-bd5fd179a34b" />
+<img width="1227" height="814" alt="image" src="https://github.com/user-attachments/assets/1f86127b-3372-4b44-9030-d9ff6860617b" />
+
 ## Features
 
 - Start and stop recordings from the browser
