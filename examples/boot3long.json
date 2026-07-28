@@ -1,0 +1,59 @@
+{
+  "recording": "boot3long.sr",
+  "annotations": [
+    {
+      "kind": "display_state",
+      "ts_ms": 0,
+      "payload": {
+        "text": "2.1A",
+        "source": "display",
+        "flags": ["STANDARD"]
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 1800,
+      "payload": {
+        "text": "40.0C",
+        "source": "display",
+        "flags": ["STANDARD"]
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 3600,
+      "payload": {
+        "text": "37.1C",
+        "source": "display",
+        "flags": ["STANDARD"]
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 5400,
+      "payload": {
+        "text": "34.2C",
+        "source": "display",
+        "flags": ["STANDARD"]
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 7200,
+      "payload": {
+        "text": "34.4C",
+        "source": "display",
+        "flags": ["STANDARD"]
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 9000,
+      "payload": {
+        "text": "31.3C",
+        "source": "display",
+        "flags": ["STANDARD"]
+      }
+    }
+  ]
+}

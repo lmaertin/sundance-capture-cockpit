@@ -1,6 +1,3 @@
 # Ignore everything by default except the web UI project and the root README.
-*
-!/.gitignore
-!/README.md
-!/capture_webui/
-!/capture_webui/**
+/misc/
+/misc/*

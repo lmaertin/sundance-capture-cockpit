@@ -1,0 +1,45 @@
+{
+  "recording": "F1L_U_CirC.sr",
+  "annotations": [
+    {
+      "kind": "display_state",
+      "ts_ms": 0,
+      "payload": {
+        "text": "F1L",
+        "source": "display"
+      }
+    },
+    {
+      "kind": "button_press",
+      "ts_ms": 1200,
+      "payload": {
+        "text": "Button press",
+        "label": "Panel button"
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 1800,
+      "payload": {
+        "text": "U",
+        "source": "display"
+      }
+    },
+    {
+      "kind": "button_press",
+      "ts_ms": 2600,
+      "payload": {
+        "text": "Button press",
+        "label": "Panel button"
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 3200,
+      "payload": {
+        "text": "CirC",
+        "source": "display"
+      }
+    }
+  ]
+}

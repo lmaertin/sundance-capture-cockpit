@@ -1,0 +1,31 @@
+{
+  "recording": "swap2.sr",
+  "annotations": [
+    {
+      "kind": "display_state",
+      "ts_ms": 0,
+      "payload": {
+        "text": "29.IC",
+        "source": "display"
+      }
+    },
+    {
+      "kind": "button_press",
+      "ts_ms": 1400,
+      "payload": {
+        "text": "Button press",
+        "label": "Panel button"
+      }
+    },
+    {
+      "kind": "display_state",
+      "ts_ms": 2200,
+      "payload": {
+        "text": "]I.65",
+        "source": "display",
+        "rotation": 180,
+        "note": "Rotated by 180 degrees"
+      }
+    }
+  ]
+}

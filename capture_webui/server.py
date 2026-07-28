@@ -22,7 +22,9 @@ ROOT_DIR = Path(__file__).resolve().parent
 STATIC_DIR = ROOT_DIR / "static"
 DATA_DIR = ROOT_DIR / "data"
 DB_PATH = DATA_DIR / "annotations.db"
-RECORDINGS_DIR = Path(os.environ.get("SUNDANCE_RECORDINGS_DIR", ROOT_DIR / "recordings"))
+RECORDINGS_DIR = Path(
+    os.environ.get("CAPTURE_RECORDINGS_DIR", os.environ.get("SUNDANCE_RECORDINGS_DIR", ROOT_DIR / "recordings"))
+)
 
 
 def now_iso() -> str:
@@ -404,10 +406,10 @@ def stop_active_job() -> dict[str, Any]:
     }
 
 
-class SundanceHandler(BaseHTTPRequestHandler):
+class CaptureHandler(BaseHTTPRequestHandler):
     """HTTP API and static file serving."""
 
-    server_version = "SundanceCapture/0.1"
+    server_version = "CaptureWebUI/0.1"
 
     def _send_json(self, payload: dict[str, Any], status: int = 200) -> None:
         raw = json.dumps(payload, ensure_ascii=True).encode("utf-8")
@@ -766,7 +768,7 @@ class SundanceHandler(BaseHTTPRequestHandler):
 
 def parse_args() -> argparse.Namespace:
     """Build command-line parser."""
-    parser = argparse.ArgumentParser(description="Sundance sigrok recorder web UI")
+    parser = argparse.ArgumentParser(description="Sigrok recorder web UI")
     parser.add_argument("--host", default="127.0.0.1", help="Listen host")
     parser.add_argument("--port", default=8765, type=int, help="Listen port")
     return parser.parse_args()
@@ -777,7 +779,7 @@ def main() -> None:
     args = parse_args()
     ensure_dirs()
     init_db()
-    server = ThreadingHTTPServer((args.host, args.port), SundanceHandler)
+    server = ThreadingHTTPServer((args.host, args.port), CaptureHandler)
     print(f"Server running on http://{args.host}:{args.port}")
     try:
         server.serve_forever()
