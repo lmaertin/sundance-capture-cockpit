@@ -294,37 +294,52 @@ That is the path from a captured pool interaction to a real protocol understandi
 
 ## Raspberry Pi Setup
 
-These steps target Raspberry Pi OS (Bookworm/Bullseye).
+These steps target Raspberry Pi OS Lite (64-bit), current Trixie release.
+If you need to stay on an older image for compatibility, Bookworm is the
+next best option.
 
-### 1. Install system packages
+Recommended starter image:
+
+- Raspberry Pi OS Lite (64-bit), current Trixie release
+- If you are using older hardware or need compatibility, Raspberry Pi OS Lite (64-bit), Bookworm is the fallback
+- Use the image without a desktop environment; the project runs as a headless service and does not need GUI packages
+
+The repository now includes helper scripts for this setup:
+
+- `scripts/install_capture_webui_on_pi.sh` performs the full guided Pi installation, including packages, Python setup, repository checkout, and systemd service installation.
+- `scripts/raspberry_pi_bootstrap.sh` remains available if you want to prepare the environment in separate steps.
+- `scripts/install_capture_webui_service.sh` installs and starts the systemd service when the repository is already present.
+
+One-click install from a Pi shell:
 
 ```bash
-sudo apt update
-sudo apt install -y python3 python3-venv python3-pip sigrok-cli git
+curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/install_capture_webui_on_pi.sh | sudo bash -s --
 ```
 
-If your analyzer needs udev rules, also install:
+If you want to install into a different directory, pass an install path:
 
 ```bash
-sudo apt install -y libsigrok libsigrokdecode
+curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/install_capture_webui_on_pi.sh | sudo bash -s -- --install-dir /opt/sundance-capture-cockpit
 ```
 
-### 2. Clone and prepare environment
+### 1. One-click installation
+
+Use the curl command above from the Raspberry Pi shell. The installer will:
+
+- install the required Debian packages for Trixie
+- create a service user
+- clone the repository
+- create the Python virtual environment
+- upgrade pip
+- install the systemd service
+- start the service automatically
+
+### 2. Test interactive startup
+
+If you want to verify the installation manually, use the installed directory:
 
 ```bash
-git clone <your-repo-url> <PROJECT_DIR>
-cd <PROJECT_DIR>
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install --upgrade pip
-```
-
-This project currently uses the Python standard library for the web server, so no extra Python package install is required for `capture_webui/server.py`.
-
-### 3. Test interactive startup
-
-```bash
-cd <PROJECT_DIR>
+cd /opt/sundance-capture-cockpit
 .venv/bin/python capture_webui/server.py --host 0.0.0.0 --port 8765
 ```
 
@@ -332,47 +347,11 @@ Open from another machine in your LAN:
 
 - `http://<raspberry-pi-ip>:8765`
 
-### 4. Create a systemd service
-
-Create a systemd service file named `capture-webui.service` in your systemd unit directory:
-
-```ini
-[Unit]
-Description=Capture WebUI
-After=network.target
-
-[Service]
-Type=simple
-User=<SERVICE_USER>
-WorkingDirectory=<PROJECT_DIR>
-ExecStart=<PROJECT_DIR>/.venv/bin/python <PROJECT_DIR>/capture_webui/server.py --host 0.0.0.0 --port 8765
-Restart=always
-RestartSec=2
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable capture-webui
-sudo systemctl start capture-webui
-sudo systemctl status capture-webui
-```
-
-### 5. Optional: custom recordings directory
+### 3. Optional: custom recordings directory
 
 You can set a dedicated storage path with environment variable `CAPTURE_RECORDINGS_DIR` (the older `SUNDANCE_RECORDINGS_DIR` name is still accepted for compatibility).
 
-For systemd, add under `[Service]`:
-
-```ini
-Environment=CAPTURE_RECORDINGS_DIR=/mnt/data/capture-recordings
-```
-
-Then reload and restart the service.
+Set `CAPTURE_RECORDINGS_DIR` before running the one-click installer, or edit the generated systemd unit after installation.
 
 ## Final Raspberry Pi Deployment (Decentralized)
 
