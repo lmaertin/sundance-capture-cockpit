@@ -653,6 +653,10 @@ async function startRecording() {
     simulate: element("simulate").checked,
   };
 
+  if (!payload.simulate) {
+    await testSignalAnalyzer(payload.driver);
+  }
+
   const result = await jsonFetch("/api/recordings/start", {
     method: "POST",
     body: JSON.stringify(payload),
@@ -668,6 +672,23 @@ async function startRecording() {
   showToast(`Recording ${result.recordingId} gestartet`);
   await refreshStatus();
   await refreshRecordings();
+}
+
+async function testSignalAnalyzer(driver = getSelectedDriver()) {
+  const result = await jsonFetch("/api/analyzer/test", {
+    method: "POST",
+    body: JSON.stringify({ driver }),
+  });
+
+  appendSigrokLog(`PS> analyzer test ok for ${driver}`);
+  if (Array.isArray(result.command) && result.command.length > 0) {
+    appendSigrokLog(`PS> ${result.command.join(" ")}`);
+  }
+  if (result.output) {
+    appendSigrokLog(`PS> ${String(result.output).split("\n").join(" | ")}`);
+  }
+  showToast(`Analyzer test passed for ${driver}`);
+  return result;
 }
 
 async function stopRecording() {
@@ -1121,6 +1142,18 @@ function bindActions() {
       showToast(String(error.message || error), true);
     }
   });
+
+  const testAnalyzerBtn = element("testAnalyzerBtn");
+  if (testAnalyzerBtn) {
+    testAnalyzerBtn.addEventListener("click", async () => {
+      try {
+        await testSignalAnalyzer();
+      } catch (error) {
+        appendSigrokLog(`PS> analyzer test failed: ${String(error.message || error)}`);
+        showToast(String(error.message || error), true);
+      }
+    });
+  }
 
   const clearSigrokLogBtn = element("clearSigrokLogBtn");
   if (clearSigrokLogBtn) {

@@ -2,8 +2,10 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest.mock import patch
 
 from capture_webui.importer import normalize_annotation_payload, parse_capture_summary
+from capture_webui.server import probe_signal_analyzer
 from decoder.decode_sr import summarize_annotation_bundle
 
 
@@ -55,6 +57,40 @@ class CaptureImportTests(unittest.TestCase):
         self.assertEqual(summary["annotation_count"], 3)
         self.assertEqual(summary["display_state_count"], 2)
         self.assertEqual(summary["button_press_count"], 1)
+
+    def test_probe_signal_analyzer_reports_missing_hardware(self) -> None:
+        completed = type(
+            "CompletedProcess",
+            (),
+            {
+                "returncode": 0,
+                "stdout": "",
+                "stderr": "No devices found.\n",
+            },
+        )
+
+        with patch("capture_webui.server.subprocess.run", return_value=completed):
+            result = probe_signal_analyzer("fx2lafw")
+
+        self.assertFalse(result["ok"])
+        self.assertIn("No devices found", result["error"])
+
+    def test_probe_signal_analyzer_accepts_device_scan_output(self) -> None:
+        completed = type(
+            "CompletedProcess",
+            (),
+            {
+                "returncode": 0,
+                "stdout": "Found 1 device\n",
+                "stderr": "",
+            },
+        )
+
+        with patch("capture_webui.server.subprocess.run", return_value=completed):
+            result = probe_signal_analyzer("fx2lafw")
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["command"], ["sigrok-cli", "--scan", "-d", "fx2lafw"])
 
 
 if __name__ == "__main__":

@@ -347,6 +347,53 @@ def delete_all_recordings() -> dict[str, Any]:
     }
 
 
+def probe_signal_analyzer(driver: str) -> dict[str, Any]:
+    """Check whether sigrok-cli can see a matching analyzer device."""
+
+    command = ["sigrok-cli", "--scan", "-d", driver]
+    try:
+        completed = subprocess.run(  # pylint: disable=subprocess-run-check
+            command,
+            capture_output=True,
+            text=True,
+            timeout=15,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        return {
+            "ok": False,
+            "command": command,
+            "error": f"Could not test sigrok-cli: {error}",
+        }
+
+    output = "\n".join(
+        part.strip() for part in [completed.stdout, completed.stderr] if part and part.strip()
+    ).strip()
+    lower_output = output.lower()
+    no_device_markers = (
+        "no devices found",
+        "no supported devices found",
+        "no device found",
+    )
+
+    if completed.returncode != 0 or not output or any(marker in lower_output for marker in no_device_markers):
+        message = output or "No signal analyzer hardware detected"
+        return {
+            "ok": False,
+            "command": command,
+            "returncode": completed.returncode,
+            "output": output,
+            "error": message,
+        }
+
+    return {
+        "ok": True,
+        "command": command,
+        "returncode": completed.returncode,
+        "output": output,
+    }
+
+
 def start_simulated_job(job: ActiveJob, duration_s: int) -> None:
     """Run a simulated recording without hardware for local UI testing."""
 
@@ -514,6 +561,14 @@ class CaptureHandler(BaseHTTPRequestHandler):
             )
             return
 
+        if path == "/api/analyzer/test":
+            payload = self._read_json_body()
+            driver = str(payload.get("driver", "fx2lafw"))
+            result = probe_signal_analyzer(driver)
+            status = 200 if result.get("ok") else 503
+            self._send_json(result, status=status)
+            return
+
         if path == "/api/recordings":
             query = parse_qs(parsed.query)
             limit = int(query.get("limit", ["100"])[0])
@@ -582,6 +637,20 @@ class CaptureHandler(BaseHTTPRequestHandler):
             driver = str(payload.get("driver", "fx2lafw"))
             duration_seconds = int(payload.get("durationSeconds", 20))
             simulate = bool(payload.get("simulate", True))
+
+            if not simulate:
+                probe_result = probe_signal_analyzer(driver)
+                if not probe_result.get("ok"):
+                    self._send_json(
+                        {
+                            "error": probe_result.get("error", "Signal analyzer test failed"),
+                            "command": probe_result.get("command", []),
+                            "output": probe_result.get("output", ""),
+                            "simulate": False,
+                        },
+                        status=503,
+                    )
+                    return
 
             timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
             file_name = f"{timestamp}_{name}.sr"

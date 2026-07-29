@@ -116,6 +116,8 @@ log "Updating package index and installing system dependencies."
 apt-get update
 apt-get install -y ca-certificates curl git python3 python3-venv python3-pip sigrok-cli
 
+git config --global --add safe.directory "$INSTALL_DIR"
+
 if [[ ! -d "$INSTALL_DIR/.git" ]]; then
   die "Install directory is not a Git repository: $INSTALL_DIR"
 fi
