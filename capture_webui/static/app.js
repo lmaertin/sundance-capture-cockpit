@@ -1,48 +1,288 @@
 let currentLanguage = "en";
 
-const keyDocs = {
-  A: "Select Button: Scrolls the menu through filter cycle programming features. Manually activates the circulation pump when it is off for 1 hour.",
-  B: "Cycle Button: Accesses filter cycle program mode and advances to the next cycle.",
-  C: "Mode Button: Switches between Standard and Economy modes.",
-  D: "Display Button: Displays the time of day and opens time setting and lock functions.",
-  E: "Invert Button: Inverts the main 4-digit LCD display.",
-  F: "Jets 2 Button: Controls jets pump 2 (and Maxxus/Aspen jets pump 3).",
-  G: "Jets 1 Button: Controls jets pump 1.",
-  H: "Blower Button: Controls the air blower.",
-  I: "Light Mode Button: Selects one of 4 color modes for waterfall, footwell, and air control lights.",
-  J: "Light Button: Turns waterfall, footwell, and air control lights on in unison. Press once for high intensity, a second time for medium, a third time for low, and a fourth time to turn off.",
-  K: "Warmer and Cooler Buttons: Display and adjust the temperature setting and other programming features.",
+const uiText = {
+  en: {
+    pageTitle: "Capture WebUI",
+    appTitle: "Capture WebUI",
+    recordingTitle: "Recording",
+    languageLabel: "Language",
+    englishOption: "English",
+    germanOption: "Deutsch",
+    customOption: "Custom...",
+    idle: "Idle",
+    live: "Live",
+    noActiveRecording: "No active recording",
+    sessionNameLabel: "Session Name",
+    driverLabel: "Driver",
+    channelsLabel: "Channels",
+    samplerateLabel: "Samplerate",
+    durationLabel: "Duration (seconds)",
+    endCommentLabel: "Optional end comment",
+    displayValueLabel: "Display value",
+    startRecording: "Recording Start",
+    stopRecording: "Recording Stop",
+    testAnalyzer: "Test analyzer",
+    reloadRecordings: "Reload recordings",
+    clearLog: "Clear log",
+    sigrokCommandLog: "Sigrok Command Log",
+    simulateWithoutHardware: "Simulate without hardware",
+    mobileAnnotationTitle: "Mobile Annotation",
+    mobileAnnotationHint:
+      "Flow: Start recording, tap only the real panel buttons, then stop recording. Optional: add one end comment.",
+    panelButtonsTitle: "Panel Buttons",
+    panelButtonsHint:
+      "No manual annotation fields. Taps are saved automatically for the active recording.",
+    mainControlFunctions: "Main Control Functions",
+    displayAndSymbolsTitle: "Display and Symbols",
+    displayAndSymbolsHint:
+      "Tap symbols directly in the center display. Add value or cycle number only if needed, then save.",
+    displaySymbolsHint:
+      "Tap symbols directly in the center display. Add value or cycle number only if needed, then save.",
+    simulateLabelText: "Simulate without hardware",
+    cycleNumberLabel: "Filter cycle number (top 8 symbol)",
+    resetSymbols: "Reset symbols",
+    noSymbolsActive: "No symbols active",
+    lcdScreenFunctions: "LCD Screen Functions",
+    saveDisplayState: "Save display state",
+    recordingsTitle: "Recordings",
+    deleteAll: "Delete all",
+    tableId: "ID",
+    tableName: "Name",
+    tableStatus: "Status",
+    tableMeasuredAt: "Measured At",
+    tableDuration: "Duration",
+    tableSamplerate: "Samplerate",
+    tableChannels: "Channels",
+    tableAnnotations: "Annotations",
+    tableActions: "Actions",
+    driverCustomPlaceholder: "custom driver id",
+    displayValuePlaceholder: "e.g. 29.9C or 12:45",
+    cycleNumberPlaceholder: "e.g. 1",
+    endCommentPlaceholder: "e.g. unusual panel behavior",
+    exportJson: "Export JSON",
+    downloadSr: "Download .sr",
+    delete: "Delete",
+    save: "Save",
+    annotations: "Annotations:",
+    none: "none",
+    notAvailable: "Not available",
+    noSequenceToCopy: "No sequence to copy",
+    sequenceCopied: "Sequence copied",
+    noStepsYet: "No steps yet",
+    noActiveRecordingError: "No active recording",
+    selectAtLeastOneChannel: "Select at least one channel",
+    startARecordingFirst: "Start a recording first",
+    deleteAllRecordingsQuestion: "Delete all recordings?",
+    recordingNameLabel: "Name",
+    commentLabel: "Comment",
+    listRefreshed: "List refreshed",
+    sequenceCleared: "Sequence cleared",
+    recordingStarted: (id) => `Recording ${id} started`,
+    recordingStopped: (id) => `Recording ${id} stopped`,
+    recordingDeleted: (id) => `Recording ${id} deleted`,
+    recordingSaved: (id) => `Recording ${id} saved`,
+    analyzerTestPassed: (driver) => `Analyzer test passed for ${driver}`,
+    analyzerTestFailed: (driver) => `Analyzer test failed for ${driver}`,
+    analyzerTestOk: (driver) => `Analyzer test ok for ${driver}`,
+    activeStatus: (id, seconds) => `ID ${id} running for ${seconds}s`,
+    inactiveStatus: "No active recording",
+    waitingForFirstCaptureCommand: "PS> waiting for first capture command...",
+    noSignalAnalyzerHardware: (driver) => `No signal analyzer hardware detected for driver ${driver}`,
+    signalAnalyzerFirmwareFailure:
+      "Signal analyzer detected, but firmware upload failed. Check the probe firmware, USB connection, and device support for the selected driver.",
+    recordingAlreadyActive: "Recording already active",
+    signalAnalyzerTestFailed: "Signal analyzer test failed",
+    recordingModeNoCommand: "simulation mode enabled (no sigrok-cli command executed)",
+    noCurrentRecording: "No active recording",
+    deleteRecordingQuestion: (id) => `Delete recording ${id}?`,
+  },
+  de: {
+    pageTitle: "Capture WebUI",
+    appTitle: "Capture WebUI",
+    recordingTitle: "Aufnahme",
+    languageLabel: "Sprache",
+    englishOption: "Englisch",
+    germanOption: "Deutsch",
+    customOption: "Benutzerdefiniert...",
+    idle: "Leerlauf",
+    live: "Live",
+    noActiveRecording: "Keine aktive Aufnahme",
+    sessionNameLabel: "Sitzungsname",
+    driverLabel: "Treiber",
+    channelsLabel: "Kanäle",
+    samplerateLabel: "Samplerate",
+    durationLabel: "Dauer (Sekunden)",
+    endCommentLabel: "Optionaler Endkommentar",
+    displayValueLabel: "Displaywert",
+    startRecording: "Aufnahme starten",
+    stopRecording: "Aufnahme stoppen",
+    testAnalyzer: "Analyzer testen",
+    reloadRecordings: "Aufnahmen neu laden",
+    clearLog: "Log leeren",
+    sigrokCommandLog: "Sigrok-Befehlsprotokoll",
+    simulateWithoutHardware: "Ohne Hardware simulieren",
+    mobileAnnotationTitle: "Mobile Erfassung",
+    mobileAnnotationHint:
+      "Ablauf: Aufnahme starten, nur die echten Panel-Tasten antippen und danach die Aufnahme stoppen. Optional: einen Endkommentar hinzufügen.",
+    panelButtonsTitle: "Panel-Tasten",
+    panelButtonsHint:
+      "Keine manuellen Eingabefelder. Taps werden automatisch für die aktive Aufnahme gespeichert.",
+    mainControlFunctions: "Hauptfunktionen",
+    displayAndSymbolsTitle: "Display und Symbole",
+    displayAndSymbolsHint:
+      "Symbole direkt im mittleren Display antippen. Nur Wert oder Zyklusnummer eintragen, wenn nötig, dann speichern.",
+    displaySymbolsHint:
+      "Symbole direkt im mittleren Display antippen. Nur Wert oder Zyklusnummer eintragen, wenn nötig, dann speichern.",
+    simulateLabelText: "Ohne Hardware simulieren",
+    cycleNumberLabel: "Filterzyklus-Nummer (oberes 8-Symbol)",
+    resetSymbols: "Symbole zurücksetzen",
+    noSymbolsActive: "Keine Symbole aktiv",
+    lcdScreenFunctions: "LCD-Symbolfunktionen",
+    saveDisplayState: "Displayzustand speichern",
+    recordingsTitle: "Aufnahmen",
+    deleteAll: "Alle löschen",
+    tableId: "ID",
+    tableName: "Name",
+    tableStatus: "Status",
+    tableMeasuredAt: "Gemessen am",
+    tableDuration: "Dauer",
+    tableSamplerate: "Samplerate",
+    tableChannels: "Kanäle",
+    tableAnnotations: "Annotationen",
+    tableActions: "Aktionen",
+    driverCustomPlaceholder: "benutzerdefinierte Treiber-ID",
+    displayValuePlaceholder: "z. B. 29.9C oder 12:45",
+    cycleNumberPlaceholder: "z. B. 1",
+    endCommentPlaceholder: "z. B. ungewöhnliches Panel-Verhalten",
+    exportJson: "JSON exportieren",
+    downloadSr: ".sr herunterladen",
+    delete: "Löschen",
+    save: "Speichern",
+    annotations: "Annotationen:",
+    none: "keine",
+    notAvailable: "Nicht verfügbar",
+    noSequenceToCopy: "Keine Sequenz zum Kopieren",
+    sequenceCopied: "Sequenz kopiert",
+    noStepsYet: "Noch keine Schritte",
+    noActiveRecordingError: "Keine aktive Aufnahme",
+    selectAtLeastOneChannel: "Mindestens einen Kanal auswählen",
+    startARecordingFirst: "Zuerst eine Aufnahme starten",
+    deleteAllRecordingsQuestion: "Alle Aufnahmen löschen?",
+    recordingNameLabel: "Name",
+    commentLabel: "Kommentar",
+    listRefreshed: "Liste aktualisiert",
+    sequenceCleared: "Sequenz geleert",
+    recordingStarted: (id) => `Aufnahme ${id} gestartet`,
+    recordingStopped: (id) => `Aufnahme ${id} gestoppt`,
+    recordingDeleted: (id) => `Aufnahme ${id} gelöscht`,
+    recordingSaved: (id) => `Aufnahme ${id} gespeichert`,
+    analyzerTestPassed: (driver) => `Analyzer-Test für ${driver} bestanden`,
+    analyzerTestFailed: (driver) => `Analyzer-Test für ${driver} fehlgeschlagen`,
+    analyzerTestOk: (driver) => `Analyzer-Test für ${driver} erfolgreich`,
+    activeStatus: (id, seconds) => `ID ${id} läuft seit ${seconds}s`,
+    inactiveStatus: "Keine aktive Aufnahme",
+    waitingForFirstCaptureCommand: "PS> warte auf den ersten Capture-Befehl...",
+    noSignalAnalyzerHardware: (driver) => `Kein Signal-Analyzer für den Treiber ${driver} gefunden`,
+    signalAnalyzerFirmwareFailure:
+      "Signal-Analyzer erkannt, aber Firmware-Upload fehlgeschlagen. Bitte Firmware, USB-Verbindung und Treiber-Unterstützung prüfen.",
+    recordingAlreadyActive: "Aufnahme läuft bereits",
+    signalAnalyzerTestFailed: "Signal-Analyzer-Test fehlgeschlagen",
+    recordingModeNoCommand: "Simulationsmodus aktiv (kein sigrok-cli-Befehl ausgeführt)",
+    noCurrentRecording: "Keine aktive Aufnahme",
+    deleteRecordingQuestion: (id) => `Aufnahme ${id} löschen?`,
+  },
 };
+
+const keyDocs = {
+  en: {
+    A: "Select Button: Scrolls the menu through filter cycle programming features. Manually activates the circulation pump when it is off for 1 hour.",
+    B: "Cycle Button: Accesses filter cycle program mode and advances to the next cycle.",
+    C: "Mode Button: Switches between Standard and Economy modes.",
+    D: "Display Button: Displays the time of day and opens time setting and lock functions.",
+    E: "Invert Button: Inverts the main 4-digit LCD display.",
+    F: "Jets 2 Button: Controls jets pump 2 (and Maxxus/Aspen jets pump 3).",
+    G: "Jets 1 Button: Controls jets pump 1.",
+    H: "Blower Button: Controls the air blower.",
+    I: "Light Mode Button: Selects one of 4 color modes for waterfall, footwell, and air control lights.",
+    J: "Light Button: Turns waterfall, footwell, and air control lights on in unison. Press once for high intensity, a second time for medium, a third time for low, and a fourth time to turn off.",
+    K: "Warmer and Cooler Buttons: Display and adjust the temperature setting and other programming features.",
+  },
+  de: {
+    A: "Auswahl-Taste: Blättert durch die Funktionen der Filterzyklus-Programmierung. Aktiviert die Umwälzpumpe manuell, wenn sie 1 Stunde lang aus war.",
+    B: "Zyklus-Taste: Öffnet den Filterzyklus-Programmmodus und springt zum nächsten Zyklus.",
+    C: "Modus-Taste: Wechselt zwischen Standard- und Economy-Modus.",
+    D: "Anzeige-Taste: Zeigt die Uhrzeit an und öffnet die Funktionen für Zeiteinstellung und Sperre.",
+    E: "Umdrehen-Taste: Spiegelt die 4-stellige Hauptanzeige.",
+    F: "Jets-2-Taste: Steuert Pumpe 2 (und bei Maxxus/Aspen Pumpe 3).",
+    G: "Jets-1-Taste: Steuert Pumpe 1.",
+    H: "Gebläse-Taste: Steuert das Luftgebläse.",
+    I: "Lichtmodus-Taste: Wählt einen von 4 Farbmodi für Wasserfall-, Fußraum- und Lichtsteuerung.",
+    J: "Licht-Taste: Schaltet Wasserfall-, Fußraum- und Lichtsteuerung gemeinsam ein. Einmal drücken für hohe Intensität, ein zweites Mal für mittel, ein drittes Mal für niedrig und ein viertes Mal zum Ausschalten.",
+    K: "Wärmer- und Kühler-Tasten: Zeigen die Temperatureinstellung und andere Programmfunktionen an und passen sie an.",
+  },
+};
+
+function ui(key, ...args) {
+  const entry = uiText[currentLanguage]?.[key] ?? uiText.en[key];
+  if (typeof entry === "function") {
+    return entry(...args);
+  }
+  return entry || key;
+}
+
+function setText(node, key, ...args) {
+  if (node) {
+    node.textContent = ui(key, ...args);
+  }
+}
+
+function setPlaceholder(node, key) {
+  if (node) {
+    node.placeholder = ui(key);
+  }
+}
+
+function setOptionText(selectNode, index, key) {
+  if (!selectNode || !selectNode.options || !selectNode.options[index]) {
+    return;
+  }
+  selectNode.options[index].textContent = ui(key);
+}
 
 const panelButtonLayout = [
   {
     code: "A",
     cls: "hs-a",
     nameEn: "Select",
+    nameDe: "Auswahl",
     icon: "/static/button-icons/original/selection.png",
   },
   {
     code: "B",
     cls: "hs-b",
     nameEn: "Cycle",
+    nameDe: "Zyklus",
     icon: "/static/button-icons/original/cycle.png",
   },
   {
     code: "C",
     cls: "hs-c",
     nameEn: "Mode",
+    nameDe: "Modus",
     icon: "/static/button-icons/original/mode.png",
   },
   {
     code: "D",
     cls: "hs-d",
     nameEn: "Display",
+    nameDe: "Anzeige",
     icon: "/static/button-icons/original/display.png",
   },
   {
     code: "K",
     cls: "hs-k-warm",
     nameEn: "Warmer",
+    nameDe: "Wärmer",
     icon: "/static/button-icons/original/warmer.png",
     direction: "warmer",
   },
@@ -50,6 +290,7 @@ const panelButtonLayout = [
     code: "K",
     cls: "hs-k-cool",
     nameEn: "Cooler",
+    nameDe: "Kühler",
     icon: "/static/button-icons/original/cooler.png",
     direction: "cooler",
   },
@@ -57,68 +298,75 @@ const panelButtonLayout = [
     code: "J",
     cls: "hs-j",
     nameEn: "Light",
+    nameDe: "Licht",
     icon: "/static/button-icons/original/light_on_off.png",
   },
   {
     code: "I",
     cls: "hs-i",
     nameEn: "Light mode",
+    nameDe: "Lichtmodus",
     icon: "/static/button-icons/original/lighting_mode.png",
   },
   {
     code: "H",
     cls: "hs-h",
     nameEn: "Blower",
+    nameDe: "Gebläse",
     icon: "/static/button-icons/original/fan.png",
   },
   {
     code: "G",
     cls: "hs-g",
     nameEn: "Jets 1",
+    nameDe: "Jets 1",
     icon: "/static/button-icons/original/jet_pump_1.png",
   },
   {
     code: "F",
     cls: "hs-f",
     nameEn: "Jets 2",
+    nameDe: "Jets 2",
     icon: "/static/button-icons/original/jet_pump_2.png",
   },
   {
     code: "E",
     cls: "hs-e",
     nameEn: "Invert",
+    nameDe: "Anzeige umkehren",
     icon: "/static/button-icons/original/reverse_display.png",
   },
 ];
 
 const displaySymbolLayout = [
-  { key: "lock", label: "Lock", icon: "/static/display-icons/original/lock.png", x: 4.2, y: 6, w: 7.2 },
-  { key: "heater", label: "Heater", icon: "/static/display-icons/original/heater.png", x: 12.5, y: 6.2, w: 7.2 },
-  { key: "sanitizer", label: "Sanitizer", icon: "/static/display-icons/original/uv-cleaner.png", x: 20.9, y: 5.8, w: 7.8 },
-  { key: "cycle_set", label: "Filter Cycle Setting", icon: "/static/display-icons/original/filter-cycle-settings.png", x: 30.3, y: 6, w: 7.4 },
+  { key: "lock", labelEn: "Lock", labelDe: "Sperre", icon: "/static/display-icons/original/lock.png", x: 4.2, y: 6, w: 7.2 },
+  { key: "heater", labelEn: "Heater", labelDe: "Heizung", icon: "/static/display-icons/original/heater.png", x: 12.5, y: 6.2, w: 7.2 },
+  { key: "sanitizer", labelEn: "Sanitizer", labelDe: "Desinfektion", icon: "/static/display-icons/original/uv-cleaner.png", x: 20.9, y: 5.8, w: 7.8 },
+  { key: "cycle_set", labelEn: "Filter Cycle Setting", labelDe: "Filterzyklus-Einstellung", icon: "/static/display-icons/original/filter-cycle-settings.png", x: 30.3, y: 6, w: 7.4 },
   {
     key: "cycle_num",
-    label: "Filter Cycle Number",
+    labelEn: "Filter Cycle Number",
+    labelDe: "Filterzyklus-Nummer",
     icon: "/static/display-icons/original/filter-cycle-number.png",
     x: 39,
     y: 6.2,
     w: 7.1,
     interactive: false,
   },
-  { key: "clock", label: "Start Time", icon: "/static/display-icons/original/filter-cycle-start-time.png", x: 47.6, y: 6.3, w: 7.2 },
-  { key: "duration", label: "Duration", icon: "/static/display-icons/original/filter-cycle-duration.png", x: 56.3, y: 6.4, w: 7.2 },
-  { key: "set_temp", label: "Set Temperature", icon: "/static/display-icons/original/set-temperature.png", x: 4.6, y: 28.4, w: 7.2 },
-  { key: "set_time", label: "Set Time", icon: "/static/display-icons/original/set-time.png", x: 12.4, y: 28.6, w: 6.2 },
-  { key: "filter", label: "Filter Indicator", icon: "/static/display-icons/original/filter-indicator.png", x: 4.4, y: 45.4, w: 7.6 },
+  { key: "clock", labelEn: "Start Time", labelDe: "Startzeit", icon: "/static/display-icons/original/filter-cycle-start-time.png", x: 47.6, y: 6.3, w: 7.2 },
+  { key: "duration", labelEn: "Duration", labelDe: "Dauer", icon: "/static/display-icons/original/filter-cycle-duration.png", x: 56.3, y: 6.4, w: 7.2 },
+  { key: "set_temp", labelEn: "Set Temperature", labelDe: "Solltemperatur", icon: "/static/display-icons/original/set-temperature.png", x: 4.6, y: 28.4, w: 7.2 },
+  { key: "set_time", labelEn: "Set Time", labelDe: "Uhrzeit einstellen", icon: "/static/display-icons/original/set-time.png", x: 12.4, y: 28.6, w: 6.2 },
+  { key: "filter", labelEn: "Filter Indicator", labelDe: "Filteranzeige", icon: "/static/display-icons/original/filter-indicator.png", x: 4.4, y: 45.4, w: 7.6 },
   { key: "am", label: "AM", icon: "/static/display-icons/original/AM.png", x: 81.2, y: 33.2, w: 7.2 },
   { key: "pm", label: "PM", icon: "/static/display-icons/original/PM.png", x: 81.2, y: 42.6, w: 7.2 },
-  { key: "mode_standard", label: "Standard", icon: "/static/display-icons/original/standard-mode.png", x: 78.8, y: 56.1, w: 16.2 },
-  { key: "blower", label: "Air Jet", icon: "/static/display-icons/original/airjet.png", x: 24.2, y: 75.4, w: 10.4 },
-  { key: "pump1", label: "Water Jet 1", icon: "/static/display-icons/original/waterjet1.png", x: 49.3, y: 75.2, w: 11.1 },
-  { key: "pump2", label: "Water Jet 2", icon: "/static/display-icons/original/waterjet2.png", x: 65.5, y: 75.2, w: 11.1 },
-  { key: "float_23", label: "Point 2-3", icon: "/static/display-icons/original/floating-point-digit-2-3.png", x: 45.5, y: 51.1, w: 1.9 },
-  { key: "float_34", label: "Point 3-4", icon: "/static/display-icons/original/floating-point-digit-3-4.png", x: 57.2, y: 51.1, w: 1.9 },
-  { key: "clock_delimiter", label: "Clock Delimiter", icon: "/static/display-icons/original/clock_delimiter.png", x: 51.1, y: 43.1, w: 1.7 },
+  { key: "mode_standard", labelEn: "Standard", labelDe: "Standard", icon: "/static/display-icons/original/standard-mode.png", x: 78.8, y: 56.1, w: 16.2 },
+  { key: "blower", labelEn: "Air Jet", labelDe: "Luftdüse", icon: "/static/display-icons/original/airjet.png", x: 24.2, y: 75.4, w: 10.4 },
+  { key: "pump1", labelEn: "Water Jet 1", labelDe: "Wasserstrahl 1", icon: "/static/display-icons/original/waterjet1.png", x: 49.3, y: 75.2, w: 11.1 },
+  { key: "pump2", labelEn: "Water Jet 2", labelDe: "Wasserstrahl 2", icon: "/static/display-icons/original/waterjet2.png", x: 65.5, y: 75.2, w: 11.1 },
+  { key: "float_23", labelEn: "Point 2-3", labelDe: "Punkt 2-3", icon: "/static/display-icons/original/floating-point-digit-2-3.png", x: 45.5, y: 51.1, w: 1.9 },
+  { key: "float_34", labelEn: "Point 3-4", labelDe: "Punkt 3-4", icon: "/static/display-icons/original/floating-point-digit-3-4.png", x: 57.2, y: 51.1, w: 1.9 },
+  { key: "clock_delimiter", labelEn: "Clock Delimiter", labelDe: "Uhrzeit-Trenner", icon: "/static/display-icons/original/clock_delimiter.png", x: 51.1, y: 43.1, w: 1.7 },
 ];
 
 const displaySymbolDescriptionsByLang = {
@@ -199,6 +447,83 @@ const displaySymbolDescriptionsByLang = {
     text: "Indicates selected filter mode. No icon means Economy mode is selected.",
   },
   ],
+  de: [
+    {
+      key: "lock",
+      title: "Sperre",
+      text: "Zeigt an, dass Panel, Solltemperatur oder Filterzyklus-Programmierung gesperrt sind.",
+    },
+    {
+      key: "heater",
+      title: "Heizung",
+      text: "Zeigt an, dass die Heizung aktiv ist.",
+    },
+    {
+      key: "sanitizer",
+      title: "Desinfektion",
+      text: "Zeigt an, dass das Desinfektionssystem aktiv ist.",
+    },
+    {
+      key: "cycle_set",
+      title: "Filterzyklus anpassen",
+      text: "Zeigt an, dass die Filterzyklus-Programmierung geöffnet ist.",
+    },
+    {
+      key: "cycle_num",
+      title: "Filterzyklus-Nummer",
+      text: "Zeigt an, welcher programmierte Filterzyklus läuft.",
+    },
+    {
+      key: "cycle_running",
+      title: "Filterzyklus",
+      text: "Zeigt an, dass der programmierte Filterzyklus läuft.",
+    },
+    {
+      key: "clock",
+      title: "Startzeit Filterzyklus",
+      text: "Zeigt an, dass die Startzeit-Programmierung des Filterzyklus geöffnet ist.",
+    },
+    {
+      key: "duration",
+      title: "Dauer Filterzyklus",
+      text: "Zeigt an, dass die Dauer-Programmierung des Filterzyklus geöffnet ist.",
+    },
+    {
+      key: "set_temp",
+      title: "Solltemperatur",
+      text: "Zeigt die aktuell eingestellte Temperatur an.",
+    },
+    {
+      key: "set_time",
+      title: "Uhrzeit einstellen",
+      text: "Zeigt an, dass die aktuelle Uhrzeit angezeigt wird.",
+    },
+    {
+      key: "filter",
+      title: "Filteranzeige",
+      text: "Zeigt an, dass eine Filterreinigung und/oder ein Filterwechsel erforderlich ist.",
+    },
+    {
+      key: "blower",
+      title: "Gebläse",
+      text: "Zeigt an, dass das Gebläse aktiv ist.",
+    },
+    {
+      key: "pump1",
+      title: "Jets 1",
+      text: "Zeigt an, dass Pumpe 1 aktiv ist.",
+    },
+    {
+      key: "pump2",
+      title: "Jets 2",
+      text: "Zeigt an, dass Pumpe 2 aktiv ist (bei Maxxus/Aspen auch Pumpe 3).",
+    },
+    {
+      key: "mode_standard",
+      title: "Modus",
+      text: "Zeigt den gewählten Filtermodus an. Kein Symbol bedeutet Economy-Modus.",
+    },
+  ],
 };
 
 const state = {
@@ -215,7 +540,7 @@ function renderSigrokLog() {
     return;
   }
   if (state.sigrokLogLines.length === 0) {
-    node.textContent = "PS> waiting for first capture command...";
+    node.textContent = ui("waitingForFirstCaptureCommand");
     return;
   }
   node.textContent = state.sigrokLogLines.join("\n");
@@ -236,11 +561,11 @@ function clearSigrokLog() {
 }
 
 function localizedButtonName(item) {
-  return item.nameEn;
+  return currentLanguage === "de" ? item.nameDe || item.nameEn : item.nameEn;
 }
 
 function localizedKeyDoc(code) {
-  return keyDocs[code] || "";
+  return keyDocs[currentLanguage]?.[code] || keyDocs.en[code] || "";
 }
 
 function element(id) {
@@ -365,7 +690,7 @@ async function jsonFetch(url, options = {}) {
 function currentRecordingId() {
   const value = Number(element("recordingId").value || "0");
   if (!Number.isFinite(value) || value <= 0) {
-    throw new Error("Bitte zuerst eine gueltige Recording ID setzen");
+    throw new Error(ui("startARecordingFirst"));
   }
   return value;
 }
@@ -376,7 +701,7 @@ function updateSequencePreview() {
     return;
   }
   if (state.sequenceSteps.length === 0) {
-    preview.textContent = "No steps yet";
+    preview.textContent = ui("noStepsYet");
     return;
   }
 
@@ -403,18 +728,18 @@ function clearSequence() {
 async function copySequence() {
   const sequenceInput = element("sequence");
   if (!sequenceInput) {
-    showToast("Not available", true);
+    showToast(ui("notAvailable"), true);
     return;
   }
   const text = sequenceInput.value.trim();
   if (!text) {
-    showToast("No sequence to copy", true);
+    showToast(ui("noSequenceToCopy"), true);
     return;
   }
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     await navigator.clipboard.writeText(text);
-    showToast("Sequence copied");
+    showToast(ui("sequenceCopied"));
     return;
   }
 
@@ -424,7 +749,7 @@ async function copySequence() {
   tmp.select();
   document.execCommand("copy");
   tmp.remove();
-  showToast("Sequence copied");
+  showToast(ui("sequenceCopied"));
 }
 
 async function refreshStatus() {
@@ -435,20 +760,17 @@ async function refreshStatus() {
   const text = element("statusText");
 
   if (!status.active) {
-    badge.textContent = "Idle";
+    badge.textContent = ui("idle");
     badge.className = "badge idle";
-    text.textContent = "No active recording";
+    text.textContent = ui("noActiveRecording");
     return;
   }
 
   state.lastRecordingId = status.recordingId;
-  badge.textContent = "Live";
+  badge.textContent = ui("live");
   badge.className = "badge live";
   const seconds = (status.elapsedMs / 1000).toFixed(1);
-  text.textContent =
-    currentLanguage === "de"
-      ? `ID ${status.recordingId} laeuft seit ${seconds}s`
-      : `ID ${status.recordingId} running for ${seconds}s`;
+  text.textContent = ui("activeStatus", status.recordingId, seconds);
 }
 
 async function refreshRecordings() {
@@ -456,10 +778,10 @@ async function refreshRecordings() {
   const body = element("recordingsBody");
   body.innerHTML = "";
 
-  const exportLabel = "Export JSON";
-  const downloadSrLabel = "Download .sr";
-  const deleteLabel = "Delete";
-  const saveLabel = "Save";
+  const exportLabel = ui("exportJson");
+  const downloadSrLabel = ui("downloadSr");
+  const deleteLabel = ui("delete");
+  const saveLabel = ui("save");
 
   function formatDuration(startIso, endIso, status) {
     if (!startIso) {
@@ -541,16 +863,16 @@ async function refreshRecordings() {
     trDetails.innerHTML = `
       <td colspan="9">
         <div class="recording-details-line">
-          <span class="recording-preview-label">Annotations:</span>
-          <span class="recording-preview-text">${preview || "none"}</span>
+          <span class="recording-preview-label">${ui("annotations")}</span>
+          <span class="recording-preview-text">${preview || ui("none")}</span>
         </div>
         <div class="recording-edit-grid">
           <label>
-            Name
+            ${ui("recordingNameLabel")}
             <input data-edit-name="${item.id}" value="${escapeHtml(item.name)}" />
           </label>
           <label>
-            Comment
+            ${ui("commentLabel")}
             <input data-edit-notes="${item.id}" value="${escapeHtml(item.notes || "")}" placeholder="optional" />
           </label>
         </div>
@@ -591,7 +913,7 @@ async function refreshRecordings() {
     btn.addEventListener("click", async () => {
       const id = Number(btn.dataset.delete);
       const ok = window.confirm(
-        `Delete recording ${id}?`
+        ui("deleteRecordingQuestion", id)
       );
       if (!ok) {
         return;
@@ -602,7 +924,7 @@ async function refreshRecordings() {
           method: "POST",
           body: JSON.stringify({ recordingId: id }),
         });
-        showToast(`Recording ${id} deleted`);
+        showToast(ui("recordingDeleted", id));
         await refreshRecordings();
         await refreshStatus();
       } catch (error) {
@@ -627,7 +949,7 @@ async function refreshRecordings() {
             notes,
           }),
         });
-        showToast(`Recording ${id} saved`);
+        showToast(ui("recordingSaved", id));
         await refreshRecordings();
       } catch (error) {
         showToast(String(error.message || error), true);
@@ -639,7 +961,7 @@ async function refreshRecordings() {
 async function startRecording() {
   const channels = getSelectedChannels();
   if (!channels) {
-    throw new Error("Select at least one channel");
+    throw new Error(ui("selectAtLeastOneChannel"));
   }
 
   const payload = {
@@ -654,7 +976,7 @@ async function startRecording() {
   };
 
   if (!payload.simulate) {
-    await testSignalAnalyzer(payload.driver);
+    appendSigrokLog(`PS> ${ui("recordingModeNoCommand")}`);
   }
 
   const result = await jsonFetch("/api/recordings/start", {
@@ -669,7 +991,7 @@ async function startRecording() {
   }
 
   state.lastRecordingId = result.recordingId;
-  showToast(`Recording ${result.recordingId} gestartet`);
+  showToast(ui("recordingStarted", result.recordingId));
   await refreshStatus();
   await refreshRecordings();
 }
@@ -680,14 +1002,14 @@ async function testSignalAnalyzer(driver = getSelectedDriver()) {
     body: JSON.stringify({ driver }),
   });
 
-  appendSigrokLog(`PS> analyzer test ok for ${driver}`);
+  appendSigrokLog(`PS> ${ui("analyzerTestOk", driver)}`);
   if (Array.isArray(result.command) && result.command.length > 0) {
     appendSigrokLog(`PS> ${result.command.join(" ")}`);
   }
   if (result.output) {
     appendSigrokLog(`PS> ${String(result.output).split("\n").join(" | ")}`);
   }
-  showToast(`Analyzer test passed for ${driver}`);
+  showToast(ui("analyzerTestPassed", driver));
   return result;
 }
 
@@ -705,13 +1027,11 @@ async function stopRecording() {
         endCommentField.value = "";
       }
     }
-    showToast(
-      `Recording ${result.recordingId} stopped`
-    );
+    showToast(ui("recordingStopped", result.recordingId));
     appendSigrokLog(`PS> recording ${result.recordingId} stopped (${result.status})`);
   } else {
-    showToast(result.message || "No active recording", true);
-    appendSigrokLog("PS> stop requested but no active recording");
+    showToast(result.message || ui("noActiveRecordingError"), true);
+    appendSigrokLog(`PS> ${ui("noCurrentRecording")}`);
   }
   await refreshStatus();
   await refreshRecordings();
@@ -725,7 +1045,7 @@ function resolveRecordingId() {
     return Number(state.lastRecordingId);
   }
   throw new Error(
-    "Start a recording first"
+    ui("startARecordingFirst")
   );
 }
 
@@ -894,13 +1214,11 @@ function refreshActiveDisplaySymbolsInfo() {
 
   const active = displaySymbolLayout
     .filter((symbol) => state.activeDisplaySymbols.has(symbol.key))
-    .map((symbol) => symbol.label);
+    .map((symbol) => (currentLanguage === "de" ? symbol.labelDe || symbol.labelEn : symbol.labelEn));
 
   target.textContent = active.length > 0
     ? `${currentLanguage === "de" ? "Aktiv" : "Active"}: ${active.join(" | ")}`
-    : currentLanguage === "de"
-      ? "Keine Symbole aktiv"
-      : "No symbols active";
+    : ui("noSymbolsActive");
 }
 
 function updateDisplayValuePreview() {
@@ -961,7 +1279,7 @@ function buildDisplayBoard() {
       marker.style.left = `${symbol.x}%`;
       marker.style.top = `${symbol.y}%`;
       marker.style.width = `${symbol.w}%`;
-      marker.innerHTML = `<img src="${symbol.icon}" alt="${symbol.label}" />`;
+      marker.innerHTML = `<img src="${symbol.icon}" alt="${currentLanguage === "de" ? symbol.labelDe || symbol.labelEn : symbol.labelEn}" />`;
       board.appendChild(marker);
       continue;
     }
@@ -970,12 +1288,12 @@ function buildDisplayBoard() {
     button.type = "button";
     button.className = "display-symbol-btn";
     button.dataset.symbol = symbol.key;
-    button.setAttribute("aria-label", symbol.label);
-    button.setAttribute("title", symbol.label);
+    button.setAttribute("aria-label", currentLanguage === "de" ? symbol.labelDe || symbol.labelEn : symbol.labelEn);
+    button.setAttribute("title", currentLanguage === "de" ? symbol.labelDe || symbol.labelEn : symbol.labelEn);
     button.style.left = `${symbol.x}%`;
     button.style.top = `${symbol.y}%`;
     button.style.width = `${symbol.w}%`;
-    button.innerHTML = `<img src="${symbol.icon}" alt="${symbol.label}" />`;
+    button.innerHTML = `<img src="${symbol.icon}" alt="${currentLanguage === "de" ? symbol.labelDe || symbol.labelEn : symbol.labelEn}" />`;
 
     button.addEventListener("click", () => {
       const isActive = state.activeDisplaySymbols.has(symbol.key);
@@ -1067,44 +1385,69 @@ function applyLanguage(lang) {
 
   const isDe = currentLanguage === "de";
 
-  const recordingTitle = document.querySelector(".card-recording h2");
-  if (recordingTitle) recordingTitle.textContent = isDe ? "Aufnahme" : "Recording";
+  document.title = ui("pageTitle");
+
+  const appTitle = document.querySelector(".topbar h1");
+  if (appTitle) appTitle.textContent = ui("appTitle");
+
+  setText(element("languageLabel"), "languageLabel");
+  setText(element("recordingTitle"), "recordingTitle");
+  setText(element("sessionNameLabel"), "sessionNameLabel");
+  setText(element("driverLabel"), "driverLabel");
+  setText(element("channelsLabel"), "channelsLabel");
+  setText(element("samplerateLabel"), "samplerateLabel");
+  setText(element("durationLabel"), "durationLabel");
+  setText(element("endCommentLabel"), "endCommentLabel");
+  setText(element("displayValueLabel"), "displayValueLabel");
+  setText(element("startBtn"), "startRecording");
+  setText(element("stopBtn"), "stopRecording");
+  setText(element("testAnalyzerBtn"), "testAnalyzer");
+  setText(element("refreshBtn"), "reloadRecordings");
+  setText(element("clearSigrokLogBtn"), "clearLog");
+  setText(element("sigrokLogTitle"), "sigrokCommandLog");
+  setText(element("simulateLabelText"), "simulateLabelText");
+  setText(element("mobileAnnotationTitle"), "mobileAnnotationTitle");
+  setText(element("mobileAnnotationHint"), "mobileAnnotationHint");
+  setText(element("panelButtonsTitle"), "panelButtonsTitle");
+  setText(element("panelButtonsHint"), "panelButtonsHint");
+  setText(element("keyGuideTitle"), "mainControlFunctions");
+  setText(element("displaySymbolsTitle"), "displayAndSymbolsTitle");
+  setText(element("displaySymbolsHint"), "displaySymbolsHint");
+  setText(element("cycleNumberLabelText"), "cycleNumberLabel");
+  setText(element("clearDisplaySymbolsBtn"), "resetSymbols");
+  setText(element("activeDisplaySymbols"), "noSymbolsActive");
+  setText(element("symbolLegendTitle"), "lcdScreenFunctions");
+  setText(element("saveDisplayBtn"), "saveDisplayState");
+  setText(element("recordingsTitle"), "recordingsTitle");
+  setText(element("deleteAllBtn"), "deleteAll");
+  setText(element("recordingsHeaderId"), "tableId");
+  setText(element("recordingsHeaderName"), "tableName");
+  setText(element("recordingsHeaderStatus"), "tableStatus");
+  setText(element("recordingsHeaderMeasuredAt"), "tableMeasuredAt");
+  setText(element("recordingsHeaderDuration"), "tableDuration");
+  setText(element("recordingsHeaderSamplerate"), "tableSamplerate");
+  setText(element("recordingsHeaderChannels"), "tableChannels");
+  setText(element("recordingsHeaderAnnotations"), "tableAnnotations");
+  setText(element("recordingsHeaderActions"), "tableActions");
+  setPlaceholder(element("driverCustom"), "driverCustomPlaceholder");
+  setPlaceholder(element("displayValue"), "displayValuePlaceholder");
+  setPlaceholder(element("cycleNumber"), "cycleNumberPlaceholder");
+  setPlaceholder(element("endComment"), "endCommentPlaceholder");
+
+  const languageSelect = element("languageSelect");
+  setText(languageSelect?.parentElement?.querySelector("span"), "languageLabel");
+  setOptionText(languageSelect, 0, "englishOption");
+  setOptionText(languageSelect, 1, "germanOption");
+
+  const driverSelect = element("driverSelect");
+  if (driverSelect) {
+    setOptionText(driverSelect, driverSelect.options.length - 1, "customOption");
+  }
 
   const annotationTitle = document.querySelector(".card-annotation h2");
-  if (annotationTitle) annotationTitle.textContent = isDe ? "Mobile Annotation" : "Mobile Annotation";
-
-  const panelTitle = document.querySelector(".panel-keys h3");
-  if (panelTitle) panelTitle.textContent = isDe ? "Panel-Tasten" : "Panel Buttons";
-
-  const panelHint = document.querySelector(".panel-keys .hint");
-  if (panelHint) {
-    panelHint.textContent = isDe
-      ? "Keine manuellen Felder. Tippe die echten Tastenpositionen, die Eingaben werden automatisch gespeichert."
-      : "No manual fields. Tap the real panel button positions and events are saved automatically.";
-  }
-
-  const displayTitle = document.querySelector(".display-state h3");
-  if (displayTitle) displayTitle.textContent = isDe ? "Display und Symbole" : "Display and Symbols";
-
-  const displayHint = document.querySelector(".display-state .hint");
-  if (displayHint) {
-    displayHint.textContent = isDe
-      ? "Tippe die Symbole direkt im mittleren Display an. Hier nur Wert eintragen und speichern."
-      : "Tap symbols directly inside the center display. Enter value and save.";
-  }
-
-  const refreshBtn = element("refreshBtn");
-  if (refreshBtn) refreshBtn.textContent = isDe ? "Recordings neu laden" : "Reload recordings";
-
-  const deleteAllBtn = element("deleteAllBtn");
-  if (deleteAllBtn) deleteAllBtn.textContent = isDe ? "Alle loeschen" : "Delete all";
-
-  const copySequenceBtn = element("copySequenceBtn");
-  if (copySequenceBtn) copySequenceBtn.textContent = isDe ? "In Zwischenablage" : "Copy";
-
   const noActive = element("statusText");
   if (noActive && (!state.activeStatus || !state.activeStatus.active)) {
-    noActive.textContent = isDe ? "Keine aktive Aufnahme" : "No active recording";
+    noActive.textContent = ui("noActiveRecording");
   }
 
   buildPanelHotspots();
@@ -1116,11 +1459,7 @@ function applyLanguage(lang) {
 
   const keyGuideTitle = document.querySelector(".key-guide-wrap h4");
   if (keyGuideTitle) {
-    keyGuideTitle.textContent = currentLanguage === "de" ? "Hauptfunktionen" : "Main Control Functions";
-  }
-  const symbolLegendTitle = document.querySelector(".symbol-legend-wrap h4");
-  if (symbolLegendTitle) {
-    symbolLegendTitle.textContent = currentLanguage === "de" ? "LCD-Symbolfunktionen" : "LCD Screen Functions";
+    keyGuideTitle.textContent = ui("mainControlFunctions");
   }
 }
 
@@ -1149,7 +1488,7 @@ function bindActions() {
       try {
         await testSignalAnalyzer();
       } catch (error) {
-        appendSigrokLog(`PS> analyzer test failed: ${String(error.message || error)}`);
+        appendSigrokLog(`PS> ${ui("analyzerTestFailed", getSelectedDriver())}: ${String(error.message || error)}`);
         showToast(String(error.message || error), true);
       }
     });
@@ -1166,7 +1505,7 @@ function bindActions() {
     try {
       await refreshRecordings();
       await refreshStatus();
-      showToast("List refreshed");
+      showToast(ui("listRefreshed"));
     } catch (error) {
       setSyncInfo(false, String(error.message || error));
       showToast(String(error.message || error), true);
@@ -1177,7 +1516,7 @@ function bindActions() {
   if (deleteAllBtn) {
     deleteAllBtn.addEventListener("click", async () => {
       const ok = window.confirm(
-        "Delete all recordings?"
+        ui("deleteAllRecordingsQuestion")
       );
       if (!ok) {
         return;
@@ -1188,7 +1527,7 @@ function bindActions() {
           method: "POST",
           body: "{}",
         });
-        showToast(`${result.deleted} recordings deleted`);
+        showToast(ui("recordingDeleted", result.deleted));
         await refreshRecordings();
         await refreshStatus();
       } catch (error) {
@@ -1212,7 +1551,7 @@ function bindActions() {
   if (clearSequenceBtn) {
     clearSequenceBtn.addEventListener("click", () => {
       clearSequence();
-      showToast("Sequence cleared");
+      showToast(ui("sequenceCleared"));
     });
   }
 

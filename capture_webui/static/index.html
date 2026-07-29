@@ -18,12 +18,12 @@
     <div class="bg-orb orb-b"></div>
 
     <header class="topbar">
-      <h1>Capture WebUI</h1>
+      <h1 id="appTitle">Capture WebUI</h1>
       <div class="statusline">
         <span id="statusBadge" class="badge idle">Idle</span>
         <span id="statusText">No active recording</span>
         <label class="lang-select">
-          Language
+          <span id="languageLabel">Language</span>
           <select id="languageSelect">
             <option value="en" selected>English</option>
             <option value="de">Deutsch</option>
@@ -37,11 +37,11 @@
         <h2 id="recordingTitle">Recording</h2>
         <div class="form-grid compact-form">
           <label>
-            Session Name
+            <span id="sessionNameLabel">Session Name</span>
             <input id="name" value="panel-session" />
           </label>
           <label>
-            Driver
+            <span id="driverLabel">Driver</span>
             <select id="driverSelect">
               <option value="fx2lafw" selected>fx2lafw</option>
               <option value="saleae-logic16">saleae-logic16</option>
@@ -55,6 +55,7 @@
             <input id="driverCustom" class="driver-custom hidden" placeholder="custom driver id" />
           </label>
           <label>
+            <span id="channelsLabel">Channels</span>
             Channels
             <div id="channelsGroup" class="channels-grid">
               <label class="channel-option"><input type="checkbox" value="D1" />1</label>
@@ -69,7 +70,7 @@
           </label>
           <div class="stacked-controls">
             <label>
-              Samplerate
+              <span id="samplerateLabel">Samplerate</span>
               <select id="samplerate">
                 <option value="1MHz">1MHz</option>
                 <option value="2MHz">2MHz</option>
@@ -81,12 +82,12 @@
               </select>
             </label>
             <label>
-              Duration (seconds)
+              <span id="durationLabel">Duration (seconds)</span>
               <input id="durationSeconds" value="10" type="number" min="1" max="600" />
             </label>
           </div>
           <label class="full">
-            Optional end comment
+            <span id="endCommentLabel">Optional end comment</span>
             <input id="endComment" placeholder="e.g. unusual panel behavior" />
           </label>
         </div>
@@ -98,26 +99,26 @@
           <button id="clearSigrokLogBtn" class="btn">Clear log</button>
         </div>
         <div class="sigrok-log-wrap">
-          <div class="sigrok-log-title">Sigrok Command Log</div>
+          <div id="sigrokLogTitle" class="sigrok-log-title">Sigrok Command Log</div>
           <pre id="sigrokLog" class="sigrok-log">PS> waiting for first capture command...</pre>
         </div>
         <div id="syncInfo" class="sync-info">Not refreshed yet</div>
         <div class="recording-tail">
           <label class="simulate-mini">
             <input id="simulate" type="checkbox" checked />
-            Simulate without hardware
+            <span id="simulateLabelText">Simulate without hardware</span>
           </label>
         </div>
       </section>
 
       <section class="card card-annotation">
-        <h2>Mobile Annotation</h2>
-        <p class="hint">Flow: Start recording, tap only the real panel buttons, then stop recording. Optional: add one end comment.</p>
+        <h2 id="mobileAnnotationTitle">Mobile Annotation</h2>
+        <p id="mobileAnnotationHint" class="hint">Flow: Start recording, tap only the real panel buttons, then stop recording. Optional: add one end comment.</p>
 
         <div class="panel-grid">
           <div class="panel-keys">
-            <h3>Panel Buttons</h3>
-            <p class="hint">No manual annotation fields. Taps are saved automatically for the active recording.</p>
+            <h3 id="panelButtonsTitle">Panel Buttons</h3>
+            <p id="panelButtonsHint" class="hint">No manual annotation fields. Taps are saved automatically for the active recording.</p>
             <div class="panel-visual" id="panelVisual">
               <div class="panel-shell"></div>
               <div class="panel-screen">
@@ -127,23 +128,23 @@
               <div id="panelHotspots" class="panel-hotspots"></div>
             </div>
             <div class="key-guide-wrap">
-              <h4>Main Control Functions</h4>
+              <h4 id="keyGuideTitle">Main Control Functions</h4>
               <div id="keyGuide" class="key-guide"></div>
             </div>
           </div>
 
           <div class="display-state">
-            <h3>Display and Symbols</h3>
-            <p class="hint">Tap symbols directly in the center display. Add value or cycle number only if needed, then save.</p>
+            <h3 id="displaySymbolsTitle">Display and Symbols</h3>
+            <p id="displaySymbolsHint" class="hint">Tap symbols directly in the center display. Add value or cycle number only if needed, then save.</p>
             <div class="display-fields">
               <label class="full">
-                Display value
+                <span id="displayValueLabel">Display value</span>
                 <input id="displayValue" placeholder="e.g. 29.9C or 12:45" />
               </label>
               <label class="full cycle-number-field">
                 <span class="cycle-inline">
                   <input id="showCycleNumber" type="checkbox" />
-                  <span>Filter cycle number (top 8 symbol)</span>
+                  <span id="cycleNumberLabelText">Filter cycle number (top 8 symbol)</span>
                 </span>
                 <input id="cycleNumber" type="number" min="0" max="9" placeholder="e.g. 1" />
               </label>
@@ -153,7 +154,7 @@
             </div>
             <div id="activeDisplaySymbols" class="active-display-symbols">No symbols active</div>
             <div class="symbol-legend-wrap">
-              <h4>LCD Screen Functions</h4>
+              <h4 id="symbolLegendTitle">LCD Screen Functions</h4>
               <div id="symbolLegend" class="symbol-legend"></div>
             </div>
             <div class="button-row compact">
@@ -164,7 +165,7 @@
       </section>
 
       <section class="card card-list">
-        <h2>Recordings</h2>
+        <h2 id="recordingsTitle">Recordings</h2>
         <div class="button-row compact">
           <button id="deleteAllBtn" class="btn danger">Delete all</button>
         </div>
@@ -172,15 +173,15 @@
           <table>
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Measured At</th>
-                <th>Duration</th>
-                <th>Samplerate</th>
-                <th>Channels</th>
-                <th>Annotations</th>
-                <th>Actions</th>
+                <th id="recordingsHeaderId">ID</th>
+                <th id="recordingsHeaderName">Name</th>
+                <th id="recordingsHeaderStatus">Status</th>
+                <th id="recordingsHeaderMeasuredAt">Measured At</th>
+                <th id="recordingsHeaderDuration">Duration</th>
+                <th id="recordingsHeaderSamplerate">Samplerate</th>
+                <th id="recordingsHeaderChannels">Channels</th>
+                <th id="recordingsHeaderAnnotations">Annotations</th>
+                <th id="recordingsHeaderActions">Actions</th>
               </tr>
             </thead>
             <tbody id="recordingsBody"></tbody>
