@@ -10,7 +10,6 @@ This project is a non-profit, community-oriented tool created to help bring info
 <img width="1249" height="807" alt="image" src="https://github.com/user-attachments/assets/456e1db3-0186-4a66-bdee-e6af12c4e7c2" />
 <img width="1228" height="360" alt="image" src="https://github.com/user-attachments/assets/42b0d955-3a2f-49f1-9daa-8cd0d6880b9c" />
 
-
 ## Features
 
 - Start and stop recordings from the browser
@@ -33,9 +32,27 @@ This project is a non-profit, community-oriented tool created to help bring info
 
 ## Cross-Platform Setup (macOS, Linux, Windows)
 
-This section helps you test locally before moving to Raspberry Pi.
+## Automated: Raspberry Pi Setup
 
-### Prerequisites
+Use Raspberry Pi OS Lite and install the project with one command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/install_capture_webui_on_pi.sh | sudo bash -s --
+```
+
+The installer:
+
+- installs the required packages
+- clones or updates the repository
+- creates the Python virtual environment
+- installs and enables the systemd service
+- starts the service automatically
+
+After installation, the web UI runs as a headless service on the Pi and is available on your LAN.
+
+## Manual Install
+
+### Prerequisites for Manual Install
 
 - Python 3.10+
 - sigrok-cli (required for real hardware captures)
@@ -291,24 +308,6 @@ The right attitude is:
 - improve the decoder only when the evidence supports it
 
 That is the path from a captured pool interaction to a real protocol understanding.
-
-## Raspberry Pi Setup
-
-Use Raspberry Pi OS Lite and install the project with one command:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/install_capture_webui_on_pi.sh | sudo bash -s --
-```
-
-The installer:
-
-- installs the required packages
-- clones or updates the repository
-- creates the Python virtual environment
-- installs and enables the systemd service
-- starts the service automatically
-
-After installation, the web UI runs as a headless service on the Pi and is available on your LAN.
 
 ## Operational Notes
 
