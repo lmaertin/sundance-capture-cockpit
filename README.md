@@ -49,6 +49,12 @@ The one-click installer:
 - installs and enables the systemd service
 - starts the service automatically
 
+To update an existing Pi install later, use the matching updater:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/update_capture_webui_on_pi.sh | sudo bash -s --
+```
+
 After installation, the web UI runs as a headless service on the Pi and is available on your LAN.
 
 ## Manual Install

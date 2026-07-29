@@ -198,6 +198,7 @@ const displaySymbolDescriptionsByLang = {
     title: "Mode",
     text: "Indicates selected filter mode. No icon means Economy mode is selected.",
   },
+  ],
 };
 
 const state = {
