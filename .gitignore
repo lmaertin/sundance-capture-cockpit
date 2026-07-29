@@ -1,3 +1,16 @@
 # Ignore everything by default except the web UI project and the root README.
 /misc/
 /misc/*
+
+# OS and Python cache artifacts.
+.DS_Store
+**/.DS_Store
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
