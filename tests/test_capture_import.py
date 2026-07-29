@@ -92,6 +92,23 @@ class CaptureImportTests(unittest.TestCase):
         self.assertTrue(result["ok"])
         self.assertEqual(result["command"], ["sigrok-cli", "--scan", "-d", "fx2lafw"])
 
+    def test_probe_signal_analyzer_reports_firmware_upload_failure(self) -> None:
+        completed = type(
+            "CompletedProcess",
+            (),
+            {
+                "returncode": 0,
+                "stdout": "The following devices were found:\nfx2lafw - Saleae Logic with 8 channels: D0 D1 D2 D3 D4 D5 D6 D7\n",
+                "stderr": "sr: resource: Failed to open resource 'fx2lafw-saleae-logic.fw'\nsr: fx2lafw: Firmware upload failed for device 1.2 (logical), name fx2lafw-saleae-logic.fw.\n",
+            },
+        )
+
+        with patch("capture_webui.server.subprocess.run", return_value=completed):
+            result = probe_signal_analyzer("fx2lafw")
+
+        self.assertFalse(result["ok"])
+        self.assertIn("Firmware upload failed", result["error"])
+
 
 if __name__ == "__main__":
     unittest.main()
