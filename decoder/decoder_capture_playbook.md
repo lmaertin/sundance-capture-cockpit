@@ -281,14 +281,14 @@ Preview selected profile and full command:
 
 ```bash
 /Users/lukas/sundance/.venv/bin/python decoder/panel96_auto_decode.py \
-  messungen/alt/pool_26-27.sr messungen/boot/boot1.sr --preview
+	messungen/alt/pool_26-27.sr messungen/boot/boot1.sr --preview
 ```
 
 Run real decode:
 
 ```bash
 /Users/lukas/sundance/.venv/bin/python decoder/panel96_auto_decode.py \
-  messungen/alt/pool_26-27.sr messungen/boot/boot1.sr
+	messungen/alt/pool_26-27.sr messungen/boot/boot1.sr
 ```
 
 Default output uses semantic labels where known (for example
@@ -298,7 +298,7 @@ Optional: force one profile for all inputs:
 
 ```bash
 /Users/lukas/sundance/.venv/bin/python decoder/panel96_auto_decode.py \
-  messungen/alt/pool_26-27.sr --profile alt
+	messungen/alt/pool_26-27.sr --profile alt
 ```
 
 Optional: show raw state labels (`ST*`, `ALT*`, `BOOT*`) instead of semantic

@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" role="img" aria-label="Geblaese">
-  <rect x="2" y="2" width="116" height="66" rx="32" fill="#d7d9dd" stroke="#2f3137" stroke-width="4"/>
-  <path d="M36 44c7-9 18-14 30-14" fill="none" stroke="#2f3137" stroke-width="4" stroke-linecap="round"/>
-  <path d="M62 30l-6 2 4 5" fill="none" stroke="#2f3137" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="72" cy="27" r="4" fill="none" stroke="#2f3137" stroke-width="3"/>
-  <circle cx="72" cy="35" r="4" fill="none" stroke="#2f3137" stroke-width="3"/>
-  <circle cx="72" cy="43" r="4" fill="none" stroke="#2f3137" stroke-width="3"/>
-</svg>

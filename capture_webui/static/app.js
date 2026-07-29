@@ -1,32 +1,17 @@
 let currentLanguage = "en";
 
-const keyDocsByLang = {
-  en: {
-    A: "Select Button: Scrolls menu through filter cycle programming features. Manually activates the circulation pump when it is off for a 1 hour duration.",
-    B: "Cycle Button: Accesses filter cycle program mode and advances display to next cycle.",
-    C: "Mode Button: Switches between Standard and Economy modes.",
-    D: "Display Button: Displays time of day and initiates time setting and locking functions.",
-    E: "Invert Button: Inverts the main 4-digit LCD display.",
-    F: "Jets 2 Button: Controls jets pump #2 (and Maxxus/Aspen Jets pump #3).",
-    G: "Jets 1 Button: Controls jets pump #1.",
-    H: "Blower Button: Controls air blower.",
-    I: "Light Mode Button: Selects one of 4 color modes for waterfall, footwell and air control lights.",
-    J: "Light Button: Turns waterfall, footwell and air control lights on in unison. Press once for high intensity, second for medium, third for low, fourth to turn off.",
-    K: "Warmer and Cooler Buttons: Display and adjust temperature setting and other programming features.",
-  },
-  de: {
-    A: "Auswahltaste: Blaettern durch Menues zur Filterzyklus-Programmierung. Aktiviert die Umwaelzpumpe manuell, wenn sie ausgeschaltet ist (1 Stunde).",
-    B: "Zyklustaste: Zugriff auf den Programmiermodus fuer Filterzyklen und Weiter zum naechsten Zyklus.",
-    C: "Modustaste: Wechsel zwischen Standard- und Sparmodus.",
-    D: "Anzeigetaste: Anzeige der Uhrzeit und Aufruf von Zeiteinstellung und Sperrfunktionen.",
-    E: "Umkehrtaste: Umkehr der 4-stelligen LCD-Hauptanzeige.",
-    F: "Taste fuer Duesenpumpe 2: Steuert Duesenpumpe 2 (bei Maxxus/Aspen auch Pumpe 3).",
-    G: "Taste fuer Duesenpumpe 1: Steuert Duesenpumpe 1.",
-    H: "Geblaesetaste: Steuert das Geblaese.",
-    I: "Beleuchtungsmodus-Taste: Waehlt einen von vier Farbmodi fuer Wasserfall-, Fussraum- und Luftreglerbeleuchtung.",
-    J: "Beleuchtungs-Ein/Aus-Taste: Schaltet Wasserfall-, Fussraum- und Luftreglerbeleuchtung gemeinsam und durchlaeuft die Helligkeitsstufen Hoch, Mittel, Niedrig, Aus.",
-    K: "Tasten fuer waermer und kaelter: Zeigen und aendern die Temperatureinstellung sowie weitere Programmierfunktionen.",
-  },
+const keyDocs = {
+  A: "Select Button: Scrolls the menu through filter cycle programming features. Manually activates the circulation pump when it is off for 1 hour.",
+  B: "Cycle Button: Accesses filter cycle program mode and advances to the next cycle.",
+  C: "Mode Button: Switches between Standard and Economy modes.",
+  D: "Display Button: Displays the time of day and opens time setting and lock functions.",
+  E: "Invert Button: Inverts the main 4-digit LCD display.",
+  F: "Jets 2 Button: Controls jets pump 2 (and Maxxus/Aspen jets pump 3).",
+  G: "Jets 1 Button: Controls jets pump 1.",
+  H: "Blower Button: Controls the air blower.",
+  I: "Light Mode Button: Selects one of 4 color modes for waterfall, footwell, and air control lights.",
+  J: "Light Button: Turns waterfall, footwell, and air control lights on in unison. Press once for high intensity, a second time for medium, a third time for low, and a fourth time to turn off.",
+  K: "Warmer and Cooler Buttons: Display and adjust the temperature setting and other programming features.",
 };
 
 const panelButtonLayout = [
@@ -34,130 +19,106 @@ const panelButtonLayout = [
     code: "A",
     cls: "hs-a",
     nameEn: "Select",
-    nameDe: "Auswahl",
-    iconPrimary: "/static/button-icons/original/auswahl.png",
-    iconFallback: "/static/button-icons/auswahl.svg",
+    icon: "/static/button-icons/original/selection.png",
   },
   {
     code: "B",
     cls: "hs-b",
     nameEn: "Cycle",
-    nameDe: "Zyklus",
-    iconPrimary: "/static/button-icons/original/zyklus.png",
-    iconFallback: "/static/button-icons/zyklus.svg",
+    icon: "/static/button-icons/original/cycle.png",
   },
   {
     code: "C",
     cls: "hs-c",
     nameEn: "Mode",
-    nameDe: "Modus",
-    iconPrimary: "/static/button-icons/original/modus.png",
-    iconFallback: "/static/button-icons/modus.svg",
+    icon: "/static/button-icons/original/mode.png",
   },
   {
     code: "D",
     cls: "hs-d",
     nameEn: "Display",
-    nameDe: "Anzeige",
-    iconPrimary: "/static/button-icons/original/anzeige.png",
-    iconFallback: "/static/button-icons/anzeige.svg",
+    icon: "/static/button-icons/original/display.png",
   },
   {
     code: "K",
     cls: "hs-k-warm",
     nameEn: "Warmer",
-    nameDe: "waermer",
-    iconPrimary: "/static/button-icons/original/waermer.png",
-    iconFallback: "/static/button-icons/waermer.svg",
+    icon: "/static/button-icons/original/warmer.png",
     direction: "warmer",
   },
   {
     code: "K",
     cls: "hs-k-cool",
     nameEn: "Cooler",
-    nameDe: "kaelter",
-    iconPrimary: "/static/button-icons/original/kaelter.png",
-    iconFallback: "/static/button-icons/kaelter.svg",
+    icon: "/static/button-icons/original/cooler.png",
     direction: "cooler",
   },
   {
     code: "J",
     cls: "hs-j",
     nameEn: "Light",
-    nameDe: "Beleuchtung ein/aus",
-    iconPrimary: "/static/button-icons/original/beleuchtung_ein_aus.png",
-    iconFallback: "/static/button-icons/beleuchtung_ein_aus.svg",
+    icon: "/static/button-icons/original/light_on_off.png",
   },
   {
     code: "I",
     cls: "hs-i",
     nameEn: "Light mode",
-    nameDe: "Beleuchtungsmodus",
-    iconPrimary: "/static/button-icons/original/beleuchtungsmodus.png",
-    iconFallback: "/static/button-icons/beleuchtungsmodus.svg",
+    icon: "/static/button-icons/original/lighting_mode.png",
   },
   {
     code: "H",
     cls: "hs-h",
     nameEn: "Blower",
-    nameDe: "Geblaese",
-    iconPrimary: "/static/button-icons/original/geblaese.png",
-    iconFallback: "/static/button-icons/geblaese.svg",
+    icon: "/static/button-icons/original/fan.png",
   },
   {
     code: "G",
     cls: "hs-g",
     nameEn: "Jets 1",
-    nameDe: "Duesenpumpe 1",
-    iconPrimary: "/static/button-icons/original/duesenpumpe_1.png",
-    iconFallback: "/static/button-icons/duesenpumpe_1.svg",
+    icon: "/static/button-icons/original/jet_pump_1.png",
   },
   {
     code: "F",
     cls: "hs-f",
     nameEn: "Jets 2",
-    nameDe: "Duesenpumpe 2",
-    iconPrimary: "/static/button-icons/original/duesenpumpe_2.png",
-    iconFallback: "/static/button-icons/duesenpumpe_2.svg",
+    icon: "/static/button-icons/original/jet_pump_2.png",
   },
   {
     code: "E",
     cls: "hs-e",
     nameEn: "Invert",
-    nameDe: "Anzeige umkehren",
-    iconPrimary: "/static/button-icons/original/anzeige_umkehren.png",
-    iconFallback: "/static/button-icons/anzeige_umkehren.svg",
+    icon: "/static/button-icons/original/reverse_display.png",
   },
 ];
 
 const displaySymbolLayout = [
-  { key: "lock", label: "Sperre", icon: "/static/display-icons/original/sperre.png", x: 4.2, y: 6, w: 7.2 },
-  { key: "heater", label: "Heizung", icon: "/static/display-icons/original/heizung.png", x: 12.5, y: 6.2, w: 7.2 },
-  { key: "sanitizer", label: "UV-Reiniger", icon: "/static/display-icons/original/uv-reiniger.png", x: 20.9, y: 5.8, w: 7.8 },
-  { key: "cycle_set", label: "Filter-Einstellung", icon: "/static/display-icons/original/filterzyklus-einstellung.png", x: 30.3, y: 6, w: 7.4 },
+  { key: "lock", label: "Lock", icon: "/static/display-icons/original/lock.png", x: 4.2, y: 6, w: 7.2 },
+  { key: "heater", label: "Heater", icon: "/static/display-icons/original/heater.png", x: 12.5, y: 6.2, w: 7.2 },
+  { key: "sanitizer", label: "Sanitizer", icon: "/static/display-icons/original/uv-cleaner.png", x: 20.9, y: 5.8, w: 7.8 },
+  { key: "cycle_set", label: "Filter Cycle Setting", icon: "/static/display-icons/original/filter-cycle-settings.png", x: 30.3, y: 6, w: 7.4 },
   {
     key: "cycle_num",
-    label: "Filter-Nummer",
-    icon: "/static/display-icons/original/filterzyklus-number.png",
+    label: "Filter Cycle Number",
+    icon: "/static/display-icons/original/filter-cycle-number.png",
     x: 39,
     y: 6.2,
     w: 7.1,
     interactive: false,
   },
-  { key: "clock", label: "Startzeit", icon: "/static/display-icons/original/filterzyklus-startzeit.png", x: 47.6, y: 6.3, w: 7.2 },
-  { key: "duration", label: "Dauer", icon: "/static/display-icons/original/filterzyklus-dauer.png", x: 56.3, y: 6.4, w: 7.2 },
-  { key: "set_temp", label: "Temp-Einstellung", icon: "/static/display-icons/original/eingestellte-temperatur-angezeigt.png", x: 4.6, y: 28.4, w: 7.2 },
-  { key: "set_time", label: "Zeit-Einstellung", icon: "/static/display-icons/original/eingestellte-zeit.png", x: 12.4, y: 28.6, w: 6.2 },
-  { key: "filter", label: "Filteranzeiger", icon: "/static/display-icons/original/filteranzeiger.png", x: 4.4, y: 45.4, w: 7.6 },
+  { key: "clock", label: "Start Time", icon: "/static/display-icons/original/filter-cycle-start-time.png", x: 47.6, y: 6.3, w: 7.2 },
+  { key: "duration", label: "Duration", icon: "/static/display-icons/original/filter-cycle-duration.png", x: 56.3, y: 6.4, w: 7.2 },
+  { key: "set_temp", label: "Set Temperature", icon: "/static/display-icons/original/set-temperature.png", x: 4.6, y: 28.4, w: 7.2 },
+  { key: "set_time", label: "Set Time", icon: "/static/display-icons/original/set-time.png", x: 12.4, y: 28.6, w: 6.2 },
+  { key: "filter", label: "Filter Indicator", icon: "/static/display-icons/original/filter-indicator.png", x: 4.4, y: 45.4, w: 7.6 },
   { key: "am", label: "AM", icon: "/static/display-icons/original/AM.png", x: 81.2, y: 33.2, w: 7.2 },
   { key: "pm", label: "PM", icon: "/static/display-icons/original/PM.png", x: 81.2, y: 42.6, w: 7.2 },
-  { key: "mode_standard", label: "Standard", icon: "/static/display-icons/original/standard-modus.png", x: 78.8, y: 56.1, w: 16.2 },
+  { key: "mode_standard", label: "Standard", icon: "/static/display-icons/original/standard-mode.png", x: 78.8, y: 56.1, w: 16.2 },
   { key: "blower", label: "Air Jet", icon: "/static/display-icons/original/airjet.png", x: 24.2, y: 75.4, w: 10.4 },
   { key: "pump1", label: "Water Jet 1", icon: "/static/display-icons/original/waterjet1.png", x: 49.3, y: 75.2, w: 11.1 },
   { key: "pump2", label: "Water Jet 2", icon: "/static/display-icons/original/waterjet2.png", x: 65.5, y: 75.2, w: 11.1 },
-  { key: "float_23", label: "Punkt 2-3", icon: "/static/display-icons/original/floatingpoint_digit2+3.png", x: 45.5, y: 51.1, w: 1.9 },
-  { key: "float_34", label: "Punkt 3-4", icon: "/static/display-icons/original/floatingpoint_digit3+4.png", x: 57.2, y: 51.1, w: 1.9 },
-  { key: "clock_delimiter", label: "Uhr-Trenner", icon: "/static/display-icons/original/clock_delimiter.png", x: 51.1, y: 43.1, w: 1.7 },
+  { key: "float_23", label: "Point 2-3", icon: "/static/display-icons/original/floating-point-digit-2-3.png", x: 45.5, y: 51.1, w: 1.9 },
+  { key: "float_34", label: "Point 3-4", icon: "/static/display-icons/original/floating-point-digit-3-4.png", x: 57.2, y: 51.1, w: 1.9 },
+  { key: "clock_delimiter", label: "Clock Delimiter", icon: "/static/display-icons/original/clock_delimiter.png", x: 51.1, y: 43.1, w: 1.7 },
 ];
 
 const displaySymbolDescriptionsByLang = {
@@ -237,24 +198,6 @@ const displaySymbolDescriptionsByLang = {
     title: "Mode",
     text: "Indicates selected filter mode. No icon means Economy mode is selected.",
   },
-  ],
-  de: [
-    { key: "lock", title: "Sperre", text: "Zeigt an, dass Bedienfeld, Solltemperatur oder Filterzyklus-Programmierung gesperrt sind." },
-    { key: "heater", title: "Heizung", text: "Zeigt an, dass die Heizung eingeschaltet ist." },
-    { key: "sanitizer", title: "Reiniger", text: "Zeigt an, dass das Reinigungssystem eingeschaltet ist." },
-    { key: "cycle_set", title: "Filterzyklus-Einstellung", text: "Zeigt Zugriff auf die Filterzyklus-Programmierung." },
-    { key: "cycle_num", title: "Filterzyklus-Nummer", text: "Zeigt an, welcher programmierte Filterzyklus laeuft." },
-    { key: "cycle_running", title: "Filterzyklus", text: "Zeigt an, dass ein programmierter Filterzyklus laeuft." },
-    { key: "clock", title: "Filterzyklus-Startzeit", text: "Zeigt Zugriff auf die Programmierung der Filterzyklus-Startzeit." },
-    { key: "duration", title: "Filterzyklus-Dauer", text: "Zeigt Zugriff auf die Programmierung der Filterzyklus-Dauer." },
-    { key: "set_temp", title: "Solltemperatur", text: "Zeigt an, dass die eingestellte Temperatur angezeigt wird." },
-    { key: "set_time", title: "Uhrzeit", text: "Zeigt an, dass die aktuelle Uhrzeit angezeigt wird." },
-    { key: "filter", title: "Filteranzeiger", text: "Zeigt an, dass der Filter gereinigt und/oder ersetzt werden muss." },
-    { key: "blower", title: "Geblaese", text: "Zeigt an, dass das Geblaese eingeschaltet ist." },
-    { key: "pump1", title: "Duesenpumpe 1", text: "Zeigt an, dass Duesenpumpe 1 eingeschaltet ist." },
-    { key: "pump2", title: "Duesenpumpe 2", text: "Zeigt an, dass Duesenpumpe 2 eingeschaltet ist (auch fuer Maxxus/Aspen Pumpe 3)." },
-    { key: "mode_standard", title: "Modus", text: "Zeigt den gewaehlten Filtermodus. Kein Symbol bedeutet Sparmodus." },
-  ],
 };
 
 const state = {
@@ -292,12 +235,11 @@ function clearSigrokLog() {
 }
 
 function localizedButtonName(item) {
-  return currentLanguage === "de" ? item.nameDe : item.nameEn;
+  return item.nameEn;
 }
 
 function localizedKeyDoc(code) {
-  const docs = keyDocsByLang[currentLanguage] || keyDocsByLang.en;
-  return docs[code] || "";
+  return keyDocs[code] || "";
 }
 
 function element(id) {
@@ -311,16 +253,10 @@ function setSyncInfo(ok, details = "") {
   }
   const stamp = new Date().toLocaleTimeString();
   if (ok) {
-    node.textContent =
-      currentLanguage === "de"
-        ? `Aktualisiert ${stamp}${details ? ` - ${details}` : ""}`
-        : `Updated ${stamp}${details ? ` - ${details}` : ""}`;
+    node.textContent = `Updated ${stamp}${details ? ` - ${details}` : ""}`;
     return;
   }
-  node.textContent =
-    currentLanguage === "de"
-      ? `Fehler beim Aktualisieren ${stamp}${details ? ` - ${details}` : ""}`
-      : `Refresh failed ${stamp}${details ? ` - ${details}` : ""}`;
+  node.textContent = `Refresh failed ${stamp}${details ? ` - ${details}` : ""}`;
 }
 
 function getSelectedChannels() {
@@ -439,7 +375,7 @@ function updateSequencePreview() {
     return;
   }
   if (state.sequenceSteps.length === 0) {
-    preview.textContent = currentLanguage === "de" ? "Noch keine Schritte" : "No steps yet";
+    preview.textContent = "No steps yet";
     return;
   }
 
@@ -466,18 +402,18 @@ function clearSequence() {
 async function copySequence() {
   const sequenceInput = element("sequence");
   if (!sequenceInput) {
-    showToast(currentLanguage === "de" ? "Nicht verfuegbar" : "Not available", true);
+    showToast("Not available", true);
     return;
   }
   const text = sequenceInput.value.trim();
   if (!text) {
-    showToast(currentLanguage === "de" ? "Keine Sequenz zum Kopieren" : "No sequence to copy", true);
+    showToast("No sequence to copy", true);
     return;
   }
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     await navigator.clipboard.writeText(text);
-    showToast(currentLanguage === "de" ? "Sequenz kopiert" : "Sequence copied");
+    showToast("Sequence copied");
     return;
   }
 
@@ -487,7 +423,7 @@ async function copySequence() {
   tmp.select();
   document.execCommand("copy");
   tmp.remove();
-  showToast(currentLanguage === "de" ? "Sequenz kopiert" : "Sequence copied");
+  showToast("Sequence copied");
 }
 
 async function refreshStatus() {
@@ -500,7 +436,7 @@ async function refreshStatus() {
   if (!status.active) {
     badge.textContent = "Idle";
     badge.className = "badge idle";
-    text.textContent = currentLanguage === "de" ? "Keine aktive Aufnahme" : "No active recording";
+    text.textContent = "No active recording";
     return;
   }
 
@@ -519,10 +455,10 @@ async function refreshRecordings() {
   const body = element("recordingsBody");
   body.innerHTML = "";
 
-  const exportLabel = currentLanguage === "de" ? "Export JSON" : "Export JSON";
-  const downloadSrLabel = currentLanguage === "de" ? "Download .sr" : "Download .sr";
-  const deleteLabel = currentLanguage === "de" ? "Loeschen" : "Delete";
-  const saveLabel = currentLanguage === "de" ? "Speichern" : "Save";
+  const exportLabel = "Export JSON";
+  const downloadSrLabel = "Download .sr";
+  const deleteLabel = "Delete";
+  const saveLabel = "Save";
 
   function formatDuration(startIso, endIso, status) {
     if (!startIso) {
@@ -604,17 +540,17 @@ async function refreshRecordings() {
     trDetails.innerHTML = `
       <td colspan="9">
         <div class="recording-details-line">
-          <span class="recording-preview-label">${currentLanguage === "de" ? "Annotationen" : "Annotations"}:</span>
-          <span class="recording-preview-text">${preview || (currentLanguage === "de" ? "keine" : "none")}</span>
+          <span class="recording-preview-label">Annotations:</span>
+          <span class="recording-preview-text">${preview || "none"}</span>
         </div>
         <div class="recording-edit-grid">
           <label>
-            ${currentLanguage === "de" ? "Name" : "Name"}
+            Name
             <input data-edit-name="${item.id}" value="${escapeHtml(item.name)}" />
           </label>
           <label>
-            ${currentLanguage === "de" ? "Kommentar" : "Comment"}
-            <input data-edit-notes="${item.id}" value="${escapeHtml(item.notes || "")}" placeholder="${currentLanguage === "de" ? "optional" : "optional"}" />
+            Comment
+            <input data-edit-notes="${item.id}" value="${escapeHtml(item.notes || "")}" placeholder="optional" />
           </label>
         </div>
       </td>
@@ -654,9 +590,7 @@ async function refreshRecordings() {
     btn.addEventListener("click", async () => {
       const id = Number(btn.dataset.delete);
       const ok = window.confirm(
-        currentLanguage === "de"
-          ? `Recording ${id} wirklich loeschen?`
-          : `Delete recording ${id}?`
+        `Delete recording ${id}?`
       );
       if (!ok) {
         return;
@@ -667,11 +601,7 @@ async function refreshRecordings() {
           method: "POST",
           body: JSON.stringify({ recordingId: id }),
         });
-        showToast(
-          currentLanguage === "de"
-            ? `Recording ${id} geloescht`
-            : `Recording ${id} deleted`
-        );
+        showToast(`Recording ${id} deleted`);
         await refreshRecordings();
         await refreshStatus();
       } catch (error) {
@@ -696,11 +626,7 @@ async function refreshRecordings() {
             notes,
           }),
         });
-        showToast(
-          currentLanguage === "de"
-            ? `Recording ${id} gespeichert`
-            : `Recording ${id} saved`
-        );
+        showToast(`Recording ${id} saved`);
         await refreshRecordings();
       } catch (error) {
         showToast(String(error.message || error), true);
@@ -712,11 +638,7 @@ async function refreshRecordings() {
 async function startRecording() {
   const channels = getSelectedChannels();
   if (!channels) {
-    throw new Error(
-      currentLanguage === "de"
-        ? "Bitte mindestens einen Channel waehlen"
-        : "Select at least one channel"
-    );
+    throw new Error("Select at least one channel");
   }
 
   const payload = {
@@ -762,13 +684,11 @@ async function stopRecording() {
       }
     }
     showToast(
-      currentLanguage === "de"
-        ? `Recording ${result.recordingId} gestoppt`
-        : `Recording ${result.recordingId} stopped`
+      `Recording ${result.recordingId} stopped`
     );
     appendSigrokLog(`PS> recording ${result.recordingId} stopped (${result.status})`);
   } else {
-    showToast(result.message || (currentLanguage === "de" ? "Keine aktive Aufnahme" : "No active recording"), true);
+    showToast(result.message || "No active recording", true);
     appendSigrokLog("PS> stop requested but no active recording");
   }
   await refreshStatus();
@@ -783,9 +703,7 @@ function resolveRecordingId() {
     return Number(state.lastRecordingId);
   }
   throw new Error(
-    currentLanguage === "de"
-      ? "Starte zuerst eine Aufnahme"
-      : "Start a recording first"
+    "Start a recording first"
   );
 }
 
@@ -817,21 +735,11 @@ function buildPanelHotspots() {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `panel-hotspot ${item.cls}`;
-    const iconSrc = item.iconPrimary || item.iconFallback;
-    const fallbackSrc = item.iconFallback || item.iconPrimary;
+    const iconSrc = item.icon;
     button.innerHTML = `
-      <img class="panel-icon" src="${iconSrc}" alt="${localizedName}" data-fallback="${fallbackSrc || ""}" />
+      <img class="panel-icon" src="${iconSrc}" alt="${localizedName}" />
       <span class="visually-hidden">${localizedName}</span>
     `;
-    const icon = button.querySelector("img.panel-icon");
-    if (icon && fallbackSrc) {
-      icon.addEventListener("error", () => {
-        if (icon.src.endsWith(fallbackSrc)) {
-          return;
-        }
-        icon.src = fallbackSrc;
-      });
-    }
     const docKey = item.code;
     button.setAttribute("title", localizedKeyDoc(docKey));
     button.setAttribute("aria-label", `${localizedName}: ${localizedKeyDoc(docKey)}`);
@@ -869,72 +777,72 @@ function buildKeyGuide() {
 
   const entries = [
     {
-      name: "Auswahltaste",
+      name: "Select Button",
       code: "A",
       docCode: "A",
-      icons: ["/static/button-icons/original/auswahl.png"],
+      icons: ["/static/button-icons/original/selection.png"],
     },
     {
-      name: "Zyklustaste",
+      name: "Cycle Button",
       code: "B",
       docCode: "B",
-      icons: ["/static/button-icons/original/zyklus.png"],
+      icons: ["/static/button-icons/original/cycle.png"],
     },
     {
-      name: "Modustaste",
+      name: "Mode Button",
       code: "C",
       docCode: "C",
-      icons: ["/static/button-icons/original/modus.png"],
+      icons: ["/static/button-icons/original/mode.png"],
     },
     {
-      name: "Anzeigetaste",
+      name: "Display Button",
       code: "D",
       docCode: "D",
-      icons: ["/static/button-icons/original/anzeige.png"],
+      icons: ["/static/button-icons/original/display.png"],
     },
     {
-      name: "Umkehrtaste",
+      name: "Invert Button",
       code: "E",
       docCode: "E",
-      icons: ["/static/button-icons/original/anzeige_umkehren.png"],
+      icons: ["/static/button-icons/original/reverse_display.png"],
     },
     {
-      name: "Taste fuer Duesenpumpe 2",
+      name: "Jets 2 Button",
       code: "F",
       docCode: "F",
-      icons: ["/static/button-icons/original/duesenpumpe_2.png"],
+      icons: ["/static/button-icons/original/jet_pump_2.png"],
     },
     {
-      name: "Taste fuer Duesenpumpe 1",
+      name: "Jets 1 Button",
       code: "G",
       docCode: "G",
-      icons: ["/static/button-icons/original/duesenpumpe_1.png"],
+      icons: ["/static/button-icons/original/jet_pump_1.png"],
     },
     {
-      name: "Geblaesetaste",
+      name: "Blower Button",
       code: "H",
       docCode: "H",
-      icons: ["/static/button-icons/original/geblaese.png"],
+      icons: ["/static/button-icons/original/fan.png"],
     },
     {
-      name: "Beleuchtungsmodus-Taste",
+      name: "Light Mode Button",
       code: "I",
       docCode: "I",
-      icons: ["/static/button-icons/original/beleuchtungsmodus.png"],
+      icons: ["/static/button-icons/original/lighting_mode.png"],
     },
     {
-      name: "Beleuchtungs Ein/Aus-Taste",
+      name: "Light Button",
       code: "J",
       docCode: "J",
-      icons: ["/static/button-icons/original/beleuchtung_ein_aus.png"],
+      icons: ["/static/button-icons/original/light_on_off.png"],
     },
     {
-      name: "Tasten fuer waermer/kaelter",
+      name: "Warmer and Cooler Buttons",
       code: "K+/K-",
       docCode: "K",
       icons: [
-        "/static/button-icons/original/waermer.png",
-        "/static/button-icons/original/kaelter.png",
+        "/static/button-icons/original/warmer.png",
+        "/static/button-icons/original/cooler.png",
       ],
     },
   ];
@@ -944,22 +852,7 @@ function buildKeyGuide() {
     const row = document.createElement("div");
     row.className = "key-item";
     const docCode = entry.docCode || entry.code;
-    const displayName =
-      currentLanguage === "de"
-        ? entry.name
-        : {
-            "Auswahltaste": "Select Button",
-            "Zyklustaste": "Cycle Button",
-            "Modustaste": "Mode Button",
-            "Anzeigetaste": "Display Button",
-            "Umkehrtaste": "Invert Button",
-            "Taste fuer Duesenpumpe 2": "Jets 2 Button",
-            "Taste fuer Duesenpumpe 1": "Jets 1 Button",
-            "Geblaesetaste": "Blower Button",
-            "Beleuchtungsmodus-Taste": "Light Mode Button",
-            "Beleuchtungs Ein/Aus-Taste": "Light Button",
-            "Tasten fuer waermer/kaelter": "Warmer and Cooler Buttons",
-          }[entry.name] || entry.name;
+    const displayName = entry.name;
     const iconsHtml = (entry.icons || [])
       .map((icon) => `<img src="${icon}" alt="${displayName}" />`)
       .join("");
@@ -1135,17 +1028,13 @@ async function saveDisplayState() {
     summaryParts.push(`Display ${value}`);
   }
   if (symbols.length > 0) {
-    summaryParts.push(
-      `${currentLanguage === "de" ? "Symbole" : "Symbols"}(${symbols.join(",")})`
-    );
+    summaryParts.push(`Symbols(${symbols.join(",")})`);
   }
   if (cycleNumber !== null && Number.isFinite(cycleNumber)) {
-    summaryParts.push(
-      `${currentLanguage === "de" ? "Filterzyklus" : "Filter cycle"} ${cycleNumber}`
-    );
+    summaryParts.push(`Filter cycle ${cycleNumber}`);
   }
   if (!value && symbols.length === 0) {
-    summaryParts.push(currentLanguage === "de" ? "Display ohne Details" : "Display without details");
+    summaryParts.push("Display without details");
   }
   appendStep(summaryParts.join(" "));
 }
@@ -1243,7 +1132,7 @@ function bindActions() {
     try {
       await refreshRecordings();
       await refreshStatus();
-      showToast(currentLanguage === "de" ? "Liste aktualisiert" : "List refreshed");
+      showToast("List refreshed");
     } catch (error) {
       setSyncInfo(false, String(error.message || error));
       showToast(String(error.message || error), true);
@@ -1254,9 +1143,7 @@ function bindActions() {
   if (deleteAllBtn) {
     deleteAllBtn.addEventListener("click", async () => {
       const ok = window.confirm(
-        currentLanguage === "de"
-          ? "Wirklich alle Recordings loeschen?"
-          : "Delete all recordings?"
+        "Delete all recordings?"
       );
       if (!ok) {
         return;
@@ -1267,11 +1154,7 @@ function bindActions() {
           method: "POST",
           body: "{}",
         });
-        showToast(
-          currentLanguage === "de"
-            ? `${result.deleted} Recordings geloescht`
-            : `${result.deleted} recordings deleted`
-        );
+        showToast(`${result.deleted} recordings deleted`);
         await refreshRecordings();
         await refreshStatus();
       } catch (error) {
@@ -1295,7 +1178,7 @@ function bindActions() {
   if (clearSequenceBtn) {
     clearSequenceBtn.addEventListener("click", () => {
       clearSequence();
-      showToast(currentLanguage === "de" ? "Sequenz geleert" : "Sequence cleared");
+      showToast("Sequence cleared");
     });
   }
 

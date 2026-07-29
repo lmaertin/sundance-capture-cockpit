@@ -294,109 +294,21 @@ That is the path from a captured pool interaction to a real protocol understandi
 
 ## Raspberry Pi Setup
 
-These steps target Raspberry Pi OS Lite (64-bit), current Trixie release.
-If you need to stay on an older image for compatibility, Bookworm is the
-next best option.
-
-Recommended starter image:
-
-- Raspberry Pi OS Lite (64-bit), current Trixie release
-- If you are using older hardware or need compatibility, Raspberry Pi OS Lite (64-bit), Bookworm is the fallback
-- Use the image without a desktop environment; the project runs as a headless service and does not need GUI packages
-
-The repository now includes helper scripts for this setup:
-
-- `scripts/install_capture_webui_on_pi.sh` performs the full guided Pi installation, including packages, Python setup, repository checkout, and systemd service installation.
-- `scripts/raspberry_pi_bootstrap.sh` remains available if you want to prepare the environment in separate steps.
-- `scripts/install_capture_webui_service.sh` installs and starts the systemd service when the repository is already present.
-
-One-click install from a Pi shell:
+Use Raspberry Pi OS Lite and install the project with one command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/install_capture_webui_on_pi.sh | sudo bash -s --
 ```
 
-If you want to install into a different directory, pass an install path:
+The installer:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/install_capture_webui_on_pi.sh | sudo bash -s -- --install-dir /opt/sundance-capture-cockpit
-```
+- installs the required packages
+- clones or updates the repository
+- creates the Python virtual environment
+- installs and enables the systemd service
+- starts the service automatically
 
-### 1. One-click installation
-
-Use the curl command above from the Raspberry Pi shell. The installer will:
-
-- install the required Debian packages for Trixie
-- create a service user
-- clone the repository
-- create the Python virtual environment
-- upgrade pip
-- install the systemd service
-- start the service automatically
-
-### 2. Test interactive startup
-
-If you want to verify the installation manually, use the installed directory:
-
-```bash
-cd /opt/sundance-capture-cockpit
-.venv/bin/python capture_webui/server.py --host 0.0.0.0 --port 8765
-```
-
-Open from another machine in your LAN:
-
-- `http://<raspberry-pi-ip>:8765`
-
-### 3. Optional: custom recordings directory
-
-You can set a dedicated storage path with environment variable `CAPTURE_RECORDINGS_DIR` (the older `SUNDANCE_RECORDINGS_DIR` name is still accepted for compatibility).
-
-Set `CAPTURE_RECORDINGS_DIR` before running the one-click installer, or edit the generated systemd unit after installation.
-
-## Final Raspberry Pi Deployment (Decentralized)
-
-This setup keeps everything local in your network without cloud dependency.
-
-### Deployment goals
-
-- Pi runs capture service 24/7
-- Browser clients on LAN access UI directly
-- Data stays local on Pi storage
-- Service auto-recovers after reboot/power loss
-
-### Recommended production checklist
-
-1. Network identity
-
-- Assign a static DHCP lease to the Pi in your router.
-- Optional mDNS hostname usage: `http://<pi-hostname>.local:8765`
-
-1. Service hardening
-
-- Keep systemd Restart=always enabled.
-- Add a non-root service user if you do not use the default pi user.
-- Limit write paths to project folders and recordings mount.
-
-1. Storage strategy
-
-- Move recordings to dedicated storage with SUNDANCE_RECORDINGS_DIR.
-- Use a larger SSD/USB disk for long capture sessions.
-- Add cleanup policy for old .sr files (age- or size-based).
-
-1. Backup strategy
-
-- Back up capture_webui/data/annotations.db daily.
-- Optionally sync selected .sr files to NAS on schedule.
-
-1. Observability and maintenance
-
-- Check service logs with journalctl -u capture-webui.
-- Keep OS updated: sudo apt update && sudo apt upgrade.
-- Reboot test after updates to verify auto-start behavior.
-
-### Optional remote access pattern
-
-If you want access from outside the LAN, place a VPN in front (for example Tailscale or WireGuard) rather than exposing port 8765 directly to the internet.
+After installation, the web UI runs as a headless service on the Pi and is available on your LAN.
 
 ## Operational Notes
 
