@@ -73,7 +73,7 @@ class CaptureImportTests(unittest.TestCase):
             result = probe_signal_analyzer("fx2lafw")
 
         self.assertFalse(result["ok"])
-        self.assertIn("No devices found", result["error"])
+        self.assertIn("No signal analyzer hardware detected", result["error"])
 
     def test_probe_signal_analyzer_accepts_device_scan_output(self) -> None:
         completed = type(
@@ -107,7 +107,7 @@ class CaptureImportTests(unittest.TestCase):
             result = probe_signal_analyzer("fx2lafw")
 
         self.assertFalse(result["ok"])
-        self.assertIn("Firmware upload failed", result["error"])
+        self.assertIn("Signal analyzer detected", result["error"])
 
 
 if __name__ == "__main__":

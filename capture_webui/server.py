@@ -381,13 +381,23 @@ def probe_signal_analyzer(driver: str) -> dict[str, Any]:
         "could not load firmware",
     )
 
+    def build_failure_message() -> str:
+        if any(marker in lower_output for marker in firmware_failure_markers):
+            return (
+                "Signal analyzer detected, but firmware upload failed. "
+                "Check the probe firmware, USB connection, and device support for the selected driver."
+            )
+        if any(marker in lower_output for marker in no_device_markers):
+            return f"No signal analyzer hardware detected for driver {driver}"
+        return output or "No signal analyzer hardware detected"
+
     if (
         completed.returncode != 0
         or not output
         or any(marker in lower_output for marker in no_device_markers)
         or any(marker in lower_output for marker in firmware_failure_markers)
     ):
-        message = output or "No signal analyzer hardware detected"
+        message = build_failure_message()
         return {
             "ok": False,
             "command": command,
