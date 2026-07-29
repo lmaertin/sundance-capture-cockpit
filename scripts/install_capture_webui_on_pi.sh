@@ -114,7 +114,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 log "Updating package index and installing system dependencies."
 apt-get update
-apt-get install -y ca-certificates curl git python3 python3-venv python3-pip sigrok-cli
+apt-get install -y ca-certificates curl git python3 python3-venv python3-pip sigrok-cli sigrok-firmware-fx2lafw
 
 git config --global --add safe.directory "$INSTALL_DIR"
 

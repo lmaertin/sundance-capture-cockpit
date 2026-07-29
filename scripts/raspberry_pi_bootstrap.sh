@@ -14,7 +14,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 apt update
-apt install -y python3 python3-venv python3-pip sigrok-cli git
+apt install -y python3 python3-venv python3-pip sigrok-cli sigrok-firmware-fx2lafw git
 
 if [[ ! -d "$PROJECT_DIR/.venv" ]]; then
   python3 -m venv "$PROJECT_DIR/.venv"
