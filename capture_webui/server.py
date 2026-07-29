@@ -561,14 +561,6 @@ class CaptureHandler(BaseHTTPRequestHandler):
             )
             return
 
-        if path == "/api/analyzer/test":
-            payload = self._read_json_body()
-            driver = str(payload.get("driver", "fx2lafw"))
-            result = probe_signal_analyzer(driver)
-            status = 200 if result.get("ok") else 503
-            self._send_json(result, status=status)
-            return
-
         if path == "/api/recordings":
             query = parse_qs(parsed.query)
             limit = int(query.get("limit", ["100"])[0])
@@ -722,6 +714,14 @@ class CaptureHandler(BaseHTTPRequestHandler):
                     "command": command,
                 }
             )
+            return
+
+        if path == "/api/analyzer/test":
+            payload = self._read_json_body()
+            driver = str(payload.get("driver", "fx2lafw"))
+            result = probe_signal_analyzer(driver)
+            status = 200 if result.get("ok") else 503
+            self._send_json(result, status=status)
             return
 
         if path == "/api/recordings/stop":
