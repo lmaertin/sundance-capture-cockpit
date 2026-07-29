@@ -114,7 +114,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 log "Updating package index and installing system dependencies."
 apt-get update
-apt-get install -y ca-certificates curl git python3 python3-venv python3-pip sigrok-cli libsigrok libsigrokdecode
+apt-get install -y ca-certificates curl git python3 python3-venv python3-pip sigrok-cli
 
 if ! id -u "$SERVICE_USER" >/dev/null 2>&1; then
   log "Creating service user ${SERVICE_USER}."
