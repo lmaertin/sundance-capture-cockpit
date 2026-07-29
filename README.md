@@ -32,7 +32,7 @@ This project is a non-profit, community-oriented tool created to help bring info
 
 ## Cross-Platform Setup (macOS, Linux, Windows)
 
-## Automated: Raspberry Pi Setup
+## Raspberry Pi Setup
 
 Use Raspberry Pi OS Lite and install the project with one command:
 
@@ -40,9 +40,10 @@ Use Raspberry Pi OS Lite and install the project with one command:
 curl -fsSL https://raw.githubusercontent.com/lmaertin/sundance-capture-cockpit/main/scripts/install_capture_webui_on_pi.sh | sudo bash -s --
 ```
 
-The installer:
+The one-click installer:
 
 - installs the required packages
+- installs `sigrok-cli` for capture support
 - clones or updates the repository
 - creates the Python virtual environment
 - installs and enables the systemd service
