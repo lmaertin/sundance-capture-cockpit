@@ -761,6 +761,91 @@ select:focus {
   line-height: 1.35;
 }
 
+.mobile-replay {
+  display: none;
+  margin-top: 10px;
+  border: 1px solid #2f3b58;
+  border-radius: 12px;
+  background: #0c1422;
+  padding: 10px;
+  gap: 10px;
+}
+
+.mobile-replay-block h4 {
+  margin: 0 0 8px;
+  color: #c8d8fb;
+  font-size: 0.84rem;
+}
+
+.mobile-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mobile-panel-btn {
+  border: 1px solid #35415e;
+  background: #151f31;
+  color: #d7e3ff;
+  border-radius: 10px;
+  padding: 8px 6px;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.mobile-panel-btn img {
+  width: 38px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.mobile-panel-btn:active,
+.mobile-panel-btn.is-active {
+  border-color: #66e7c7;
+  background: #1a2e43;
+  transform: scale(0.98);
+}
+
+.mobile-symbols-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mobile-symbol-chip {
+  border: 1px solid #35415e;
+  background: #132033;
+  color: #d7e3ff;
+  border-radius: 10px;
+  min-height: 46px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+.mobile-symbol-chip img {
+  width: 24px;
+  height: 16px;
+  object-fit: contain;
+  filter: grayscale(0.4) brightness(1.6) invert(1);
+}
+
+.mobile-symbol-chip.is-on {
+  border-color: rgba(116, 245, 216, 0.95);
+  background: rgba(37, 88, 80, 0.42);
+  color: #d7fff4;
+}
+
 .symbol-legend-wrap {
   margin-top: 10px;
   border: 1px solid #2f3b58;
@@ -952,9 +1037,14 @@ th {
     grid-template-columns: 1fr;
   }
 
+  .mobile-replay {
+    display: grid;
   }
-  }
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  .panel-visual,
+  .key-guide-wrap,
+  .symbol-legend-wrap {
+    display: none;
   }
 
   .panel-hotspot {
@@ -988,6 +1078,14 @@ th {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+  }
+
+  .mobile-buttons-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mobile-symbols-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .recording-edit-grid {

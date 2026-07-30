@@ -31,6 +31,8 @@ const uiText = {
     mobileAnnotationHint:
       "Flow: Start recording, tap only the real panel buttons, then stop recording. Optional: add one end comment.",
     panelButtonsTitle: "Panel Buttons",
+    mobileButtonsTitle: "Buttons",
+    mobileSymbolsTitle: "Display Symbols",
     panelButtonsHint:
       "No manual annotation fields. Taps are saved automatically for the active recording.",
     mainControlFunctions: "Main Control Functions",
@@ -129,6 +131,8 @@ const uiText = {
     mobileAnnotationHint:
       "Ablauf: Aufnahme starten, nur die echten Panel-Tasten antippen und danach die Aufnahme stoppen. Optional: einen Endkommentar hinzufügen.",
     panelButtonsTitle: "Panel-Tasten",
+    mobileButtonsTitle: "Tasten",
+    mobileSymbolsTitle: "Display-Symbole",
     panelButtonsHint:
       "Keine manuellen Eingabefelder. Taps werden automatisch für die aktive Aufnahme gespeichert.",
     mainControlFunctions: "Hauptfunktionen",
@@ -981,10 +985,6 @@ async function startRecording() {
     simulate: element("simulate").checked,
   };
 
-  if (!payload.simulate) {
-    appendSigrokLog(`PS> ${ui("recordingModeNoCommand")}`);
-  }
-
   const result = await jsonFetch("/api/recordings/start", {
     method: "POST",
     body: JSON.stringify(payload),
@@ -993,7 +993,7 @@ async function startRecording() {
   if (Array.isArray(result.command) && result.command.length > 0) {
     appendSigrokLog(`PS> ${result.command.join(" ")}`);
   } else if (payload.simulate) {
-    appendSigrokLog("PS> simulation mode enabled (no sigrok-cli command executed)");
+    appendSigrokLog(`PS> ${ui("recordingModeNoCommand")}`);
   }
 
   state.lastRecordingId = result.recordingId;
@@ -1087,8 +1087,57 @@ function highlightTap(target) {
   setTimeout(() => target.classList.remove("is-active"), 160);
 }
 
+function syncDisplaySymbolClasses(symbolKey) {
+  const selectors = [
+    "#displayBoard .display-symbol-btn",
+    "#mobileSymbolsGrid .mobile-symbol-chip",
+  ];
+
+  for (const selector of selectors) {
+    for (const node of document.querySelectorAll(selector)) {
+      if (symbolKey && node.dataset.symbol !== symbolKey) {
+        continue;
+      }
+      const isOn = state.activeDisplaySymbols.has(node.dataset.symbol);
+      node.classList.toggle("is-on", isOn);
+      node.setAttribute("aria-pressed", isOn ? "true" : "false");
+    }
+  }
+}
+
+function toggleDisplaySymbol(symbolKey) {
+  if (state.activeDisplaySymbols.has(symbolKey)) {
+    state.activeDisplaySymbols.delete(symbolKey);
+  } else {
+    state.activeDisplaySymbols.add(symbolKey);
+  }
+  syncDisplaySymbolClasses(symbolKey);
+  refreshActiveDisplaySymbolsInfo();
+}
+
+async function recordPanelButtonPress(item, triggerNode) {
+  const localizedName = localizedButtonName(item);
+  highlightTap(triggerNode);
+  if (item.direction) {
+    await addAnnotation("button_press", {
+      button: item.code,
+      name: localizedName,
+      direction: item.direction,
+    });
+  } else {
+    await addAnnotation("button_press", {
+      button: item.code,
+      name: localizedName,
+    });
+  }
+  appendStep(localizedName);
+}
+
 function buildPanelHotspots() {
   const target = element("panelHotspots");
+  if (!target) {
+    return;
+  }
   target.innerHTML = "";
   for (const item of panelButtonLayout) {
     const localizedName = localizedButtonName(item);
@@ -1106,20 +1155,7 @@ function buildPanelHotspots() {
 
     button.addEventListener("click", async () => {
       try {
-        highlightTap(button);
-        if (item.direction) {
-          await addAnnotation("button_press", {
-            button: item.code,
-            name: localizedName,
-            direction: item.direction,
-          });
-        } else {
-          await addAnnotation("button_press", {
-            button: item.code,
-            name: localizedName,
-          });
-        }
-        appendStep(localizedName);
+        await recordPanelButtonPress(item, button);
       } catch (error) {
         showToast(String(error.message || error), true);
       }
@@ -1314,14 +1350,7 @@ function buildDisplayBoard() {
     button.innerHTML = `<img src="${symbol.icon}" alt="${currentLanguage === "de" ? symbol.labelDe || symbol.labelEn : symbol.labelEn}" />`;
 
     button.addEventListener("click", () => {
-      const isActive = state.activeDisplaySymbols.has(symbol.key);
-      if (isActive) {
-        state.activeDisplaySymbols.delete(symbol.key);
-      } else {
-        state.activeDisplaySymbols.add(symbol.key);
-      }
-      button.classList.toggle("is-on", !isActive);
-      refreshActiveDisplaySymbolsInfo();
+      toggleDisplaySymbol(symbol.key);
     });
 
     board.appendChild(button);
@@ -1338,8 +1367,62 @@ function buildDisplayBoard() {
   cycleNumber.textContent = "8";
   board.appendChild(cycleNumber);
 
+  syncDisplaySymbolClasses();
   refreshActiveDisplaySymbolsInfo();
   updateCycleNumberPreview();
+}
+
+function buildMobileReplayControls() {
+  const buttonsGrid = element("mobileButtonsGrid");
+  const symbolsGrid = element("mobileSymbolsGrid");
+
+  if (buttonsGrid) {
+    buttonsGrid.innerHTML = "";
+    for (const item of panelButtonLayout) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "mobile-panel-btn";
+      button.setAttribute("aria-label", localizedButtonName(item));
+      button.innerHTML = `
+        <img src="${item.icon}" alt="${localizedButtonName(item)}" />
+        <span>${localizedButtonName(item)}</span>
+      `;
+      button.addEventListener("click", async () => {
+        try {
+          await recordPanelButtonPress(item, button);
+        } catch (error) {
+          showToast(String(error.message || error), true);
+        }
+      });
+      buttonsGrid.appendChild(button);
+    }
+  }
+
+  if (symbolsGrid) {
+    symbolsGrid.innerHTML = "";
+    for (const symbol of displaySymbolLayout) {
+      if (symbol.key === "cycle_num" || symbol.interactive === false) {
+        continue;
+      }
+      const localizedLabel = currentLanguage === "de" ? symbol.labelDe || symbol.labelEn : symbol.labelEn;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "mobile-symbol-chip";
+      button.dataset.symbol = symbol.key;
+      button.setAttribute("aria-label", localizedLabel);
+      button.setAttribute("aria-pressed", state.activeDisplaySymbols.has(symbol.key) ? "true" : "false");
+      button.innerHTML = `
+        <img src="${symbol.icon}" alt="${localizedLabel}" />
+        <span>${localizedLabel}</span>
+      `;
+      button.addEventListener("click", () => {
+        toggleDisplaySymbol(symbol.key);
+      });
+      symbolsGrid.appendChild(button);
+    }
+  }
+
+  syncDisplaySymbolClasses();
 }
 
 function buildSymbolLegend() {
@@ -1428,6 +1511,8 @@ function applyLanguage(lang) {
   setText(element("mobileAnnotationTitle"), "mobileAnnotationTitle");
   setText(element("mobileAnnotationHint"), "mobileAnnotationHint");
   setText(element("panelButtonsTitle"), "panelButtonsTitle");
+  setText(element("mobileButtonsTitle"), "mobileButtonsTitle");
+  setText(element("mobileSymbolsTitle"), "mobileSymbolsTitle");
   setText(element("panelButtonsHint"), "panelButtonsHint");
   setText(element("keyGuideTitle"), "mainControlFunctions");
   setText(element("displaySymbolsTitle"), "displayAndSymbolsTitle");
@@ -1470,6 +1555,7 @@ function applyLanguage(lang) {
   }
 
   buildPanelHotspots();
+  buildMobileReplayControls();
   buildKeyGuide();
   buildSymbolLegend();
   refreshActiveDisplaySymbolsInfo();
@@ -1605,9 +1691,7 @@ function bindActions() {
   if (clearDisplaySymbolsBtn) {
     clearDisplaySymbolsBtn.addEventListener("click", () => {
       state.activeDisplaySymbols.clear();
-      for (const node of document.querySelectorAll("#displayBoard .display-symbol-btn")) {
-        node.classList.remove("is-on");
-      }
+      syncDisplaySymbolClasses();
       const showCycleNumber = element("showCycleNumber");
       if (showCycleNumber) {
         showCycleNumber.checked = false;
@@ -1656,6 +1740,7 @@ function bindActions() {
 
 async function boot() {
   buildPanelHotspots();
+  buildMobileReplayControls();
   buildKeyGuide();
   buildDisplayBoard();
   buildSymbolLegend();
