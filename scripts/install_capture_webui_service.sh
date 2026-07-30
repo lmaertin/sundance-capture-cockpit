@@ -52,6 +52,11 @@ ${SERVICE_USER} ALL=(root) NOPASSWD: /usr/sbin/shutdown -h now
 ${SERVICE_USER} ALL=(root) NOPASSWD: /usr/bin/shutdown -h now
 EOF
 chmod 440 "$SUDOERS_PATH"
+if ! visudo -c -f "$SUDOERS_PATH" >/dev/null; then
+  echo "Invalid sudoers rule generated at $SUDOERS_PATH" >&2
+  rm -f "$SUDOERS_PATH"
+  exit 1
+fi
 
 cat > "$UNIT_PATH" <<EOF
 [Unit]

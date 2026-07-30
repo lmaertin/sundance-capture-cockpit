@@ -422,35 +422,44 @@ def trigger_system_shutdown() -> dict[str, Any]:
         run_prefix = ["sudo", "-n"]
 
     preferred_commands = [
-        ["systemctl", "poweroff"],
-        ["shutdown", "-h", "now"],
+        ["/usr/bin/systemctl", "poweroff"],
+        ["/usr/sbin/shutdown", "-h", "now"],
+        ["/usr/bin/shutdown", "-h", "now"],
     ]
 
     chosen_command: list[str] | None = None
     last_error: str | None = None
 
     for command in preferred_commands:
+        if not os.path.exists(command[0]):
+            continue
+
         try:
-            probe = subprocess.run(  # pylint: disable=subprocess-run-check
-                run_prefix + command,
-                capture_output=True,
-                text=True,
-                timeout=5,
-                check=False,
-            )
-            if probe.returncode == 0:
-                chosen_command = run_prefix + command
-                break
-
-            stderr = (probe.stderr or "").strip()
-            stdout = (probe.stdout or "").strip()
-            last_error = stderr or stdout or f"exit code {probe.returncode}"
-
-            if run_prefix and probe.returncode in (1, 126):
-                last_error = (
-                    "Shutdown requires sudoers permission for the service user "
-                    "(sudo -n systemctl poweroff / shutdown -h now)."
+            if run_prefix:
+                probe = subprocess.run(  # pylint: disable=subprocess-run-check
+                    ["sudo", "-n", "-l", *command],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    check=False,
                 )
+                if probe.returncode == 0:
+                    chosen_command = run_prefix + command
+                    break
+
+                stderr = (probe.stderr or "").strip()
+                stdout = (probe.stdout or "").strip()
+                last_error = stderr or stdout or f"exit code {probe.returncode}"
+                if probe.returncode in (1, 126):
+                    last_error = (
+                        "Shutdown requires sudoers permission for the service user "
+                        "(sudo -n systemctl poweroff / shutdown -h now)."
+                    )
+                continue
+
+            chosen_command = command
+            break
+
         except (OSError, subprocess.TimeoutExpired) as error:
             last_error = str(error)
 
