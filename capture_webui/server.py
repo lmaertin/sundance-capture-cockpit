@@ -414,6 +414,75 @@ def probe_signal_analyzer(driver: str) -> dict[str, Any]:
     }
 
 
+def trigger_system_shutdown() -> dict[str, Any]:
+    """Schedule host shutdown and return immediate status."""
+
+    run_prefix: list[str] = []
+    if os.geteuid() != 0:
+        run_prefix = ["sudo", "-n"]
+
+    preferred_commands = [
+        ["systemctl", "poweroff"],
+        ["shutdown", "-h", "now"],
+    ]
+
+    chosen_command: list[str] | None = None
+    last_error: str | None = None
+
+    for command in preferred_commands:
+        try:
+            probe = subprocess.run(  # pylint: disable=subprocess-run-check
+                run_prefix + command,
+                capture_output=True,
+                text=True,
+                timeout=5,
+                check=False,
+            )
+            if probe.returncode == 0:
+                chosen_command = run_prefix + command
+                break
+
+            stderr = (probe.stderr or "").strip()
+            stdout = (probe.stdout or "").strip()
+            last_error = stderr or stdout or f"exit code {probe.returncode}"
+
+            if run_prefix and probe.returncode in (1, 126):
+                last_error = (
+                    "Shutdown requires sudoers permission for the service user "
+                    "(sudo -n systemctl poweroff / shutdown -h now)."
+                )
+        except (OSError, subprocess.TimeoutExpired) as error:
+            last_error = str(error)
+
+    if chosen_command is None:
+        return {
+            "ok": False,
+            "error": f"Shutdown command not available or not permitted: {last_error or 'unknown error'}",
+        }
+
+    def worker() -> None:
+        # Give the HTTP response enough time to flush before poweroff is requested.
+        time.sleep(0.3)
+        try:
+            subprocess.run(  # pylint: disable=subprocess-run-check
+                chosen_command,
+                capture_output=True,
+                text=True,
+                timeout=10,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+
+    threading.Thread(target=worker, daemon=True).start()
+
+    return {
+        "ok": True,
+        "message": "Shutdown requested",
+        "command": chosen_command,
+    }
+
+
 def start_simulated_job(job: ActiveJob, duration_s: int) -> None:
     """Run a simulated recording without hardware for local UI testing."""
 
@@ -741,6 +810,12 @@ class CaptureHandler(BaseHTTPRequestHandler):
             driver = str(payload.get("driver", "fx2lafw"))
             result = probe_signal_analyzer(driver)
             status = 200 if result.get("ok") else 503
+            self._send_json(result, status=status)
+            return
+
+        if path == "/api/system/shutdown":
+            result = trigger_system_shutdown()
+            status = 200 if result.get("ok") else 500
             self._send_json(result, status=status)
             return
 

@@ -19,6 +19,7 @@ HOST="${4:-0.0.0.0}"
 SERVICE_NAME="capture-webui"
 UNIT_PATH="/etc/systemd/system/${SERVICE_NAME}.service"
 RECORDINGS_DIR="${CAPTURE_RECORDINGS_DIR:-${PROJECT_DIR}/capture_webui/recordings}"
+SUDOERS_PATH="/etc/sudoers.d/${SERVICE_NAME}-shutdown"
 
 if [[ -z "$SERVICE_USER" ]]; then
   usage
@@ -43,6 +44,14 @@ fi
 mkdir -p "$PROJECT_DIR/capture_webui/data"
 mkdir -p "$RECORDINGS_DIR"
 chown "$SERVICE_USER:$SERVICE_USER" "$PROJECT_DIR/capture_webui/data" "$RECORDINGS_DIR"
+
+cat > "$SUDOERS_PATH" <<EOF
+# Allow ${SERVICE_USER} to request system poweroff from Capture WebUI.
+${SERVICE_USER} ALL=(root) NOPASSWD: /usr/bin/systemctl poweroff
+${SERVICE_USER} ALL=(root) NOPASSWD: /usr/sbin/shutdown -h now
+${SERVICE_USER} ALL=(root) NOPASSWD: /usr/bin/shutdown -h now
+EOF
+chmod 440 "$SUDOERS_PATH"
 
 cat > "$UNIT_PATH" <<EOF
 [Unit]

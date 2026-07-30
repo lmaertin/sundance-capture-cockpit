@@ -22,6 +22,7 @@ const uiText = {
     startRecording: "Recording Start",
     stopRecording: "Recording Stop",
     testAnalyzer: "Test analyzer",
+    shutdown: "Shutdown",
     reloadRecordings: "Reload recordings",
     clearLog: "Clear log",
     sigrokCommandLog: "Sigrok Command Log",
@@ -73,9 +74,11 @@ const uiText = {
     selectAtLeastOneChannel: "Select at least one channel",
     startARecordingFirst: "Start a recording first",
     deleteAllRecordingsQuestion: "Delete all recordings?",
+    shutdownConfirm: "Shutdown this host now?",
     recordingNameLabel: "Name",
     commentLabel: "Comment",
     listRefreshed: "List refreshed",
+    shutdownRequested: "Shutdown requested",
     sequenceCleared: "Sequence cleared",
     recordingStarted: (id) => `Recording ${id} started`,
     recordingStopped: (id) => `Recording ${id} stopped`,
@@ -117,6 +120,7 @@ const uiText = {
     startRecording: "Aufnahme starten",
     stopRecording: "Aufnahme stoppen",
     testAnalyzer: "Analyzer testen",
+    shutdown: "Herunterfahren",
     reloadRecordings: "Aufnahmen neu laden",
     clearLog: "Log leeren",
     sigrokCommandLog: "Sigrok-Befehlsprotokoll",
@@ -168,9 +172,11 @@ const uiText = {
     selectAtLeastOneChannel: "Mindestens einen Kanal auswählen",
     startARecordingFirst: "Zuerst eine Aufnahme starten",
     deleteAllRecordingsQuestion: "Alle Aufnahmen löschen?",
+    shutdownConfirm: "Diesen Host jetzt herunterfahren?",
     recordingNameLabel: "Name",
     commentLabel: "Kommentar",
     listRefreshed: "Liste aktualisiert",
+    shutdownRequested: "Herunterfahren angefordert",
     sequenceCleared: "Sequenz geleert",
     recordingStarted: (id) => `Aufnahme ${id} gestartet`,
     recordingStopped: (id) => `Aufnahme ${id} gestoppt`,
@@ -1013,6 +1019,18 @@ async function testSignalAnalyzer(driver = getSelectedDriver()) {
   return result;
 }
 
+async function requestSystemShutdown() {
+  const result = await jsonFetch("/api/system/shutdown", {
+    method: "POST",
+    body: "{}",
+  });
+  if (Array.isArray(result.command) && result.command.length > 0) {
+    appendSigrokLog(`PS> ${result.command.join(" ")}`);
+  }
+  appendSigrokLog(`PS> ${ui("shutdownRequested")}`);
+  showToast(ui("shutdownRequested"));
+}
+
 async function stopRecording() {
   const result = await jsonFetch("/api/recordings/stop", {
     method: "POST",
@@ -1402,6 +1420,7 @@ function applyLanguage(lang) {
   setText(element("startBtn"), "startRecording");
   setText(element("stopBtn"), "stopRecording");
   setText(element("testAnalyzerBtn"), "testAnalyzer");
+  setText(element("shutdownBtn"), "shutdown");
   setText(element("refreshBtn"), "reloadRecordings");
   setText(element("clearSigrokLogBtn"), "clearLog");
   setText(element("sigrokLogTitle"), "sigrokCommandLog");
@@ -1489,6 +1508,22 @@ function bindActions() {
         await testSignalAnalyzer();
       } catch (error) {
         appendSigrokLog(`PS> ${ui("analyzerTestFailed", getSelectedDriver())}: ${String(error.message || error)}`);
+        showToast(String(error.message || error), true);
+      }
+    });
+  }
+
+  const shutdownBtn = element("shutdownBtn");
+  if (shutdownBtn) {
+    shutdownBtn.addEventListener("click", async () => {
+      const ok = window.confirm(ui("shutdownConfirm"));
+      if (!ok) {
+        return;
+      }
+      try {
+        await requestSystemShutdown();
+      } catch (error) {
+        appendSigrokLog(`PS> shutdown failed: ${String(error.message || error)}`);
         showToast(String(error.message || error), true);
       }
     });
