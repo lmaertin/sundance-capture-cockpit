@@ -15,6 +15,7 @@ SERVICE_USER="${DEFAULT_SERVICE_USER}"
 PORT="${DEFAULT_PORT}"
 HOST="${DEFAULT_HOST}"
 RECORDINGS_DIR=""
+RUN_APT_MAINTENANCE="ask"
 
 usage() {
   cat <<'EOF'
@@ -29,6 +30,8 @@ Options:
   --port <port>          Web UI port (default: 8765)
   --host <host>          Web UI bind host (default: 0.0.0.0)
   --recordings-dir <dir> Custom recordings directory
+  --with-apt             Run apt update/upgrade/install without prompting
+  --skip-apt             Skip apt update/upgrade/install without prompting
   -h, --help             Show this help message
 
 Example:
@@ -86,6 +89,14 @@ while [[ $# -gt 0 ]]; do
       RECORDINGS_DIR="$2"
       shift 2
       ;;
+    --with-apt)
+      RUN_APT_MAINTENANCE="yes"
+      shift
+      ;;
+    --skip-apt)
+      RUN_APT_MAINTENANCE="no"
+      shift
+      ;;
     -h|--help)
       usage
       exit 0
@@ -112,9 +123,28 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-log "Updating package index and installing system dependencies."
-apt-get update
-apt-get install -y ca-certificates curl git python3 python3-venv python3-pip sigrok-cli sigrok-firmware-fx2lafw
+if [[ "$RUN_APT_MAINTENANCE" == "ask" ]]; then
+  if [[ -t 0 ]]; then
+    read -r -p "Run apt update/upgrade/install before Git update? [y/N] " run_apt_reply
+    if [[ "$run_apt_reply" =~ ^[Yy]$ ]]; then
+      RUN_APT_MAINTENANCE="yes"
+    else
+      RUN_APT_MAINTENANCE="no"
+    fi
+  else
+    RUN_APT_MAINTENANCE="no"
+    log "No interactive terminal detected. Skipping apt maintenance by default."
+  fi
+fi
+
+if [[ "$RUN_APT_MAINTENANCE" == "yes" ]]; then
+  log "Running apt update/upgrade and installing system dependencies."
+  apt-get update
+  apt-get upgrade -y
+  apt-get install -y ca-certificates curl git python3 python3-venv python3-pip sigrok-cli sigrok-firmware-fx2lafw
+else
+  log "Skipping apt maintenance. Use --with-apt to force it in future runs."
+fi
 
 git config --global --add safe.directory "$INSTALL_DIR"
 
