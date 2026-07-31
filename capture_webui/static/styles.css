@@ -1128,6 +1128,15 @@ th {
 }
 
 @media (max-width: 960px) {
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
   .panel-grid {
     grid-template-columns: 1fr;
   }
@@ -1169,10 +1178,57 @@ th {
     padding: 12px;
   }
 
+  .topbar h1 {
+    font-size: clamp(1.05rem, 4.2vw, 1.35rem);
+  }
+
   .statusline {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+    font-size: 0.95rem;
+  }
+
+  .card h2 {
+    font-size: 1.1rem;
+  }
+
+  .hint,
+  .sync-info,
+  .simulate-mini {
+    font-size: 0.92rem;
+  }
+
+  .form-grid label,
+  .annotation-head label,
+  .display-fields label,
+  .compact-form label {
+    font-size: 0.92rem;
+  }
+
+  input,
+  textarea,
+  select,
+  .compact-form input,
+  .compact-form textarea,
+  .compact-form select,
+  .recording-edit-grid input,
+  .lang-select select {
+    font-size: 16px;
+    line-height: 1.35;
+  }
+
+  .btn {
+    font-size: 0.98rem;
+    min-height: 48px;
+  }
+
+  .sigrok-log-title {
+    font-size: 0.84rem;
+  }
+
+  .sigrok-log {
+    font-size: 0.86rem;
   }
 
   .mobile-buttons-grid {
@@ -1189,15 +1245,28 @@ th {
 }
 
 @media (max-width: 430px) {
+  body.view-mode-mobile .topbar {
+    padding: 10px;
+  }
+
+  body.view-mode-mobile .topbar h1 {
+    font-size: 1.02rem;
+    letter-spacing: 0.2px;
+  }
+
+  body.view-mode-mobile .statusline {
+    gap: 3px;
+  }
+
   body.view-mode-mobile .layout {
     width: min(100vw, 430px);
-    margin: 118px auto 20px;
-    gap: 10px;
+    margin: 112px auto 18px;
+    gap: 9px;
   }
 
   body.view-mode-mobile .card {
     border-radius: 12px;
-    padding: 10px;
+    padding: 9px;
   }
 
   body.view-mode-mobile .card-recording .compact-form {
@@ -1207,25 +1276,116 @@ th {
 
   body.view-mode-mobile .card-recording .button-row {
     grid-template-columns: 1fr 1fr;
+    gap: 7px;
   }
 
   body.view-mode-mobile .mobile-buttons-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 7px;
   }
 
   body.view-mode-mobile .mobile-symbols-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 7px;
   }
 
   body.view-mode-mobile .mobile-panel-btn {
-    min-height: 108px;
-    font-size: 1.19rem;
+    min-height: 102px;
+    padding: 9px 7px;
+    gap: 7px;
+    font-size: clamp(0.96rem, 3.9vw, 1.06rem);
   }
 
   body.view-mode-mobile .mobile-symbol-chip {
-    min-height: 84px;
-    font-size: 1.23rem;
+    min-height: 78px;
+    padding: 9px;
+    gap: 7px;
+    font-size: clamp(0.95rem, 3.7vw, 1.03rem);
+  }
+
+  body.view-mode-mobile .card-recording .btn {
+    min-height: 68px;
+    font-size: clamp(0.94rem, 3.6vw, 1.01rem);
+  }
+
+  body.view-mode-mobile .statusline {
+    font-size: 0.9rem;
+  }
+
+  body.view-mode-mobile .compact-form input,
+  body.view-mode-mobile .compact-form select,
+  body.view-mode-mobile .compact-form textarea,
+  body.view-mode-mobile .display-fields input,
+  body.view-mode-mobile .display-fields select,
+  body.view-mode-mobile .display-fields textarea {
+    min-height: 44px;
+    padding: 9px;
+  }
+}
+
+@media (max-width: 390px) {
+  body.view-mode-mobile .topbar {
+    padding: 9px 8px;
+  }
+
+  body.view-mode-mobile .topbar h1 {
+    font-size: 0.96rem;
+  }
+
+  body.view-mode-mobile .layout {
+    margin: 104px auto 16px;
+    gap: 8px;
+  }
+
+  body.view-mode-mobile .card {
+    padding: 8px;
+    border-radius: 11px;
+  }
+
+  body.view-mode-mobile .card h2 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  body.view-mode-mobile .hint,
+  body.view-mode-mobile .sync-info,
+  body.view-mode-mobile .simulate-mini {
+    font-size: 0.86rem;
+  }
+
+  body.view-mode-mobile .card-recording .button-row,
+  body.view-mode-mobile .mobile-buttons-grid,
+  body.view-mode-mobile .mobile-symbols-grid {
+    gap: 6px;
+  }
+
+  body.view-mode-mobile .mobile-panel-btn {
+    min-height: 94px;
+    font-size: 0.92rem;
+  }
+
+  body.view-mode-mobile .mobile-panel-btn img {
+    width: 56px;
+    height: 34px;
+  }
+
+  body.view-mode-mobile .mobile-symbol-chip {
+    min-height: 72px;
+    font-size: 0.9rem;
+  }
+
+  body.view-mode-mobile .mobile-symbol-chip img {
+    width: 40px;
+    height: 27px;
+  }
+
+  body.view-mode-mobile .card-recording .btn {
+    min-height: 62px;
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  body.view-mode-mobile .statusline {
+    font-size: 0.84rem;
   }
 }
