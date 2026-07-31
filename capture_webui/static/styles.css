@@ -807,15 +807,15 @@ select:focus {
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  font-size: 0.79rem;
+  font-size: 1.19rem;
   font-weight: 600;
   cursor: pointer;
   text-align: left;
 }
 
 .mobile-panel-btn img {
-  width: 34px;
-  height: 20px;
+  width: 68px;
+  height: 40px;
   object-fit: contain;
   flex: 0 0 auto;
 }
@@ -848,13 +848,13 @@ select:focus {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  font-size: 0.82rem;
+  font-size: 1.23rem;
   text-align: left;
 }
 
 .mobile-symbol-chip img {
-  width: 24px;
-  height: 16px;
+  width: 48px;
+  height: 32px;
   object-fit: contain;
   filter: grayscale(0.4) brightness(1.6) invert(1);
 }
@@ -897,7 +897,7 @@ body.view-mode-mobile .card-recording .button-row {
 body.view-mode-mobile .card-recording .btn {
   width: 100%;
   min-height: 75px;
-  font-size: 0.83rem;
+  font-size: 1.25rem;
   padding: 10px;
 }
 
@@ -1221,11 +1221,11 @@ th {
 
   body.view-mode-mobile .mobile-panel-btn {
     min-height: 108px;
-    font-size: 0.85rem;
+    font-size: 1.19rem;
   }
 
   body.view-mode-mobile .mobile-symbol-chip {
     min-height: 84px;
-    font-size: 0.86rem;
+    font-size: 1.23rem;
   }
 }
