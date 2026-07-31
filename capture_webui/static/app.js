@@ -102,7 +102,7 @@ const uiText = {
     deleteRecordingQuestion: (id) => `Delete recording ${id}?`,
     viewModeLabel: "View",
     viewModeAuto: "Auto",
-    viewModeCompact: "Compact Replay",
+    viewModeMobile: "Mobile View",
     viewModeClassic: "Classic View",
   },
   de: {
@@ -206,7 +206,7 @@ const uiText = {
     deleteRecordingQuestion: (id) => `Aufnahme ${id} löschen?`,
     viewModeLabel: "Ansicht",
     viewModeAuto: "Auto",
-    viewModeCompact: "Kompakt-Ansicht",
+    viewModeMobile: "Mobile Ansicht",
     viewModeClassic: "Klassische Ansicht",
   },
 };
@@ -268,12 +268,13 @@ function setOptionText(selectNode, index, key) {
 }
 
 function applyViewMode(mode) {
-  const normalized = ["auto", "compact", "classic"].includes(mode) ? mode : "auto";
+  const normalizedMode = mode === "compact" ? "mobile" : mode;
+  const normalized = ["auto", "mobile", "classic"].includes(normalizedMode) ? normalizedMode : "auto";
   state.viewMode = normalized;
 
-  document.body.classList.remove("view-mode-compact", "view-mode-classic");
-  if (normalized === "compact") {
-    document.body.classList.add("view-mode-compact");
+  document.body.classList.remove("view-mode-mobile", "view-mode-classic");
+  if (normalized === "mobile") {
+    document.body.classList.add("view-mode-mobile");
   } else if (normalized === "classic") {
     document.body.classList.add("view-mode-classic");
   }
@@ -1578,7 +1579,7 @@ function applyLanguage(lang) {
   const viewModeSelect = element("viewModeSelect");
   setText(element("viewModeLabel"), "viewModeLabel");
   setOptionText(viewModeSelect, 0, "viewModeAuto");
-  setOptionText(viewModeSelect, 1, "viewModeCompact");
+  setOptionText(viewModeSelect, 1, "viewModeMobile");
   setOptionText(viewModeSelect, 2, "viewModeClassic");
 
   const driverSelect = element("driverSelect");
