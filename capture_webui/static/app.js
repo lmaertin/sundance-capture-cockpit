@@ -100,6 +100,10 @@ const uiText = {
     recordingModeNoCommand: "simulation mode enabled (no sigrok-cli command executed)",
     noCurrentRecording: "No active recording",
     deleteRecordingQuestion: (id) => `Delete recording ${id}?`,
+    viewModeLabel: "View",
+    viewModeAuto: "Auto",
+    viewModeCompact: "Compact Replay",
+    viewModeClassic: "Classic View",
   },
   de: {
     pageTitle: "Capture WebUI",
@@ -200,6 +204,10 @@ const uiText = {
     recordingModeNoCommand: "Simulationsmodus aktiv (kein sigrok-cli-Befehl ausgeführt)",
     noCurrentRecording: "Keine aktive Aufnahme",
     deleteRecordingQuestion: (id) => `Aufnahme ${id} löschen?`,
+    viewModeLabel: "Ansicht",
+    viewModeAuto: "Auto",
+    viewModeCompact: "Kompakt-Ansicht",
+    viewModeClassic: "Klassische Ansicht",
   },
 };
 
@@ -257,6 +265,29 @@ function setOptionText(selectNode, index, key) {
     return;
   }
   selectNode.options[index].textContent = ui(key);
+}
+
+function applyViewMode(mode) {
+  const normalized = ["auto", "compact", "classic"].includes(mode) ? mode : "auto";
+  state.viewMode = normalized;
+
+  document.body.classList.remove("view-mode-compact", "view-mode-classic");
+  if (normalized === "compact") {
+    document.body.classList.add("view-mode-compact");
+  } else if (normalized === "classic") {
+    document.body.classList.add("view-mode-classic");
+  }
+
+  const select = element("viewModeSelect");
+  if (select && select.value !== normalized) {
+    select.value = normalized;
+  }
+
+  try {
+    localStorage.setItem("captureViewMode", normalized);
+  } catch {
+    // Ignore storage errors in restricted environments.
+  }
 }
 
 const panelButtonLayout = [
@@ -542,6 +573,7 @@ const state = {
   sequenceSteps: [],
   activeDisplaySymbols: new Set(),
   sigrokLogLines: [],
+  viewMode: "auto",
 };
 
 function renderSigrokLog() {
@@ -1543,6 +1575,12 @@ function applyLanguage(lang) {
   setOptionText(languageSelect, 0, "englishOption");
   setOptionText(languageSelect, 1, "germanOption");
 
+  const viewModeSelect = element("viewModeSelect");
+  setText(element("viewModeLabel"), "viewModeLabel");
+  setOptionText(viewModeSelect, 0, "viewModeAuto");
+  setOptionText(viewModeSelect, 1, "viewModeCompact");
+  setOptionText(viewModeSelect, 2, "viewModeClassic");
+
   const driverSelect = element("driverSelect");
   if (driverSelect) {
     setOptionText(driverSelect, driverSelect.options.length - 1, "customOption");
@@ -1736,6 +1774,13 @@ function bindActions() {
     });
   }
 
+  const viewModeSelect = element("viewModeSelect");
+  if (viewModeSelect) {
+    viewModeSelect.addEventListener("change", () => {
+      applyViewMode(viewModeSelect.value);
+    });
+  }
+
 }
 
 async function boot() {
@@ -1762,6 +1807,14 @@ async function boot() {
   }
 
   updateDriverCustomVisibility();
+
+  let persistedViewMode = "auto";
+  try {
+    persistedViewMode = localStorage.getItem("captureViewMode") || "auto";
+  } catch {
+    persistedViewMode = "auto";
+  }
+  applyViewMode(persistedViewMode);
 
   await refreshStatus();
   await refreshRecordings();

@@ -93,6 +93,18 @@ body {
   font-size: 0.85rem;
 }
 
+.lang-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lang-select select {
+  min-height: 28px;
+  padding: 3px 8px;
+  font-size: 0.78rem;
+}
+
 .badge {
   border-radius: 999px;
   padding: 5px 11px;
@@ -844,6 +856,30 @@ select:focus {
   border-color: rgba(116, 245, 216, 0.95);
   background: rgba(37, 88, 80, 0.42);
   color: #d7fff4;
+}
+
+body.view-mode-compact .mobile-replay {
+  display: grid !important;
+}
+
+body.view-mode-compact .panel-grid {
+  grid-template-columns: 1fr;
+}
+
+body.view-mode-compact .panel-visual,
+body.view-mode-compact .key-guide-wrap,
+body.view-mode-compact .symbol-legend-wrap {
+  display: none !important;
+}
+
+body.view-mode-classic .mobile-replay {
+  display: none !important;
+}
+
+body.view-mode-classic .panel-visual,
+body.view-mode-classic .key-guide-wrap,
+body.view-mode-classic .symbol-legend-wrap {
+  display: block !important;
 }
 
 .symbol-legend-wrap {
