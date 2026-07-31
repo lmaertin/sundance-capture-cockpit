@@ -400,14 +400,14 @@ const displaySymbolLayout = [
   { key: "set_temp", labelEn: "Set Temperature", labelDe: "Solltemperatur", icon: "/static/display-icons/original/set-temperature.png", x: 4.6, y: 28.4, w: 7.2 },
   { key: "set_time", labelEn: "Set Time", labelDe: "Uhrzeit einstellen", icon: "/static/display-icons/original/set-time.png", x: 12.4, y: 28.6, w: 6.2 },
   { key: "filter", labelEn: "Filter Indicator", labelDe: "Filteranzeige", icon: "/static/display-icons/original/filter-indicator.png", x: 4.4, y: 45.4, w: 7.6 },
-  { key: "am", label: "AM", icon: "/static/display-icons/original/AM.png", x: 81.2, y: 33.2, w: 7.2 },
-  { key: "pm", label: "PM", icon: "/static/display-icons/original/PM.png", x: 81.2, y: 42.6, w: 7.2 },
+  { key: "am", labelEn: "AM Time Indicator", labelDe: "AM-Zeitanzeige", icon: "/static/display-icons/original/AM.png", x: 81.2, y: 33.2, w: 7.2 },
+  { key: "pm", labelEn: "PM Time Indicator", labelDe: "PM-Zeitanzeige", icon: "/static/display-icons/original/PM.png", x: 81.2, y: 42.6, w: 7.2 },
   { key: "mode_standard", labelEn: "Standard", labelDe: "Standard", icon: "/static/display-icons/original/standard-mode.png", x: 78.8, y: 56.1, w: 16.2 },
   { key: "blower", labelEn: "Air Jet", labelDe: "Luftdüse", icon: "/static/display-icons/original/airjet.png", x: 24.2, y: 75.4, w: 10.4 },
   { key: "pump1", labelEn: "Water Jet 1", labelDe: "Wasserstrahl 1", icon: "/static/display-icons/original/waterjet1.png", x: 49.3, y: 75.2, w: 11.1 },
   { key: "pump2", labelEn: "Water Jet 2", labelDe: "Wasserstrahl 2", icon: "/static/display-icons/original/waterjet2.png", x: 65.5, y: 75.2, w: 11.1 },
-  { key: "float_23", labelEn: "Point 2-3", labelDe: "Punkt 2-3", icon: "/static/display-icons/original/floating-point-digit-2-3.png", x: 45.5, y: 51.1, w: 1.9 },
-  { key: "float_34", labelEn: "Point 3-4", labelDe: "Punkt 3-4", icon: "/static/display-icons/original/floating-point-digit-3-4.png", x: 57.2, y: 51.1, w: 1.9 },
+  { key: "float_23", labelEn: "Decimal Point segment 2/3", labelDe: "Dezimalpunkt Segment 2/3", icon: "/static/display-icons/original/floating-point-digit-2-3.png", x: 45.5, y: 51.1, w: 1.9 },
+  { key: "float_34", labelEn: "Decimal Point segment 3/4", labelDe: "Dezimalpunkt Segment 3/4", icon: "/static/display-icons/original/floating-point-digit-3-4.png", x: 57.2, y: 51.1, w: 1.9 },
   { key: "clock_delimiter", labelEn: "Clock Delimiter", labelDe: "Uhrzeit-Trenner", icon: "/static/display-icons/original/clock_delimiter.png", x: 51.1, y: 43.1, w: 1.7 },
 ];
 
@@ -467,6 +467,31 @@ const displaySymbolDescriptionsByLang = {
     key: "filter",
     title: "Filter Annunciator",
     text: "Indicates filter cleaning and/or replacement is required.",
+  },
+  {
+    key: "am",
+    title: "AM Time Indicator",
+    text: "Indicates ante meridiem time (before noon).",
+  },
+  {
+    key: "pm",
+    title: "PM Time Indicator",
+    text: "Indicates post meridiem time (after noon).",
+  },
+  {
+    key: "float_23",
+    title: "Decimal Point 2-3",
+    text: "Decimal separator between digits 2 and 3 of the 4-digit display.",
+  },
+  {
+    key: "float_34",
+    title: "Decimal Point 3-4",
+    text: "Decimal separator between digits 3 and 4 of the 4-digit display.",
+  },
+  {
+    key: "clock_delimiter",
+    title: "Time Delimiter",
+    text: "Separator used for time format (for example 12:45).",
   },
   {
     key: "blower",
@@ -544,6 +569,31 @@ const displaySymbolDescriptionsByLang = {
       key: "filter",
       title: "Filteranzeige",
       text: "Zeigt an, dass eine Filterreinigung und/oder ein Filterwechsel erforderlich ist.",
+    },
+    {
+      key: "am",
+      title: "AM-Zeitanzeige",
+      text: "Kennzeichnet Vormittagszeit (vor 12:00 Uhr).",
+    },
+    {
+      key: "pm",
+      title: "PM-Zeitanzeige",
+      text: "Kennzeichnet Nachmittagszeit/Abendzeit (nach 12:00 Uhr).",
+    },
+    {
+      key: "float_23",
+      title: "Dezimalpunkt 2-3",
+      text: "Dezimaltrennzeichen zwischen Ziffer 2 und 3 der 4-stelligen Anzeige.",
+    },
+    {
+      key: "float_34",
+      title: "Dezimalpunkt 3-4",
+      text: "Dezimaltrennzeichen zwischen Ziffer 3 und 4 der 4-stelligen Anzeige.",
+    },
+    {
+      key: "clock_delimiter",
+      title: "Zeittrenner",
+      text: "Trennzeichen für die Uhrzeitdarstellung (z. B. 12:45).",
     },
     {
       key: "blower",
