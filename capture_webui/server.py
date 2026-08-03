@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import os
 import sqlite3
 import subprocess
 import threading
 import time
+import zipfile
 from dataclasses import dataclass, field
 from datetime import datetime
 from http import HTTPStatus
@@ -116,6 +118,52 @@ def init_db() -> None:
         conn.commit()
 
 
+def iso_from_timestamp(timestamp: float) -> str:
+    """Convert POSIX timestamp to UTC ISO8601 string without microseconds."""
+    return datetime.utcfromtimestamp(timestamp).replace(microsecond=0).isoformat() + "Z"
+
+
+def sync_recordings_from_disk() -> int:
+    """Import existing .sr files into DB when no matching recording row exists."""
+    with db_connect() as conn:
+        existing_rows = conn.execute("SELECT file_path FROM recordings").fetchall()
+        known_paths = {str(row["file_path"]) for row in existing_rows}
+
+        imported = 0
+        for sr_file in sorted(RECORDINGS_DIR.glob("*.sr")):
+            file_path = str(sr_file)
+            if file_path in known_paths:
+                continue
+
+            measured_at = iso_from_timestamp(sr_file.stat().st_mtime)
+            default_name = safe_name(sr_file.stem)
+            conn.execute(
+                """
+                INSERT INTO recordings
+                (name, sequence, notes, samplerate, channels, file_path, status, start_time, end_time, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    default_name,
+                    "",
+                    "Imported from recordings directory",
+                    "unknown",
+                    "unknown",
+                    file_path,
+                    "completed",
+                    measured_at,
+                    measured_at,
+                    measured_at,
+                ),
+            )
+            known_paths.add(file_path)
+            imported += 1
+
+        conn.commit()
+
+    return imported
+
+
 def insert_recording(
     name: str,
     sequence: str,
@@ -181,6 +229,63 @@ def list_recordings(limit: int = 100) -> list[dict[str, Any]]:
     for item in items:
         item["annotation_preview"] = fetch_annotation_preview(int(item["id"]), limit=10)
     return items
+
+
+def recording_download_stem(recording: dict[str, Any], fallback_id: int) -> str:
+    """Return a stable base filename used for SR/JSON download pairs."""
+    file_path_value = str(recording.get("file_path") or "").strip()
+    if file_path_value:
+        stem = Path(file_path_value).stem.strip()
+        if stem:
+            return safe_name(stem)
+
+    name_value = str(recording.get("name") or "").strip()
+    if name_value:
+        return safe_name(name_value)
+
+    return f"recording_{fallback_id}"
+
+
+def export_payload(recording_id: int) -> dict[str, Any] | None:
+    """Build one recording export payload or return None if missing."""
+    recording = fetch_recording(recording_id)
+    if recording is None:
+        return None
+    annotations = fetch_annotations(recording_id)
+    return {"recording": recording, "annotations": annotations}
+
+
+def build_recordings_archive() -> tuple[bytes, str, int]:
+    """Create a ZIP archive containing all recordings as paired SR and JSON files."""
+    rows = list_recordings(limit=100000)
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    archive_name = f"recordings_{timestamp}.zip"
+    used_stems: set[str] = set()
+    exported_count = 0
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for row in rows:
+            recording_id = int(row["id"])
+            payload = export_payload(recording_id)
+            if payload is None:
+                continue
+
+            recording = payload["recording"]
+            stem = recording_download_stem(recording, recording_id)
+            if stem in used_stems:
+                stem = f"{stem}_{recording_id}"
+            used_stems.add(stem)
+
+            sr_path = Path(str(recording.get("file_path") or ""))
+            if sr_path.exists() and sr_path.is_file():
+                archive.write(sr_path, arcname=f"{stem}.sr")
+
+            json_bytes = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+            archive.writestr(f"{stem}.json", json_bytes)
+            exported_count += 1
+
+    return buffer.getvalue(), archive_name, exported_count
 
 
 def fetch_recording(recording_id: int) -> dict[str, Any] | None:
@@ -595,6 +700,21 @@ class CaptureHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(content)
 
+    def _serve_download_bytes(
+        self,
+        content: bytes,
+        download_name: str,
+        content_type: str = "application/octet-stream",
+    ) -> None:
+        """Serve raw bytes as attachment download."""
+        download_file_name = download_name.replace('"', "")
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Disposition", f'attachment; filename="{download_file_name}"')
+        self.send_header("Content-Length", str(len(content)))
+        self.end_headers()
+        self.wfile.write(content)
+
     def _serve_download_file(self, file_path: Path, download_name: str) -> None:
         """Serve a local file as attachment download."""
         if not file_path.exists() or not file_path.is_file():
@@ -602,13 +722,7 @@ class CaptureHandler(BaseHTTPRequestHandler):
             return
 
         content = file_path.read_bytes()
-        safe_name = download_name.replace('"', "")
-        self.send_response(HTTPStatus.OK)
-        self.send_header("Content-Type", "application/octet-stream")
-        self.send_header("Content-Disposition", f'attachment; filename="{safe_name}"')
-        self.send_header("Content-Length", str(len(content)))
-        self.end_headers()
-        self.wfile.write(content)
+        self._serve_download_bytes(content, download_name)
 
     def do_GET(self) -> None:  # pylint: disable=invalid-name
         """Handle GET requests."""
@@ -652,7 +766,7 @@ class CaptureHandler(BaseHTTPRequestHandler):
                         "channels": "D4,D5,D6,D7",
                         "driver": "fx2lafw",
                         "durationSeconds": 10,
-                        "simulate": True,
+                        "simulate": False,
                     },
                     "recordingsDir": str(RECORDINGS_DIR),
                 }
@@ -665,6 +779,14 @@ class CaptureHandler(BaseHTTPRequestHandler):
             self._send_json({"items": list_recordings(limit=limit)})
             return
 
+        if path == "/api/recordings/download-all":
+            archive_bytes, archive_name, exported_count = build_recordings_archive()
+            if exported_count <= 0:
+                self._send_json({"error": "No recordings available"}, status=404)
+                return
+            self._serve_download_bytes(archive_bytes, archive_name, "application/zip")
+            return
+
         if path.startswith("/api/recordings/") and path.endswith("/export"):
             parts = path.strip("/").split("/")
             try:
@@ -673,12 +795,21 @@ class CaptureHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "Invalid recording id"}, status=400)
                 return
 
-            recording = fetch_recording(recording_id)
-            if recording is None:
+            payload = export_payload(recording_id)
+            if payload is None:
                 self._send_json({"error": "Recording not found"}, status=404)
                 return
-            annotations = fetch_annotations(recording_id)
-            self._send_json({"recording": recording, "annotations": annotations})
+
+            query = parse_qs(parsed.query)
+            download_mode = query.get("download", ["0"])[0].lower() in {"1", "true", "yes"}
+            if download_mode:
+                recording = payload["recording"]
+                stem = recording_download_stem(recording, recording_id)
+                content = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+                self._serve_download_bytes(content, f"{stem}.json", "application/json; charset=utf-8")
+                return
+
+            self._send_json(payload)
             return
 
         if path.startswith("/api/recordings/") and path.endswith("/file"):
@@ -726,7 +857,7 @@ class CaptureHandler(BaseHTTPRequestHandler):
             channels = str(payload.get("channels", "D4,D5,D6,D7"))
             driver = str(payload.get("driver", "fx2lafw"))
             duration_seconds = int(payload.get("durationSeconds", 20))
-            simulate = bool(payload.get("simulate", True))
+            simulate = bool(payload.get("simulate", False))
 
             if not simulate:
                 probe_result = probe_signal_analyzer(driver)
@@ -898,8 +1029,6 @@ class CaptureHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "payload must be an object"}, status=400)
                 return
 
-            ts_ms = 0
-
             annotation_id = add_annotation(
                 recording_id=recording_id,
                 ts_ms=0,
@@ -952,8 +1081,11 @@ def main() -> None:
     args = parse_args()
     ensure_dirs()
     init_db()
+    imported_count = sync_recordings_from_disk()
     server = ThreadingHTTPServer((args.host, args.port), CaptureHandler)
     print(f"Server running on http://{args.host}:{args.port}")
+    if imported_count > 0:
+        print(f"Imported {imported_count} existing .sr files from {RECORDINGS_DIR}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

@@ -104,7 +104,6 @@
           <button id="stopBtn" class="btn danger">Recording Stop</button>
           <button id="testAnalyzerBtn" class="btn">Test analyzer</button>
           <button id="shutdownBtn" class="btn danger">Shutdown</button>
-          <button id="refreshBtn" class="btn">Reload recordings</button>
           <button id="clearSigrokLogBtn" class="btn">Clear log</button>
         </div>
         <div class="sigrok-log-wrap">
@@ -114,7 +113,7 @@
         <div id="syncInfo" class="sync-info">Not refreshed yet</div>
         <div class="recording-tail">
           <label class="simulate-mini">
-            <input id="simulate" type="checkbox" checked />
+            <input id="simulate" type="checkbox" />
             <span id="simulateLabelText">Simulate without hardware</span>
           </label>
         </div>
@@ -188,6 +187,8 @@
         <h2 id="recordingsTitle">Recordings</h2>
         <div class="button-row compact">
           <button id="deleteAllBtn" class="btn danger">Delete all</button>
+          <button id="downloadAllBtn" class="btn">Download all</button>
+          <button id="refreshBtn" class="btn">Reload recordings</button>
         </div>
         <div class="table-wrap">
           <table>

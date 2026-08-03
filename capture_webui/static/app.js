@@ -24,6 +24,7 @@ const uiText = {
     testAnalyzer: "Test analyzer",
     shutdown: "Shutdown",
     reloadRecordings: "Reload recordings",
+    downloadAll: "Download all",
     clearLog: "Clear log",
     sigrokCommandLog: "Sigrok Command Log",
     simulateWithoutHardware: "Simulate without hardware",
@@ -128,6 +129,7 @@ const uiText = {
     testAnalyzer: "Analyzer testen",
     shutdown: "Herunterfahren",
     reloadRecordings: "Aufnahmen neu laden",
+    downloadAll: "Alle herunterladen",
     clearLog: "Log leeren",
     sigrokCommandLog: "Sigrok-Befehlsprotokoll",
     simulateWithoutHardware: "Ohne Hardware simulieren",
@@ -665,6 +667,31 @@ function element(id) {
   return document.getElementById(id);
 }
 
+function recordingDownloadStem(recording, fallbackId) {
+  const rawPath = String(recording?.file_path || "").trim();
+  if (rawPath) {
+    const fileName = rawPath.split(/[\\/]/).pop() || "";
+    const dot = fileName.lastIndexOf(".");
+    const stem = (dot > 0 ? fileName.slice(0, dot) : fileName).trim();
+    if (stem) {
+      return stem;
+    }
+  }
+
+  const rawName = String(recording?.name || "").trim();
+  if (rawName) {
+    const normalized = rawName
+      .replace(/[^a-zA-Z0-9_-]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    if (normalized) {
+      return normalized;
+    }
+  }
+
+  return `recording_${fallbackId}`;
+}
+
 function setSyncInfo(ok, details = "") {
   const node = element("syncInfo");
   if (!node) {
@@ -980,13 +1007,14 @@ async function refreshRecordings() {
     btn.addEventListener("click", async () => {
       const id = Number(btn.dataset.export);
       const exported = await jsonFetch(`/api/recordings/${id}/export`);
+      const stem = recordingDownloadStem(exported.recording, id);
       const blob = new Blob([JSON.stringify(exported, null, 2)], {
         type: "application/json",
       });
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `recording_${id}_annotations.json`;
+      anchor.download = `${stem}.json`;
       anchor.click();
       URL.revokeObjectURL(url);
     });
@@ -995,9 +1023,11 @@ async function refreshRecordings() {
   for (const btn of body.querySelectorAll("button[data-download-sr]")) {
     btn.addEventListener("click", () => {
       const id = Number(btn.dataset.downloadSr);
+      const item = data.items.find((entry) => Number(entry.id) === id);
+      const stem = recordingDownloadStem(item, id);
       const anchor = document.createElement("a");
       anchor.href = `/api/recordings/${id}/file`;
-      anchor.download = `recording_${id}.sr`;
+      anchor.download = `${stem}.sr`;
       anchor.click();
     });
   }
@@ -1588,6 +1618,7 @@ function applyLanguage(lang) {
   setText(element("testAnalyzerBtn"), "testAnalyzer");
   setText(element("shutdownBtn"), "shutdown");
   setText(element("refreshBtn"), "reloadRecordings");
+  setText(element("downloadAllBtn"), "downloadAll");
   setText(element("clearSigrokLogBtn"), "clearLog");
   setText(element("sigrokLogTitle"), "sigrokCommandLog");
   setText(element("simulateLabelText"), "simulateLabelText");
@@ -1708,6 +1739,16 @@ function bindActions() {
   if (clearSigrokLogBtn) {
     clearSigrokLogBtn.addEventListener("click", () => {
       clearSigrokLog();
+    });
+  }
+
+  const downloadAllBtn = element("downloadAllBtn");
+  if (downloadAllBtn) {
+    downloadAllBtn.addEventListener("click", () => {
+      const anchor = document.createElement("a");
+      anchor.href = "/api/recordings/download-all";
+      anchor.download = "recordings.zip";
+      anchor.click();
     });
   }
 

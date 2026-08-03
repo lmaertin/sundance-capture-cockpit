@@ -140,17 +140,17 @@ python capture_webui\server.py --host 127.0.0.1 --port 8765
 
 ### Local Test Flow (all platforms)
 
-1. Keep Simulate without hardware enabled for first tests.
+1. Enable Simulate without hardware for first tests (default is disabled).
 1. Start recording, click panel buttons, stop recording.
 1. Verify new row appears in Recordings.
-1. Test Download .sr and Export JSON.
+1. Test Download .sr, Export JSON, and Download all.
 1. Verify the Sigrok Command Log shows the command line for each run.
 
 ## Recording Modes
 
 1. Simulation mode
 
-- Keep `Simulate without hardware` enabled
+- Enable `Simulate without hardware`
 - Useful for validating UI flows and annotation handling
 
 1. Real hardware mode
@@ -173,6 +173,11 @@ Notes:
 
 Use the `Download .sr` button in the `Recordings` table.
 
+The JSON export uses the same base name as the `.sr` file. Example:
+
+- `20260727_233022_panel-session.sr`
+- `20260727_233022_panel-session.json`
+
 Direct API route:
 
 - `GET /api/recordings/<id>/file`
@@ -183,13 +188,31 @@ Example:
 curl -L "http://127.0.0.1:8765/api/recordings/12/file" -o recording_12.sr
 ```
 
+## How To Download All Recordings
+
+Use the `Download all` button in the `Recordings` section.
+
+Direct API route:
+
+- `GET /api/recordings/download-all`
+
+Example:
+
+```bash
+curl -L "http://127.0.0.1:8765/api/recordings/download-all" -o recordings.zip
+```
+
+The ZIP archive contains one `.sr` and one `.json` file per recording with matching base names.
+
 ## API Endpoints
 
 - `GET /api/config`
 - `GET /api/status`
 - `GET /api/recordings?limit=60`
 - `GET /api/recordings/<id>/export`
+- `GET /api/recordings/<id>/export?download=1`
 - `GET /api/recordings/<id>/file`
+- `GET /api/recordings/download-all`
 - `POST /api/recordings/start`
 - `POST /api/recordings/stop`
 - `POST /api/recordings/update`
