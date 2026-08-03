@@ -1,6 +1,8 @@
 # Ignore everything by default except the web UI project and the root README.
 /misc/
 /misc/*
+/recordings/
+/recordings/*
 
 # OS and Python cache artifacts.
 .DS_Store

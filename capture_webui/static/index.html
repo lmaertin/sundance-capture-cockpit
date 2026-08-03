@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/static/styles.css?v=20260731-mobile-1" />
+    <link rel="stylesheet" href="/static/styles.css?v=20260803-mobile-wizard-24" />
   </head>
   <body>
     <div class="bg-orb orb-a"></div>
@@ -22,105 +22,93 @@
       <div class="statusline">
         <span id="statusBadge" class="badge idle">Idle</span>
         <span id="statusText">No active recording</span>
-        <label class="lang-select">
-          <span id="languageLabel">Language</span>
-          <select id="languageSelect">
-            <option value="en" selected>English</option>
-            <option value="de">Deutsch</option>
-          </select>
-        </label>
-        <label class="lang-select">
-          <span id="viewModeLabel">View</span>
-          <select id="viewModeSelect">
-            <option value="auto" selected>Auto</option>
-            <option value="mobile">Mobile View</option>
-            <option value="classic">Classic View</option>
-          </select>
-        </label>
       </div>
     </header>
 
     <main class="layout">
       <section class="card card-recording">
         <h2 id="recordingTitle">Recording</h2>
-        <div class="form-grid compact-form">
+        <div class="form-grid compact-form capture-basics-form">
           <label>
             <span id="sessionNameLabel">Session Name</span>
             <input id="name" value="panel-session" />
           </label>
           <label>
-            <span id="driverLabel">Driver</span>
-            <select id="driverSelect">
-              <option value="fx2lafw" selected>fx2lafw</option>
-              <option value="saleae-logic16">saleae-logic16</option>
-              <option value="saleae-logic-pro">saleae-logic-pro</option>
-              <option value="dreamsourcelab-dslogic">dreamsourcelab-dslogic</option>
-              <option value="ols">ols</option>
-              <option value="sysclk-lwla">sysclk-lwla</option>
-              <option value="demo">demo</option>
-              <option value="__custom__">Custom...</option>
-            </select>
-            <input id="driverCustom" class="driver-custom hidden" placeholder="custom driver id" />
-          </label>
-          <label>
-            <span id="channelsLabel">Channels</span>
-            Channels
-            <div id="channelsGroup" class="channels-grid">
-              <label class="channel-option"><input type="checkbox" value="D1" />1</label>
-              <label class="channel-option"><input type="checkbox" value="D2" />2</label>
-              <label class="channel-option"><input type="checkbox" value="D3" />3</label>
-              <label class="channel-option"><input type="checkbox" value="D4" checked />4</label>
-              <label class="channel-option"><input type="checkbox" value="D5" checked />5</label>
-              <label class="channel-option"><input type="checkbox" value="D6" checked />6</label>
-              <label class="channel-option"><input type="checkbox" value="D7" checked />7</label>
-              <label class="channel-option"><input type="checkbox" value="D8" />8</label>
-            </div>
-          </label>
-          <div class="stacked-controls">
-            <label>
-              <span id="samplerateLabel">Samplerate</span>
-              <select id="samplerate">
-                <option value="1MHz">1MHz</option>
-                <option value="2MHz">2MHz</option>
-                <option value="4MHz">4MHz</option>
-                <option value="8MHz">8MHz</option>
-                <option value="12MHz">12MHz</option>
-                <option value="16MHz">16MHz</option>
-                <option value="24MHz" selected>24MHz</option>
-              </select>
-            </label>
-            <label>
-              <span id="durationLabel">Duration (seconds)</span>
-              <input id="durationSeconds" value="10" type="number" min="1" max="600" />
-            </label>
-          </div>
-          <label class="full">
             <span id="endCommentLabel">Optional end comment</span>
             <input id="endComment" placeholder="e.g. unusual panel behavior" />
           </label>
         </div>
-        <div class="button-row">
-          <button id="startBtn" class="btn primary">Recording Start</button>
-          <button id="stopBtn" class="btn danger">Recording Stop</button>
-          <button id="testAnalyzerBtn" class="btn">Test analyzer</button>
-          <button id="shutdownBtn" class="btn danger">Shutdown</button>
-          <button id="clearSigrokLogBtn" class="btn">Clear log</button>
-        </div>
-        <div class="sigrok-log-wrap">
-          <div id="sigrokLogTitle" class="sigrok-log-title">Sigrok Command Log</div>
-          <pre id="sigrokLog" class="sigrok-log">PS> waiting for first capture command...</pre>
-        </div>
+        <details class="recording-advanced">
+          <summary id="advancedControlsSummary">Advanced controls and hardware</summary>
+          <div class="recording-tail in-advanced">
+            <label class="simulate-mini">
+              <input id="simulate" type="checkbox" />
+              <span id="simulateLabelText">Simulate without hardware</span>
+            </label>
+          </div>
+          <div class="form-grid compact-form advanced-capture-settings">
+            <label>
+              <span id="driverLabel">Driver</span>
+              <select id="driverSelect">
+                <option value="fx2lafw" selected>fx2lafw</option>
+                <option value="saleae-logic16">saleae-logic16</option>
+                <option value="saleae-logic-pro">saleae-logic-pro</option>
+                <option value="dreamsourcelab-dslogic">dreamsourcelab-dslogic</option>
+                <option value="ols">ols</option>
+                <option value="sysclk-lwla">sysclk-lwla</option>
+                <option value="demo">demo</option>
+                <option value="__custom__">Custom...</option>
+              </select>
+              <input id="driverCustom" class="driver-custom hidden" placeholder="custom driver id" />
+            </label>
+            <label>
+              <span id="channelsLabel">Channels</span>
+              Channels
+              <div id="channelsGroup" class="channels-grid">
+                <label class="channel-option"><input type="checkbox" value="D1" />1</label>
+                <label class="channel-option"><input type="checkbox" value="D2" />2</label>
+                <label class="channel-option"><input type="checkbox" value="D3" />3</label>
+                <label class="channel-option"><input type="checkbox" value="D4" checked />4</label>
+                <label class="channel-option"><input type="checkbox" value="D5" checked />5</label>
+                <label class="channel-option"><input type="checkbox" value="D6" checked />6</label>
+                <label class="channel-option"><input type="checkbox" value="D7" checked />7</label>
+                <label class="channel-option"><input type="checkbox" value="D8" />8</label>
+              </div>
+            </label>
+            <div class="stacked-controls">
+              <label>
+                <span id="samplerateLabel">Samplerate</span>
+                <select id="samplerate">
+                  <option value="1MHz">1MHz</option>
+                  <option value="2MHz">2MHz</option>
+                  <option value="4MHz">4MHz</option>
+                  <option value="8MHz">8MHz</option>
+                  <option value="12MHz">12MHz</option>
+                  <option value="16MHz">16MHz</option>
+                  <option value="24MHz" selected>24MHz</option>
+                </select>
+              </label>
+              <label>
+                <span id="durationLabel">Duration (seconds)</span>
+                <input id="durationSeconds" value="10" type="number" min="1" max="600" />
+              </label>
+            </div>
+          </div>
+          <div class="button-row">
+            <button id="testAnalyzerBtn" class="btn">Test analyzer</button>
+            <button id="shutdownBtn" class="btn danger">Shutdown</button>
+            <button id="clearSigrokLogBtn" class="btn">Clear log</button>
+          </div>
+          <div class="sigrok-log-wrap">
+            <div id="sigrokLogTitle" class="sigrok-log-title">Sigrok Command Log</div>
+            <pre id="sigrokLog" class="sigrok-log">PS> waiting for first capture command...</pre>
+          </div>
+        </details>
         <div id="syncInfo" class="sync-info">Not refreshed yet</div>
-        <div class="recording-tail">
-          <label class="simulate-mini">
-            <input id="simulate" type="checkbox" />
-            <span id="simulateLabelText">Simulate without hardware</span>
-          </label>
-        </div>
       </section>
 
       <section class="card card-annotation">
-        <h2 id="mobileAnnotationTitle">Mobile Annotation</h2>
+        <h2 id="mobileAnnotationTitle">Capture</h2>
         <p id="mobileAnnotationHint" class="hint">Flow: Start recording, tap only the real panel buttons, then stop recording. Optional: add one end comment.</p>
 
         <div id="mobileReplay" class="mobile-replay" aria-label="Mobile replay controls">
@@ -146,10 +134,10 @@
               </div>
               <div id="panelHotspots" class="panel-hotspots"></div>
             </div>
-            <div class="key-guide-wrap">
-              <h4 id="keyGuideTitle">Main Control Functions</h4>
+            <details class="guide-collapsible key-guide-wrap">
+              <summary><span id="keyGuideTitle">Main Control Functions</span></summary>
               <div id="keyGuide" class="key-guide"></div>
-            </div>
+            </details>
           </div>
 
           <div class="display-state">
@@ -168,17 +156,11 @@
                 <input id="cycleNumber" type="number" min="0" max="9" placeholder="e.g. 1" />
               </label>
             </div>
-            <div class="button-row compact">
-              <button id="clearDisplaySymbolsBtn" class="btn">Reset symbols</button>
-            </div>
             <div id="activeDisplaySymbols" class="active-display-symbols">No symbols active</div>
-            <div class="symbol-legend-wrap">
-              <h4 id="symbolLegendTitle">LCD Screen Functions</h4>
+            <details class="guide-collapsible symbol-legend-wrap">
+              <summary><span id="symbolLegendTitle">LCD Screen Functions</span></summary>
               <div id="symbolLegend" class="symbol-legend"></div>
-            </div>
-            <div class="button-row compact">
-              <button id="saveDisplayBtn" class="btn primary">Save display state</button>
-            </div>
+            </details>
           </div>
         </div>
       </section>
@@ -196,12 +178,8 @@
               <tr>
                 <th id="recordingsHeaderId">ID</th>
                 <th id="recordingsHeaderName">Name</th>
-                <th id="recordingsHeaderStatus">Status</th>
                 <th id="recordingsHeaderMeasuredAt">Measured At</th>
                 <th id="recordingsHeaderDuration">Duration</th>
-                <th id="recordingsHeaderSamplerate">Samplerate</th>
-                <th id="recordingsHeaderChannels">Channels</th>
-                <th id="recordingsHeaderAnnotations">Annotations</th>
                 <th id="recordingsHeaderActions">Actions</th>
               </tr>
             </thead>
@@ -211,8 +189,15 @@
       </section>
     </main>
 
+    <div id="mobileActionBar" class="mobile-action-bar" aria-label="Quick actions">
+      <button id="mobileRecordToggleBtn" class="btn primary" type="button">Recording Start</button>
+      <div class="mobile-action-subbar">
+        <button id="saveDisplayBtn" class="btn primary" type="button">Save display state</button>
+      </div>
+    </div>
+
     <div id="toast" class="toast hidden"></div>
 
-    <script src="/static/app.js?v=20260731-mobile-1"></script>
+    <script src="/static/app.js?v=20260803-mobile-wizard-8"></script>
   </body>
 </html>
