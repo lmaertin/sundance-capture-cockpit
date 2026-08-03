@@ -204,6 +204,38 @@ curl -L "http://127.0.0.1:8765/api/recordings/download-all" -o recordings.zip
 
 The ZIP archive contains one `.sr` and one `.json` file per recording with matching base names.
 
+## Migration Guide For Old Recordings (Default Paths)
+
+Use this when older `.sr` files are not yet visible in the Web UI.
+
+```bash
+# 1) Ensure the default recordings directory exists
+sudo mkdir -p /opt/sundance-capture-cockpit/capture_webui/recordings
+sudo chown -R capture-webui:capture-webui /opt/sundance-capture-cockpit/capture_webui/recordings
+
+# 2) If old files are in the former default folder, copy them over
+# (this runs only when the source directory exists)
+if [ -d /opt/sundance-capture-cockpit/recordings ]; then
+  sudo rsync -avh --ignore-existing /opt/sundance-capture-cockpit/recordings/*.sr /opt/sundance-capture-cockpit/capture_webui/recordings/
+fi
+
+# 3) Ensure ownership for service access
+sudo chown -R capture-webui:capture-webui /opt/sundance-capture-cockpit/capture_webui/recordings
+
+# 4) Restart the service to trigger automatic import into SQLite
+sudo systemctl restart capture-webui
+sudo systemctl status capture-webui --no-pager
+
+# 5) Verify imported recordings via API
+curl -s http://sundance-decoder:8765/api/recordings
+```
+
+Notes:
+
+- Existing `.sr` files are not deleted by this migration.
+- Import is triggered on server startup and adds only recordings that are missing in the database.
+- The service path is configured through `CAPTURE_RECORDINGS_DIR`; when unset, it defaults to `/opt/sundance-capture-cockpit/capture_webui/recordings`.
+
 ## API Endpoints
 
 - `GET /api/config`
