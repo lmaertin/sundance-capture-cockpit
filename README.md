@@ -17,6 +17,7 @@ This project is a non-profit, community-oriented tool created to help bring info
 - Download raw `.sr` files per recording
 - Export recording metadata and annotations as JSON
 - Annotate panel button events and display states
+- Reorder annotations later with drag-and-drop in the recording details view
 - View recordings with timestamp, duration, and annotation preview
 - Driver dropdown with `fx2lafw` as default and optional custom driver
 - Channels as checkboxes (`D1`..`D8`), default `D4,D5,D6,D7`
@@ -251,6 +252,7 @@ Notes:
 - `POST /api/recordings/delete`
 - `POST /api/recordings/delete-all`
 - `POST /api/annotations`
+- `POST /api/annotations/reorder`
 
 ## How-To: From Pool to Protocol Decoder
 

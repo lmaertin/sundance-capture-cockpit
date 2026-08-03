@@ -111,9 +111,22 @@ def init_db() -> None:
                 kind TEXT NOT NULL,
                 payload_json TEXT NOT NULL,
                 created_at TEXT NOT NULL,
+                position INTEGER NOT NULL DEFAULT 0,
                 FOREIGN KEY(recording_id) REFERENCES recordings(id)
             )
             """
+        )
+        conn.commit()
+
+    with db_connect() as conn:
+        columns = {row[1] for row in conn.execute("PRAGMA table_info(annotations)").fetchall()}
+        if "position" not in columns:
+            conn.execute("ALTER TABLE annotations ADD COLUMN position INTEGER NOT NULL DEFAULT 0")
+            conn.commit()
+
+    with db_connect() as conn:
+        conn.execute(
+            "UPDATE annotations SET position = id WHERE COALESCE(position, 0) = 0"
         )
         conn.commit()
 
@@ -200,15 +213,68 @@ def finalize_recording(recording_id: int, status: str) -> None:
 def add_annotation(recording_id: int, ts_ms: int, kind: str, payload: dict[str, Any]) -> int:
     """Persist one annotation event."""
     with db_connect() as conn:
+        position_row = conn.execute(
+            "SELECT COALESCE(MAX(position), 0) + 1 AS next_position FROM annotations WHERE recording_id=?",
+            (recording_id,),
+        ).fetchone()
+        next_position = int(position_row["next_position"] if position_row else 1)
         cursor = conn.execute(
             """
-            INSERT INTO annotations (recording_id, ts_ms, kind, payload_json, created_at)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO annotations (recording_id, ts_ms, kind, payload_json, created_at, position)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (recording_id, ts_ms, kind, json.dumps(payload, ensure_ascii=True), now_iso()),
+            (
+                recording_id,
+                ts_ms,
+                kind,
+                json.dumps(payload, ensure_ascii=True),
+                now_iso(),
+                next_position,
+            ),
         )
         conn.commit()
         return int(cursor.lastrowid)
+
+
+def format_annotation_preview_entry(kind: str, payload: Any) -> str:
+    """Render a readable annotation preview from the stored payload."""
+    if kind == "button_press":
+        if isinstance(payload, dict):
+            name = payload.get("name") or payload.get("label")
+            if name:
+                return f"button_press: {name}"
+            direction = payload.get("direction")
+            if direction:
+                return f"button_press: {direction}"
+        return "button_press"
+
+    if kind == "display_state":
+        if isinstance(payload, dict):
+            value = payload.get("value")
+            cycle_number = payload.get("cycleNumber")
+            symbols = payload.get("symbols")
+            if isinstance(symbols, list):
+                symbols_text = ",".join(str(item) for item in symbols)
+            elif symbols:
+                symbols_text = str(symbols)
+            else:
+                symbols_text = None
+            parts = []
+            if value:
+                parts.append(f"value={value}")
+            if cycle_number not in (None, ""):
+                parts.append(f"cycle={cycle_number}")
+            if symbols_text:
+                parts.append(f"symbols={symbols_text}")
+            if parts:
+                return f"display_state: {'; '.join(parts)}"
+            if payload.get("text"):
+                return f"display_state: {payload['text']}"
+        return "display_state"
+
+    if isinstance(payload, dict) and payload:
+        return f"{kind}: {json.dumps(payload, ensure_ascii=False, sort_keys=True)}"
+    return kind
 
 
 def list_recordings(limit: int = 100) -> list[dict[str, Any]]:
@@ -227,7 +293,13 @@ def list_recordings(limit: int = 100) -> list[dict[str, Any]]:
         ).fetchall()
     items = [dict(row) for row in rows]
     for item in items:
-        item["annotation_preview"] = fetch_annotation_preview(int(item["id"]), limit=10)
+        recording_id = int(item["id"])
+        annotation_total = int(item.get("annotation_count") or 0)
+        item["annotation_preview"] = fetch_annotation_preview(
+            recording_id,
+            limit=annotation_total if annotation_total > 0 else None,
+        )
+        item["annotations"] = fetch_annotations(recording_id)
     return items
 
 
@@ -303,10 +375,10 @@ def fetch_annotations(recording_id: int) -> list[dict[str, Any]]:
     with db_connect() as conn:
         rows = conn.execute(
             """
-            SELECT id, recording_id, ts_ms, kind, payload_json, created_at
+            SELECT id, recording_id, ts_ms, kind, payload_json, created_at, position
             FROM annotations
             WHERE recording_id=?
-            ORDER BY id ASC
+            ORDER BY position ASC, id ASC
             """,
             (recording_id,),
         ).fetchall()
@@ -319,23 +391,35 @@ def fetch_annotations(recording_id: int) -> list[dict[str, Any]]:
     return records
 
 
-def fetch_annotation_preview(recording_id: int, limit: int = 3) -> list[str]:
-    """Return compact text preview entries for a recording's first annotations."""
+def fetch_annotation_preview(recording_id: int, limit: int | None = 3) -> list[str]:
+    """Return ordered annotation preview strings including payload details for one recording."""
     with db_connect() as conn:
-        rows = conn.execute(
-            """
-            SELECT kind
-            FROM annotations
-            WHERE recording_id=?
-            ORDER BY id ASC
-            LIMIT ?
-            """,
-            (recording_id, limit),
-        ).fetchall()
+        if limit is None:
+            rows = conn.execute(
+                """
+                SELECT kind, payload_json
+                FROM annotations
+                WHERE recording_id=?
+                ORDER BY position ASC, id ASC
+                """,
+                (recording_id,),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                """
+                SELECT kind, payload_json
+                FROM annotations
+                WHERE recording_id=?
+                ORDER BY position ASC, id ASC
+                LIMIT ?
+                """,
+                (recording_id, limit),
+            ).fetchall()
     preview: list[str] = []
     for row in rows:
         kind = str(row["kind"])
-        preview.append(kind)
+        payload = json.loads(row["payload_json"] or "{}")
+        preview.append(format_annotation_preview_entry(kind, payload))
     return preview
 
 
@@ -376,6 +460,79 @@ def update_recording(
 
     updated = fetch_recording(recording_id)
     return {"ok": True, "recording": updated}
+
+
+def update_annotation(annotation_id: int, kind: str | None, payload: dict[str, Any] | None) -> dict[str, Any]:
+    """Update a single annotation after recording completion."""
+    with STATE.lock:
+        active = STATE.active
+    if active is not None:
+        with db_connect() as conn:
+            row = conn.execute(
+                "SELECT recording_id FROM annotations WHERE id=?",
+                (annotation_id,),
+            ).fetchone()
+        if row and int(row["recording_id"]) == active.recording_id:
+            return {"ok": False, "status": 409, "error": "Cannot edit annotations for active recording"}
+
+    with db_connect() as conn:
+        existing = conn.execute(
+            "SELECT id, recording_id, kind, payload_json FROM annotations WHERE id=?",
+            (annotation_id,),
+        ).fetchone()
+    if existing is None:
+        return {"ok": False, "status": 404, "error": "Annotation not found"}
+
+    new_kind = kind if isinstance(kind, str) and kind.strip() else existing["kind"]
+    new_payload = payload if isinstance(payload, dict) else json.loads(existing["payload_json"] or "{}")
+
+    with db_connect() as conn:
+        conn.execute(
+            "UPDATE annotations SET kind=?, payload_json=? WHERE id=?",
+            (new_kind, json.dumps(new_payload, ensure_ascii=True), annotation_id),
+        )
+        conn.commit()
+
+    return {"ok": True, "annotation": {"id": annotation_id, "kind": new_kind, "payload": new_payload}}
+
+
+def reorder_annotations(recording_id: int, annotation_ids: list[int]) -> dict[str, Any]:
+    """Persist a custom ordering for a recording's annotations."""
+    with STATE.lock:
+        active = STATE.active
+    if active and active.recording_id == recording_id:
+        return {"ok": False, "status": 409, "error": "Cannot reorder annotations for active recording"}
+
+    with db_connect() as conn:
+        existing_rows = conn.execute(
+            "SELECT id FROM annotations WHERE recording_id=?",
+            (recording_id,),
+        ).fetchall()
+    existing_ids = [int(row["id"]) for row in existing_rows]
+    if not existing_ids:
+        return {"ok": True, "recordingId": recording_id, "annotationIds": []}
+
+    normalized_ids: list[int] = []
+    seen: set[int] = set()
+    for annotation_id in annotation_ids:
+        annotation_id_int = int(annotation_id)
+        if annotation_id_int in existing_ids and annotation_id_int not in seen:
+            normalized_ids.append(annotation_id_int)
+            seen.add(annotation_id_int)
+
+    for existing_id in existing_ids:
+        if existing_id not in seen:
+            normalized_ids.append(existing_id)
+
+    with db_connect() as conn:
+        for position, annotation_id in enumerate(normalized_ids, start=1):
+            conn.execute(
+                "UPDATE annotations SET position=? WHERE id=? AND recording_id=?",
+                (position, annotation_id, recording_id),
+            )
+        conn.commit()
+
+    return {"ok": True, "recordingId": recording_id, "annotationIds": normalized_ids}
 
 
 def delete_recording(recording_id: int) -> dict[str, Any]:
@@ -1036,6 +1193,57 @@ class CaptureHandler(BaseHTTPRequestHandler):
                 payload=item_payload,
             )
             self._send_json({"ok": True, "annotationId": annotation_id})
+            return
+
+        if path == "/api/annotations/update":
+            payload = self._read_json_body()
+            annotation_id = int(payload.get("annotationId", 0))
+            kind = payload.get("kind")
+            item_payload = payload.get("payload")
+
+            if annotation_id <= 0:
+                self._send_json({"error": "annotationId is required"}, status=400)
+                return
+            if item_payload is not None and not isinstance(item_payload, dict):
+                self._send_json({"error": "payload must be an object"}, status=400)
+                return
+
+            result = update_annotation(annotation_id=annotation_id, kind=kind, payload=item_payload)
+            if not result.get("ok"):
+                self._send_json(
+                    {"error": result.get("error", "Update failed")},
+                    status=int(result.get("status", 500)),
+                )
+                return
+            self._send_json(result)
+            return
+
+        if path == "/api/annotations/reorder":
+            payload = self._read_json_body()
+            recording_id = int(payload.get("recordingId", 0))
+            annotation_ids = payload.get("annotationIds", [])
+
+            if recording_id <= 0:
+                self._send_json({"error": "recordingId is required"}, status=400)
+                return
+            if not isinstance(annotation_ids, list):
+                self._send_json({"error": "annotationIds must be a list"}, status=400)
+                return
+
+            try:
+                cleaned_ids = [int(annotation_id) for annotation_id in annotation_ids]
+            except (TypeError, ValueError):
+                self._send_json({"error": "annotationIds must contain integers"}, status=400)
+                return
+
+            result = reorder_annotations(recording_id=recording_id, annotation_ids=cleaned_ids)
+            if not result.get("ok"):
+                self._send_json(
+                    {"error": result.get("error", "Reorder failed")},
+                    status=int(result.get("status", 500)),
+                )
+                return
+            self._send_json(result)
             return
 
         self.send_error(HTTPStatus.NOT_FOUND)

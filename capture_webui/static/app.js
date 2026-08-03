@@ -25,23 +25,44 @@ const uiText = {
     shutdown: "Shutdown",
     reloadRecordings: "Reload recordings",
     downloadAll: "Download all",
+    advancedControls: "Advanced controls and hardware",
+    flowStepStart: "1 Start",
+    flowStepButtons: "2 Buttons",
+    flowStepDisplay: "3 Display",
+    flowStepStop: "4 Stop",
+    jumpRecordings: "Recordings",
+    wizardTitle: "Capture Wizard",
+    wizardStep1: "1 Start recording",
+    wizardStep2: "2 Tap panel buttons",
+    wizardStep3: "3 Save display state",
+    wizardStep4: "4 Stop and review",
+    wizardHintIdle: "Start a recording to begin guided capture.",
+    wizardHintButtons: "Capture the panel button sequence now.",
+    wizardHintDisplay: "Store the resulting display state before stopping.",
+    wizardHintStop: "Stop recording and review/export the result.",
+    stopWithoutDisplayConfirm:
+      "No display state saved yet. Stop recording anyway?",
     clearLog: "Clear log",
     sigrokCommandLog: "Sigrok Command Log",
     simulateWithoutHardware: "Simulate without hardware",
-    mobileAnnotationTitle: "Mobile Annotation",
+    mobileAnnotationTitle: "Capture",
     mobileAnnotationHint:
       "Flow: Start recording, tap only the real panel buttons, then stop recording. Optional: add one end comment.",
     panelButtonsTitle: "Panel Buttons",
+    panelButtonsTitleShort: "Buttons",
     mobileButtonsTitle: "Buttons",
     mobileSymbolsTitle: "Display Symbols",
     panelButtonsHint:
       "No manual annotation fields. Taps are saved automatically for the active recording.",
+    panelButtonsHintShort: "No manual fields. Taps are auto-saved.",
     mainControlFunctions: "Main Control Functions",
     displayAndSymbolsTitle: "Display and Symbols",
+    displayAndSymbolsTitleShort: "Display",
     displayAndSymbolsHint:
       "Tap symbols directly in the center display. Add value or cycle number only if needed, then save.",
     displaySymbolsHint:
       "Tap symbols directly in the center display. Add value or cycle number only if needed, then save.",
+    displaySymbolsHintShort: "Tap symbols, optionally add value/cycle, then save.",
     simulateLabelText: "Simulate without hardware",
     cycleNumberLabel: "Filter cycle number (top 8 symbol)",
     resetSymbols: "Reset symbols",
@@ -63,15 +84,17 @@ const uiText = {
     displayValuePlaceholder: "e.g. 29.9C or 12:45",
     cycleNumberPlaceholder: "e.g. 1",
     endCommentPlaceholder: "e.g. unusual panel behavior",
-    exportJson: "Export JSON",
-    downloadSr: "Download .sr",
+    exportJson: ".json",
+    downloadSr: ".sr",
     delete: "Delete",
     save: "Save",
     annotations: "Annotations:",
+    annotationMore: (count) => `+${count} more`,
     none: "none",
     notAvailable: "Not available",
     noSequenceToCopy: "No sequence to copy",
     sequenceCopied: "Sequence copied",
+    annotationReordered: "Annotation order updated",
     noStepsYet: "No steps yet",
     noActiveRecordingError: "No active recording",
     selectAtLeastOneChannel: "Select at least one channel",
@@ -130,23 +153,44 @@ const uiText = {
     shutdown: "Herunterfahren",
     reloadRecordings: "Aufnahmen neu laden",
     downloadAll: "Alle herunterladen",
+    advancedControls: "Erweiterte Steuerung",
+    flowStepStart: "1 Start",
+    flowStepButtons: "2 Tasten",
+    flowStepDisplay: "3 Display",
+    flowStepStop: "4 Stopp",
+    jumpRecordings: "Aufnahmen",
+    wizardTitle: "Capture-Assistent",
+    wizardStep1: "1 Aufnahme starten",
+    wizardStep2: "2 Panel-Tasten tippen",
+    wizardStep3: "3 Displayzustand speichern",
+    wizardStep4: "4 Stoppen und prüfen",
+    wizardHintIdle: "Starte eine Aufnahme, um die geführte Erfassung zu beginnen.",
+    wizardHintButtons: "Erfasse jetzt die Panel-Tasten-Sequenz.",
+    wizardHintDisplay: "Speichere den Displayzustand, bevor du stoppst.",
+    wizardHintStop: "Stoppe die Aufnahme und prüfe/exportiere das Ergebnis.",
+    stopWithoutDisplayConfirm:
+      "Es wurde noch kein Displayzustand gespeichert. Aufnahme trotzdem stoppen?",
     clearLog: "Log leeren",
     sigrokCommandLog: "Sigrok-Befehlsprotokoll",
     simulateWithoutHardware: "Ohne Hardware simulieren",
-    mobileAnnotationTitle: "Mobile Erfassung",
+    mobileAnnotationTitle: "Erfassung",
     mobileAnnotationHint:
       "Ablauf: Aufnahme starten, nur die echten Panel-Tasten antippen und danach die Aufnahme stoppen. Optional: einen Endkommentar hinzufügen.",
     panelButtonsTitle: "Panel-Tasten",
+    panelButtonsTitleShort: "Tasten",
     mobileButtonsTitle: "Tasten",
     mobileSymbolsTitle: "Display-Symbole",
     panelButtonsHint:
       "Keine manuellen Eingabefelder. Taps werden automatisch für die aktive Aufnahme gespeichert.",
+    panelButtonsHintShort: "Keine manuellen Felder. Taps werden automatisch gespeichert.",
     mainControlFunctions: "Hauptfunktionen",
     displayAndSymbolsTitle: "Display und Symbole",
+    displayAndSymbolsTitleShort: "Display",
     displayAndSymbolsHint:
       "Symbole direkt im mittleren Display antippen. Nur Wert oder Zyklusnummer eintragen, wenn nötig, dann speichern.",
     displaySymbolsHint:
       "Symbole direkt im mittleren Display antippen. Nur Wert oder Zyklusnummer eintragen, wenn nötig, dann speichern.",
+    displaySymbolsHintShort: "Symbole tippen, optional Wert/Zyklus, dann speichern.",
     simulateLabelText: "Ohne Hardware simulieren",
     cycleNumberLabel: "Filterzyklus-Nummer (oberes 8-Symbol)",
     resetSymbols: "Symbole zurücksetzen",
@@ -173,10 +217,12 @@ const uiText = {
     delete: "Löschen",
     save: "Speichern",
     annotations: "Annotationen:",
+    annotationMore: (count) => `+${count} weitere`,
     none: "keine",
     notAvailable: "Nicht verfügbar",
     noSequenceToCopy: "Keine Sequenz zum Kopieren",
     sequenceCopied: "Sequenz kopiert",
+    annotationReordered: "Annotation-Reihenfolge aktualisiert",
     noStepsYet: "Noch keine Schritte",
     noActiveRecordingError: "Keine aktive Aufnahme",
     selectAtLeastOneChannel: "Mindestens einen Kanal auswählen",
@@ -269,9 +315,27 @@ function setOptionText(selectNode, index, key) {
   selectNode.options[index].textContent = ui(key);
 }
 
+function applyCompactCaptureHints() {
+  const compact = document.body.classList.contains("view-mode-mobile");
+  setText(element("panelButtonsHint"), compact ? "panelButtonsHintShort" : "panelButtonsHint");
+  setText(element("displaySymbolsHint"), compact ? "displaySymbolsHintShort" : "displaySymbolsHint");
+}
+
+function applyCompactCaptureTitles() {
+  const compact = document.body.classList.contains("view-mode-mobile");
+  setText(element("panelButtonsTitle"), compact ? "panelButtonsTitleShort" : "panelButtonsTitle");
+  setText(
+    element("displaySymbolsTitle"),
+    compact ? "displayAndSymbolsTitleShort" : "displayAndSymbolsTitle"
+  );
+}
+
 function applyViewMode(mode) {
-  const normalizedMode = mode === "compact" ? "mobile" : mode;
-  const normalized = ["auto", "mobile", "classic"].includes(normalizedMode) ? normalizedMode : "auto";
+  const requestedMode = mode === "compact" ? "mobile" : mode;
+  const forceMobile = requestedMode === "mobile";
+  const forceClassic = requestedMode === "classic";
+  const autoMobile = window.matchMedia("(max-width: 960px)").matches;
+  const normalized = forceMobile ? "mobile" : forceClassic ? "classic" : autoMobile ? "mobile" : "auto";
   state.viewMode = normalized;
 
   document.body.classList.remove("view-mode-mobile", "view-mode-classic");
@@ -281,16 +345,9 @@ function applyViewMode(mode) {
     document.body.classList.add("view-mode-classic");
   }
 
-  const select = element("viewModeSelect");
-  if (select && select.value !== normalized) {
-    select.value = normalized;
-  }
+  applyCompactCaptureHints();
+  applyCompactCaptureTitles();
 
-  try {
-    localStorage.setItem("captureViewMode", normalized);
-  } catch {
-    // Ignore storage errors in restricted environments.
-  }
 }
 
 const panelButtonLayout = [
@@ -627,7 +684,84 @@ const state = {
   activeDisplaySymbols: new Set(),
   sigrokLogLines: [],
   viewMode: "auto",
+  wizardRecordingId: null,
+  wizardHasButton: false,
+  wizardHasDisplay: false,
+  draggedAnnotationId: null,
+  draggedRecordingId: null,
 };
+
+function resetWizardState() {
+  state.wizardRecordingId = null;
+  state.wizardHasButton = false;
+  state.wizardHasDisplay = false;
+}
+
+function updateWizardFromActivity() {
+  const active = Boolean(state.activeStatus && state.activeStatus.active);
+  if (!active) {
+    resetWizardState();
+    syncCaptureAvailability(false);
+    return;
+  }
+
+  syncCaptureAvailability(true);
+}
+
+function syncCaptureAvailability(isActive) {
+  document.body.classList.toggle("capture-active", isActive);
+
+  const startButtons = [element("startBtn")];
+  for (const node of startButtons) {
+    if (node) {
+      node.disabled = isActive;
+    }
+  }
+
+  const stopButtons = [element("stopBtn")];
+  for (const node of stopButtons) {
+    if (node) {
+      node.disabled = !isActive;
+    }
+  }
+
+  updateMobileRecordToggle(isActive);
+
+  const hasRecordingContext = Boolean(
+    (state.activeStatus && state.activeStatus.active)
+    || state.lastRecordingId
+    || state.wizardRecordingId
+  );
+
+  const interactiveSelectors = [
+    ".panel-hotspot",
+    ".mobile-panel-btn",
+    ".mobile-symbol-chip",
+  ];
+
+  for (const selector of interactiveSelectors) {
+    for (const node of document.querySelectorAll(selector)) {
+      if (!(node instanceof HTMLButtonElement)) {
+        continue;
+      }
+      node.disabled = !isActive;
+      node.classList.toggle("capture-disabled", !isActive);
+    }
+  }
+
+}
+
+function updateMobileRecordToggle(isActive) {
+  const button = element("mobileRecordToggleBtn");
+  if (!button) {
+    return;
+  }
+
+  button.textContent = isActive ? ui("stopRecording") : ui("startRecording");
+  button.classList.toggle("danger", isActive);
+  button.classList.toggle("primary", !isActive);
+  button.disabled = false;
+}
 
 function renderSigrokLog() {
   const node = element("sigrokLog");
@@ -883,6 +1017,7 @@ async function refreshStatus() {
     badge.textContent = ui("idle");
     badge.className = "badge idle";
     text.textContent = ui("noActiveRecording");
+    updateWizardFromActivity();
     return;
   }
 
@@ -891,6 +1026,62 @@ async function refreshStatus() {
   badge.className = "badge live";
   const seconds = (status.elapsedMs / 1000).toFixed(1);
   text.textContent = ui("activeStatus", status.recordingId, seconds);
+  if (!state.wizardRecordingId || state.wizardRecordingId !== status.recordingId) {
+    state.wizardRecordingId = status.recordingId;
+  }
+  updateWizardFromActivity();
+}
+
+function formatAnnotationPreviewText(kind, payload) {
+  if (kind === "button_press") {
+    if (payload && typeof payload === "object") {
+      const name = payload.name || payload.label;
+      if (name) {
+        return `button_press: ${name}`;
+      }
+      const direction = payload.direction;
+      if (direction) {
+        return `button_press: ${direction}`;
+      }
+    }
+    return "button_press";
+  }
+
+  if (kind === "display_state") {
+    if (payload && typeof payload === "object") {
+      const value = payload.value;
+      const cycleNumber = payload.cycleNumber;
+      const symbols = payload.symbols;
+      let symbolsText = null;
+      if (Array.isArray(symbols)) {
+        symbolsText = symbols.join(",");
+      } else if (symbols) {
+        symbolsText = String(symbols);
+      }
+      const parts = [];
+      if (value) {
+        parts.push(`value=${value}`);
+      }
+      if (cycleNumber !== undefined && cycleNumber !== null && cycleNumber !== "") {
+        parts.push(`cycle=${cycleNumber}`);
+      }
+      if (symbolsText) {
+        parts.push(`symbols=${symbolsText}`);
+      }
+      if (parts.length) {
+        return `display_state: ${parts.join("; ")}`;
+      }
+      if (payload.text) {
+        return `display_state: ${payload.text}`;
+      }
+    }
+    return "display_state";
+  }
+
+  if (payload && typeof payload === "object" && Object.keys(payload).length > 0) {
+    return `${kind}: ${JSON.stringify(payload)}`;
+  }
+  return kind;
 }
 
 async function refreshRecordings() {
@@ -950,28 +1141,33 @@ async function refreshRecordings() {
     const previewItems = Array.isArray(item.annotation_preview)
       ? item.annotation_preview
       : [];
-    let preview = previewItems.join(" | ");
+    const annotationEntries = Array.isArray(item.annotations) ? item.annotations : [];
     const totalAnnotations = Number(item.annotation_count || 0);
+    const previewListItems = annotationEntries
+      .map((entry, index) => {
+        const previewText = previewItems[index] || formatAnnotationPreviewText(entry.kind, entry.payload);
+        const canReorder = item.status !== "recording" && annotationEntries.length > 1;
+        return `<li data-annotation-id="${entry.id}" draggable="${canReorder ? "true" : "false"}">${escapeHtml(previewText)}</li>`;
+      })
+      .join("");
+    let overflowItem = "";
     if (totalAnnotations > previewItems.length) {
       const missing = totalAnnotations - previewItems.length;
-      preview = preview
-        ? `${preview} | +${missing} more`
-        : `+${missing} more`;
+      overflowItem = `<li class="recording-preview-more">${escapeHtml(ui("annotationMore", missing))}</li>`;
     }
+    const previewContent = (previewListItems || overflowItem)
+      ? `<ul class="recording-preview-list" data-recording-id="${item.id}">${previewListItems}${overflowItem}</ul>`
+      : `<span class="recording-preview-text">${escapeHtml(ui("none"))}</span>`;
 
     const trMain = document.createElement("tr");
     trMain.innerHTML = `
       <td>${item.id}</td>
       <td>${item.name}</td>
-      <td>${item.status}</td>
       <td>${measuredAt}</td>
       <td>${duration}</td>
-      <td>${item.samplerate}</td>
-      <td>${item.channels}</td>
-      <td>${item.annotation_count}</td>
       <td>
-        <button class="btn" data-download-sr="${item.id}">${downloadSrLabel}</button>
-        <button class="btn" data-export="${item.id}">${exportLabel}</button>
+        <button class="btn recording-action-optional" data-download-sr="${item.id}">${downloadSrLabel}</button>
+        <button class="btn recording-action-optional" data-export="${item.id}">${exportLabel}</button>
         <button class="btn" data-save="${item.id}">${saveLabel}</button>
         <button class="btn danger" data-delete="${item.id}">${deleteLabel}</button>
       </td>
@@ -981,20 +1177,10 @@ async function refreshRecordings() {
     const trDetails = document.createElement("tr");
     trDetails.className = "recording-details-row";
     trDetails.innerHTML = `
-      <td colspan="9">
-        <div class="recording-details-line">
+      <td colspan="5">
+        <div class="recording-details-annotations">
           <span class="recording-preview-label">${ui("annotations")}</span>
-          <span class="recording-preview-text">${preview || ui("none")}</span>
-        </div>
-        <div class="recording-edit-grid">
-          <label>
-            ${ui("recordingNameLabel")}
-            <input data-edit-name="${item.id}" value="${escapeHtml(item.name)}" />
-          </label>
-          <label>
-            ${ui("commentLabel")}
-            <input data-edit-notes="${item.id}" value="${escapeHtml(item.notes || "")}" placeholder="optional" />
-          </label>
+          ${previewContent}
         </div>
       </td>
     `;
@@ -1002,6 +1188,82 @@ async function refreshRecordings() {
   }
 
   setSyncInfo(true, `${data.items.length} items`);
+
+  for (const list of body.querySelectorAll(".recording-preview-list")) {
+    const recordingId = Number(list.dataset.recordingId || 0);
+    const canReorder = Number.isFinite(recordingId) && recordingId > 0 && list.querySelectorAll("li[data-annotation-id]").length > 1;
+    if (!canReorder) {
+      continue;
+    }
+    list.addEventListener("dragstart", (event) => {
+      const sourceItem = event.target.closest("li[data-annotation-id]");
+      if (!sourceItem) {
+        return;
+      }
+      sourceItem.classList.add("is-dragging");
+      state.draggedAnnotationId = Number(sourceItem.dataset.annotationId);
+      state.draggedRecordingId = recordingId;
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = "move";
+      }
+    });
+    list.addEventListener("dragend", (event) => {
+      const sourceItem = event.target.closest("li[data-annotation-id]");
+      if (sourceItem) {
+        sourceItem.classList.remove("is-dragging");
+      }
+      list.querySelectorAll("li").forEach((node) => node.classList.remove("drag-over"));
+      state.draggedAnnotationId = null;
+      state.draggedRecordingId = null;
+    });
+    list.addEventListener("dragover", (event) => {
+      const targetItem = event.target.closest("li[data-annotation-id]");
+      if (!targetItem) {
+        return;
+      }
+      event.preventDefault();
+      targetItem.classList.add("drag-over");
+    });
+    list.addEventListener("dragleave", (event) => {
+      const targetItem = event.target.closest("li[data-annotation-id]");
+      if (targetItem) {
+        targetItem.classList.remove("drag-over");
+      }
+    });
+    list.addEventListener("drop", async (event) => {
+      const targetItem = event.target.closest("li[data-annotation-id]");
+      if (!targetItem) {
+        return;
+      }
+      event.preventDefault();
+      const draggedId = Number(state.draggedAnnotationId);
+      const targetId = Number(targetItem.dataset.annotationId);
+      if (!Number.isFinite(draggedId) || !Number.isFinite(targetId) || draggedId === targetId) {
+        return;
+      }
+      const orderedIds = Array.from(list.querySelectorAll("li[data-annotation-id]"))
+        .map((node) => Number(node.dataset.annotationId))
+        .filter(Number.isFinite);
+      const fromIndex = orderedIds.indexOf(draggedId);
+      const toIndex = orderedIds.indexOf(targetId);
+      if (fromIndex < 0 || toIndex < 0) {
+        return;
+      }
+      const [movedId] = orderedIds.splice(fromIndex, 1);
+      const insertIndex = toIndex > fromIndex ? toIndex - 1 : toIndex;
+      orderedIds.splice(insertIndex, 0, movedId);
+      try {
+        await jsonFetch("/api/annotations/reorder", {
+          method: "POST",
+          body: JSON.stringify({ recordingId, annotationIds: orderedIds }),
+        });
+        showToast(ui("annotationReordered"));
+        await refreshRecordings();
+      } catch (error) {
+        showToast(String(error.message || error), true);
+      }
+    });
+  }
 
   for (const btn of body.querySelectorAll("button[data-export]")) {
     btn.addEventListener("click", async () => {
@@ -1059,11 +1321,21 @@ async function refreshRecordings() {
   for (const btn of body.querySelectorAll("button[data-save]")) {
     btn.addEventListener("click", async () => {
       const id = Number(btn.dataset.save);
-      const nameInput = body.querySelector(`input[data-edit-name="${id}"]`);
-      const notesInput = body.querySelector(`input[data-edit-notes="${id}"]`);
+      const detailRow = btn.closest("tr.recording-details-row");
+      const nameInput = detailRow ? detailRow.querySelector(`input[data-edit-name="${id}"]`) : null;
+      const notesInput = detailRow ? detailRow.querySelector(`input[data-edit-notes="${id}"]`) : null;
       const name = nameInput ? String(nameInput.value || "") : "";
       const notes = notesInput ? String(notesInput.value || "") : "";
       try {
+        await jsonFetch("/api/recordings/update", {
+          method: "POST",
+          body: JSON.stringify({
+            recordingId: id,
+            name,
+            notes,
+          }),
+        });
+
         await jsonFetch("/api/recordings/update", {
           method: "POST",
           body: JSON.stringify({
@@ -1110,6 +1382,9 @@ async function startRecording() {
   }
 
   state.lastRecordingId = result.recordingId;
+  state.wizardRecordingId = result.recordingId;
+  state.wizardHasButton = false;
+  state.wizardHasDisplay = false;
   showToast(ui("recordingStarted", result.recordingId));
   await refreshStatus();
   await refreshRecordings();
@@ -1145,6 +1420,14 @@ async function requestSystemShutdown() {
 }
 
 async function stopRecording() {
+  const active = Boolean(state.activeStatus && state.activeStatus.active);
+  if (active && !state.wizardHasDisplay) {
+    const proceed = window.confirm(ui("stopWithoutDisplayConfirm"));
+    if (!proceed) {
+      return;
+    }
+  }
+
   const result = await jsonFetch("/api/recordings/stop", {
     method: "POST",
     body: "{}",
@@ -1164,6 +1447,7 @@ async function stopRecording() {
     showToast(result.message || ui("noActiveRecordingError"), true);
     appendSigrokLog(`PS> ${ui("noCurrentRecording")}`);
   }
+  resetWizardState();
   await refreshStatus();
   await refreshRecordings();
 }
@@ -1171,6 +1455,9 @@ async function stopRecording() {
 function resolveRecordingId() {
   if (state.activeStatus && state.activeStatus.active) {
     return Number(state.activeStatus.recordingId);
+  }
+  if (state.wizardRecordingId) {
+    return Number(state.wizardRecordingId);
   }
   if (state.lastRecordingId) {
     return Number(state.lastRecordingId);
@@ -1186,6 +1473,14 @@ async function addAnnotationForRecording(recordingId, kind, payload) {
     method: "POST",
     body: JSON.stringify(body),
   });
+  state.wizardRecordingId = recordingId;
+  if (kind === "button_press") {
+    state.wizardHasButton = true;
+  }
+  if (kind === "display_state") {
+    state.wizardHasDisplay = true;
+  }
+  updateWizardFromActivity();
   showToast(`Annotation ${kind}`);
   await refreshRecordings();
   return result;
@@ -1231,18 +1526,11 @@ function toggleDisplaySymbol(symbolKey) {
 async function recordPanelButtonPress(item, triggerNode) {
   const localizedName = localizedButtonName(item);
   highlightTap(triggerNode);
+  const payload = { name: localizedName };
   if (item.direction) {
-    await addAnnotation("button_press", {
-      button: item.code,
-      name: localizedName,
-      direction: item.direction,
-    });
-  } else {
-    await addAnnotation("button_press", {
-      button: item.code,
-      name: localizedName,
-    });
+    payload.direction = item.direction;
   }
+  await addAnnotation("button_press", payload);
   appendStep(localizedName);
 }
 
@@ -1564,6 +1852,26 @@ function activeSymbolsFromUi() {
   return Array.from(state.activeDisplaySymbols);
 }
 
+async function resetDisplayStateUi() {
+  state.activeDisplaySymbols.clear();
+  syncDisplaySymbolClasses();
+  const displayValue = element("displayValue");
+  if (displayValue) {
+    displayValue.value = "";
+    updateDisplayValuePreview();
+  }
+  const cycleNumber = element("cycleNumber");
+  if (cycleNumber) {
+    cycleNumber.value = "";
+  }
+  const showCycleNumber = element("showCycleNumber");
+  if (showCycleNumber) {
+    showCycleNumber.checked = false;
+  }
+  updateCycleNumberPreview();
+  refreshActiveDisplaySymbolsInfo();
+}
+
 async function saveDisplayState() {
   const value = element("displayValue").value.trim();
   const cycleNumberRaw = element("cycleNumber").value.trim();
@@ -1591,13 +1899,12 @@ async function saveDisplayState() {
     summaryParts.push("Display without details");
   }
   appendStep(summaryParts.join(" "));
+  await resetDisplayStateUi();
 }
 
 function applyLanguage(lang) {
-  currentLanguage = lang === "de" ? "de" : "en";
+  currentLanguage = "en";
   document.documentElement.lang = currentLanguage;
-
-  const isDe = currentLanguage === "de";
 
   document.title = ui("pageTitle");
 
@@ -1619,6 +1926,7 @@ function applyLanguage(lang) {
   setText(element("shutdownBtn"), "shutdown");
   setText(element("refreshBtn"), "reloadRecordings");
   setText(element("downloadAllBtn"), "downloadAll");
+  setText(element("advancedControlsSummary"), "advancedControls");
   setText(element("clearSigrokLogBtn"), "clearLog");
   setText(element("sigrokLogTitle"), "sigrokCommandLog");
   setText(element("simulateLabelText"), "simulateLabelText");
@@ -1627,41 +1935,25 @@ function applyLanguage(lang) {
   setText(element("panelButtonsTitle"), "panelButtonsTitle");
   setText(element("mobileButtonsTitle"), "mobileButtonsTitle");
   setText(element("mobileSymbolsTitle"), "mobileSymbolsTitle");
-  setText(element("panelButtonsHint"), "panelButtonsHint");
   setText(element("keyGuideTitle"), "mainControlFunctions");
-  setText(element("displaySymbolsTitle"), "displayAndSymbolsTitle");
-  setText(element("displaySymbolsHint"), "displaySymbolsHint");
+  applyCompactCaptureHints();
+  applyCompactCaptureTitles();
   setText(element("cycleNumberLabelText"), "cycleNumberLabel");
-  setText(element("clearDisplaySymbolsBtn"), "resetSymbols");
   setText(element("activeDisplaySymbols"), "noSymbolsActive");
   setText(element("symbolLegendTitle"), "lcdScreenFunctions");
   setText(element("saveDisplayBtn"), "saveDisplayState");
+  setText(element("mobileRecordToggleBtn"), "startRecording");
   setText(element("recordingsTitle"), "recordingsTitle");
   setText(element("deleteAllBtn"), "deleteAll");
   setText(element("recordingsHeaderId"), "tableId");
   setText(element("recordingsHeaderName"), "tableName");
-  setText(element("recordingsHeaderStatus"), "tableStatus");
   setText(element("recordingsHeaderMeasuredAt"), "tableMeasuredAt");
   setText(element("recordingsHeaderDuration"), "tableDuration");
-  setText(element("recordingsHeaderSamplerate"), "tableSamplerate");
-  setText(element("recordingsHeaderChannels"), "tableChannels");
-  setText(element("recordingsHeaderAnnotations"), "tableAnnotations");
   setText(element("recordingsHeaderActions"), "tableActions");
   setPlaceholder(element("driverCustom"), "driverCustomPlaceholder");
   setPlaceholder(element("displayValue"), "displayValuePlaceholder");
   setPlaceholder(element("cycleNumber"), "cycleNumberPlaceholder");
   setPlaceholder(element("endComment"), "endCommentPlaceholder");
-
-  const languageSelect = element("languageSelect");
-  setText(languageSelect?.parentElement?.querySelector("span"), "languageLabel");
-  setOptionText(languageSelect, 0, "englishOption");
-  setOptionText(languageSelect, 1, "germanOption");
-
-  const viewModeSelect = element("viewModeSelect");
-  setText(element("viewModeLabel"), "viewModeLabel");
-  setOptionText(viewModeSelect, 0, "viewModeAuto");
-  setOptionText(viewModeSelect, 1, "viewModeMobile");
-  setOptionText(viewModeSelect, 2, "viewModeClassic");
 
   const driverSelect = element("driverSelect");
   if (driverSelect) {
@@ -1680,32 +1972,38 @@ function applyLanguage(lang) {
   buildSymbolLegend();
   refreshActiveDisplaySymbolsInfo();
   updateSequencePreview();
+  syncCaptureAvailability(Boolean(state.activeStatus && state.activeStatus.active));
   refreshRecordings().catch(() => {});
-
-  const keyGuideTitle = document.querySelector(".key-guide-wrap h4");
-  if (keyGuideTitle) {
-    keyGuideTitle.textContent = ui("mainControlFunctions");
-  }
 }
 
 function bindActions() {
-  element("startBtn").addEventListener("click", async () => {
+  const runStartAction = async () => {
     try {
       await startRecording();
     } catch (error) {
       appendSigrokLog(`PS> start failed: ${String(error.message || error)}`);
       showToast(String(error.message || error), true);
     }
-  });
+  };
 
-  element("stopBtn").addEventListener("click", async () => {
+  const runStopAction = async () => {
     try {
       await stopRecording();
     } catch (error) {
       appendSigrokLog(`PS> stop failed: ${String(error.message || error)}`);
       showToast(String(error.message || error), true);
     }
-  });
+  };
+
+  const startBtn = element("startBtn");
+  if (startBtn) {
+    startBtn.addEventListener("click", runStartAction);
+  }
+
+  const stopBtn = element("stopBtn");
+  if (stopBtn) {
+    stopBtn.addEventListener("click", runStopAction);
+  }
 
   const testAnalyzerBtn = element("testAnalyzerBtn");
   if (testAnalyzerBtn) {
@@ -1817,20 +2115,6 @@ function bindActions() {
     });
   }
 
-  const clearDisplaySymbolsBtn = element("clearDisplaySymbolsBtn");
-  if (clearDisplaySymbolsBtn) {
-    clearDisplaySymbolsBtn.addEventListener("click", () => {
-      state.activeDisplaySymbols.clear();
-      syncDisplaySymbolClasses();
-      const showCycleNumber = element("showCycleNumber");
-      if (showCycleNumber) {
-        showCycleNumber.checked = false;
-      }
-      updateCycleNumberPreview();
-      refreshActiveDisplaySymbolsInfo();
-    });
-  }
-
   const displayValue = element("displayValue");
   if (displayValue) {
     displayValue.addEventListener("input", () => {
@@ -1852,13 +2136,6 @@ function bindActions() {
     });
   }
 
-  const languageSelect = element("languageSelect");
-  if (languageSelect) {
-    languageSelect.addEventListener("change", () => {
-      applyLanguage(languageSelect.value);
-    });
-  }
-
   const driverSelect = element("driverSelect");
   if (driverSelect) {
     driverSelect.addEventListener("change", () => {
@@ -1866,12 +2143,18 @@ function bindActions() {
     });
   }
 
-  const viewModeSelect = element("viewModeSelect");
-  if (viewModeSelect) {
-    viewModeSelect.addEventListener("change", () => {
-      applyViewMode(viewModeSelect.value);
+  const mobileRecordToggleBtn = element("mobileRecordToggleBtn");
+  if (mobileRecordToggleBtn) {
+    mobileRecordToggleBtn.addEventListener("click", async () => {
+      const isActive = Boolean(state.activeStatus && state.activeStatus.active);
+      if (isActive) {
+        await runStopAction();
+        return;
+      }
+      await runStartAction();
     });
   }
+
 
 }
 
@@ -1900,17 +2183,20 @@ async function boot() {
 
   updateDriverCustomVisibility();
 
-  let persistedViewMode = "auto";
   try {
-    persistedViewMode = localStorage.getItem("captureViewMode") || "auto";
+    localStorage.removeItem("captureViewMode");
   } catch {
-    persistedViewMode = "auto";
+    // Ignore storage errors in restricted environments.
   }
-  applyViewMode(persistedViewMode);
+  applyViewMode();
+  window.addEventListener("resize", () => {
+    applyViewMode();
+  });
 
   await refreshStatus();
   await refreshRecordings();
   applyLanguage("en");
+  syncCaptureAvailability(false);
   setInterval(refreshStatus, 3000);
 }
 

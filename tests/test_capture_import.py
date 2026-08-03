@@ -5,7 +5,12 @@ from pathlib import Path
 from unittest.mock import patch
 
 from capture_webui.importer import normalize_annotation_payload, parse_capture_summary
-from capture_webui.server import probe_signal_analyzer
+from capture_webui.server import (
+    format_annotation_preview_entry,
+    probe_signal_analyzer,
+    reorder_annotations,
+    update_annotation,
+)
 from decoder.decode_sr import summarize_annotation_bundle
 
 
@@ -57,6 +62,90 @@ class CaptureImportTests(unittest.TestCase):
         self.assertEqual(summary["annotation_count"], 3)
         self.assertEqual(summary["display_state_count"], 2)
         self.assertEqual(summary["button_press_count"], 1)
+
+    def test_format_annotation_preview_entry_uses_names_for_button_presses(self) -> None:
+        button_preview = format_annotation_preview_entry(
+            "button_press",
+            {"name": "Select Button"},
+        )
+        warmer_preview = format_annotation_preview_entry(
+            "button_press",
+            {"name": "Warmer", "direction": "warmer"},
+        )
+        display_preview = format_annotation_preview_entry(
+            "display_state",
+            {"value": "29.9C", "cycleNumber": 1, "symbols": ["heat", "fan"]},
+        )
+
+        self.assertEqual(button_preview, "button_press: Select Button")
+        self.assertEqual(warmer_preview, "button_press: Warmer")
+        self.assertEqual(display_preview, "display_state: value=29.9C; cycle=1; symbols=heat,fan")
+
+    def test_update_annotation_changes_payload(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "annotations.db"
+            with patch("capture_webui.server.DB_PATH", db_path):
+                from capture_webui.server import ensure_dirs, init_db
+
+                ensure_dirs()
+                init_db()
+                from capture_webui.server import add_annotation, fetch_annotations
+
+                recording_id = 1
+                with patch("capture_webui.server.insert_recording", return_value=recording_id):
+                    pass
+
+                with patch("capture_webui.server.db_connect") as db_connect_mock:
+                    import sqlite3
+
+                    conn = sqlite3.connect(db_path)
+                    conn.execute(
+                        "INSERT INTO recordings (id, name, samplerate, channels, file_path, status, start_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        (recording_id, "demo", "24MHz", "D4", "demo.sr", "finished", "2026-01-01T00:00:00Z", "2026-01-01T00:00:00Z"),
+                    )
+                    conn.commit()
+                    conn.close()
+
+                annotation_id = add_annotation(recording_id, 0, "button_press", {"button": "A"})
+                result = update_annotation(annotation_id, "button_press", {"button": "B", "name": "Select"})
+
+                self.assertTrue(result["ok"])
+                self.assertEqual(result["annotation"]["payload"]["button"], "B")
+                self.assertEqual(result["annotation"]["payload"]["name"], "Select")
+
+    def test_reorder_annotations_updates_positions(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "annotations.db"
+            with patch("capture_webui.server.DB_PATH", db_path):
+                from capture_webui.server import ensure_dirs, init_db
+
+                ensure_dirs()
+                init_db()
+                from capture_webui.server import add_annotation, fetch_annotations
+
+                recording_id = 1
+                with patch("capture_webui.server.insert_recording", return_value=recording_id):
+                    pass
+
+                with patch("capture_webui.server.db_connect") as db_connect_mock:
+                    import sqlite3
+
+                    conn = sqlite3.connect(db_path)
+                    conn.execute(
+                        "INSERT INTO recordings (id, name, samplerate, channels, file_path, status, start_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        (recording_id, "demo", "24MHz", "D4", "demo.sr", "finished", "2026-01-01T00:00:00Z", "2026-01-01T00:00:00Z"),
+                    )
+                    conn.commit()
+                    conn.close()
+
+                first_id = add_annotation(recording_id, 0, "display_state", {"value": "A"})
+                second_id = add_annotation(recording_id, 1, "display_state", {"value": "B"})
+
+                result = reorder_annotations(recording_id, [second_id, first_id])
+
+                self.assertTrue(result["ok"])
+                ordered = fetch_annotations(recording_id)
+                self.assertEqual([entry["id"] for entry in ordered], [second_id, first_id])
 
     def test_probe_signal_analyzer_reports_missing_hardware(self) -> None:
         completed = type(

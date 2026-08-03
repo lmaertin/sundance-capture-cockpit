@@ -30,6 +30,7 @@ body {
     radial-gradient(circle at 84% 16%, #0e2b30 0%, transparent 38%),
     linear-gradient(160deg, #07090f 0%, #0a1120 38%, #090c14 100%);
   min-height: 100vh;
+  padding-bottom: 100px;
 }
 
 .bg-orb {
@@ -128,6 +129,7 @@ body {
   width: min(1220px, 96vw);
   margin: 14px auto 24px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
 
@@ -159,6 +161,10 @@ body {
 .compact-form {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px 8px;
+}
+
+.capture-basics-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .compact-form input,
@@ -223,6 +229,12 @@ body {
   justify-content: flex-end;
 }
 
+.recording-tail.in-advanced {
+  margin-top: 2px;
+  margin-bottom: 8px;
+  justify-content: flex-start;
+}
+
 .simulate-mini {
   display: inline-flex;
   align-items: center;
@@ -240,10 +252,132 @@ body {
   margin-top: 8px;
 }
 
+.recording-primary-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
 .card-recording .btn {
   min-height: 36px;
   padding: 8px 10px;
   font-size: 0.76rem;
+}
+
+.recording-advanced {
+  margin-top: 8px;
+  border: 1px solid #334462;
+  border-radius: 10px;
+  background: #0b1424;
+  padding: 7px;
+}
+
+.recording-advanced > summary {
+  cursor: pointer;
+  color: #c8d8fb;
+  font-size: 0.76rem;
+  font-weight: 700;
+  list-style: none;
+}
+
+.recording-advanced > summary::-webkit-details-marker {
+  display: none;
+}
+
+.recording-advanced > summary::after {
+  content: "▾";
+  float: right;
+  color: #8ea7d4;
+}
+
+.recording-advanced:not([open]) .button-row,
+.recording-advanced:not([open]) .sigrok-log-wrap {
+  display: none;
+}
+
+.recording-advanced[open] > summary {
+  margin-bottom: 8px;
+}
+
+.advanced-capture-settings {
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 1px solid #2f3b58;
+  border-radius: 10px;
+  background: #0d1524;
+}
+
+.capture-disabled,
+button:disabled.capture-disabled {
+  opacity: 0.45;
+  filter: grayscale(0.4);
+  cursor: not-allowed;
+}
+
+.mobile-action-bar .btn:disabled {
+  opacity: 0.5;
+}
+
+.guide-collapsible > summary {
+  cursor: pointer;
+  color: #c8d8fb;
+  font-size: 0.84rem;
+  font-weight: 700;
+  list-style: none;
+}
+
+.guide-collapsible > summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-collapsible > summary::after {
+  content: "▾";
+  float: right;
+  color: #8ea7d4;
+}
+
+.guide-collapsible:not([open]) > :not(summary) {
+  display: none;
+}
+
+.guide-collapsible[open] > summary {
+  margin-bottom: 8px;
+}
+
+.mobile-action-bar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(440px, calc(100vw - 12px));
+  bottom: 8px;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #32405c;
+  border-radius: 12px;
+  background: color-mix(in srgb, #0b1220 92%, transparent 8%);
+  backdrop-filter: blur(4px);
+  padding: 6px;
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.35);
+}
+
+.mobile-action-bar .btn {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+
+.mobile-action-subbar {
+  display: flex;
+  gap: 6px;
+}
+
+.mobile-action-subbar .btn {
+  flex: 1;
+  min-height: 30px;
+  padding: 5px 8px;
+  font-size: 0.74rem;
 }
 
 .sigrok-log-wrap {
@@ -332,11 +466,11 @@ select:focus {
   background: #151f31;
   color: var(--ink);
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.82rem;
-  padding: 10px 12px;
+  font-size: 0.78rem;
+  padding: 7px 10px;
   border-radius: 10px;
   cursor: pointer;
-  min-height: 42px;
+  min-height: 36px;
   transition: transform 100ms ease, filter 120ms ease, border-color 120ms ease;
 }
 
@@ -405,6 +539,39 @@ select:focus {
 .display-state h3 {
   margin: 0;
   font-size: 0.95rem;
+}
+
+.display-state {
+  position: relative;
+}
+
+.mobile-action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  width: min(92vw, 440px);
+  z-index: 20;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(6, 11, 20, 0.94);
+  border: 1px solid rgba(123, 145, 182, 0.28);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+}
+
+.mobile-action-subbar {
+  display: flex;
+  gap: 6px;
+}
+
+.mobile-action-subbar .btn {
+  flex: 1;
+  min-height: 34px;
+  padding: 6px 8px;
+  font-size: 0.74rem;
 }
 
 .panel-visual {
@@ -620,12 +787,6 @@ select:focus {
   padding: 10px;
 }
 
-.key-guide-wrap h4 {
-  margin: 0 0 8px;
-  color: #c8d8fb;
-  font-size: 0.84rem;
-}
-
 .key-guide {
   display: grid;
   gap: 6px;
@@ -773,6 +934,21 @@ select:focus {
   line-height: 1.35;
 }
 
+.display-actions-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.display-actions-row .btn {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  min-height: 30px;
+}
+
 .mobile-replay {
   display: none;
   margin-top: 10px;
@@ -781,6 +957,16 @@ select:focus {
   background: #0c1422;
   padding: 10px;
   gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  min-width: 0;
+}
+
+.mobile-replay-block,
+.card-annotation,
+.card-annotation .panel-grid,
+.card-annotation .panel-keys,
+.card-annotation .display-state {
+  min-width: 0;
 }
 
 .mobile-replay-block h4 {
@@ -789,77 +975,89 @@ select:focus {
   font-size: 0.84rem;
 }
 
-.mobile-buttons-grid {
+.card-annotation .mobile-buttons-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
   gap: 8px;
+  justify-items: stretch;
+  justify-content: start;
+  width: 100%;
+  max-width: 100%;
 }
 
-.mobile-panel-btn {
+.card-annotation .mobile-panel-btn {
   border: 1px solid #35415e;
   background: #151f31;
   color: #d7e3ff;
   border-radius: 10px;
-  padding: 10px 8px;
-  min-height: 108px;
+  padding: 6px 8px;
+  min-height: 58px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
-  font-size: 1.19rem;
-  font-weight: 600;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 500;
   cursor: pointer;
   text-align: left;
+  width: 100%;
+  max-width: none;
 }
 
-.mobile-panel-btn img {
-  width: 68px;
-  height: 40px;
+.card-annotation .mobile-panel-btn img {
+  width: 40px;
+  height: 24px;
   object-fit: contain;
   flex: 0 0 auto;
 }
 
-.mobile-panel-btn span {
+.card-annotation .mobile-panel-btn span {
   line-height: 1.15;
 }
 
-.mobile-panel-btn:active,
-.mobile-panel-btn.is-active {
+.card-annotation .mobile-panel-btn:active,
+.card-annotation .mobile-panel-btn.is-active {
   border-color: #66e7c7;
   background: #1a2e43;
   transform: scale(0.98);
 }
 
-.mobile-symbols-grid {
+.card-annotation .mobile-symbols-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
   gap: 8px;
+  justify-items: stretch;
+  justify-content: start;
+  width: 100%;
+  max-width: 100%;
 }
 
-.mobile-symbol-chip {
+.card-annotation .mobile-symbol-chip {
   border: 1px solid #35415e;
   background: #132033;
   color: #d7e3ff;
   border-radius: 10px;
-  min-height: 84px;
-  padding: 10px;
+  min-height: 56px;
+  padding: 6px 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
-  font-size: 1.23rem;
+  font-size: 0.9rem;
   text-align: left;
+  width: 100%;
+  max-width: none;
 }
 
-.mobile-symbol-chip img {
-  width: 48px;
-  height: 32px;
+.card-annotation .mobile-symbol-chip img {
+  width: 34px;
+  height: 22px;
   object-fit: contain;
   filter: grayscale(0.4) brightness(1.6) invert(1);
 }
 
-.mobile-symbol-chip.is-on {
+.card-annotation .mobile-symbol-chip.is-on {
   border-color: rgba(116, 245, 216, 0.95);
   background: rgba(37, 88, 80, 0.42);
   color: #d7fff4;
@@ -880,7 +1078,7 @@ body.view-mode-mobile .symbol-legend-wrap {
 }
 
 body.view-mode-mobile .card-recording .compact-form {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 
@@ -888,22 +1086,36 @@ body.view-mode-mobile .card-recording .compact-form .full {
   grid-column: 1 / -1;
 }
 
+body.view-mode-mobile .card-recording .capture-basics-form {
+  grid-template-columns: 1fr;
+}
+
 body.view-mode-mobile .card-recording .button-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
 }
 
 body.view-mode-mobile .card-recording .btn {
-  width: 100%;
-  min-height: 75px;
-  font-size: 1.25rem;
-  padding: 10px;
+  width: fit-content;
+  max-width: 230px;
+  min-height: 42px;
+  font-size: 0.92rem;
+  padding: 8px 9px;
 }
 
-body.view-mode-mobile .mobile-buttons-grid,
-body.view-mode-mobile .mobile-symbols-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+body.view-mode-mobile #panelButtonsHint,
+body.view-mode-mobile #displaySymbolsHint {
+  display: none;
+}
+
+body.view-mode-mobile .card-annotation .mobile-buttons-grid,
+body.view-mode-mobile .card-annotation .mobile-symbols-grid {
+  grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
+  justify-content: start;
+  width: 100%;
+  max-width: 100%;
 }
 
 body.view-mode-mobile .topbar {
@@ -916,10 +1128,37 @@ body.view-mode-mobile .topbar {
   border-radius: 0;
   backdrop-filter: none;
   background: #0b1220;
+  padding: 8px 10px;
+  gap: 8px;
+}
+
+body.view-mode-mobile .topbar h1 {
+  font-size: 0.98rem;
+  letter-spacing: 0.2px;
+}
+
+body.view-mode-mobile .statusline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  min-width: 0;
+}
+
+body.view-mode-mobile #statusText {
+  max-width: 44vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.view-mode-mobile .badge {
+  padding: 3px 8px;
+  font-size: 0.68rem;
 }
 
 body.view-mode-mobile .layout {
-  margin-top: 138px;
+  margin-top: 92px;
 }
 
 body.view-mode-mobile .recording-tail {
@@ -947,12 +1186,6 @@ body.view-mode-classic .symbol-legend-wrap {
   border-radius: 12px;
   background: #0c1422;
   padding: 10px;
-}
-
-.symbol-legend-wrap h4 {
-  margin: 0 0 8px;
-  color: #c8d8fb;
-  font-size: 0.84rem;
 }
 
 .symbol-legend {
@@ -1053,10 +1286,43 @@ td {
   padding: 8px 6px;
 }
 
-#recordingsBody td:nth-child(4) {
+#recordingsBody td:nth-child(3) {
   white-space: nowrap;
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.76rem;
+}
+
+.card-list .button-row.compact {
+  margin-top: 8px;
+  gap: 6px;
+}
+
+.card-list .button-row.compact .btn {
+  min-height: 30px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  border-radius: 8px;
+}
+
+.card-list table {
+  font-size: 0.78rem;
+}
+
+.card-list th,
+.card-list td {
+  padding: 6px 5px;
+}
+
+.card-list th {
+  font-size: 0.7rem;
+}
+
+#recordingsBody .btn {
+  min-height: 26px;
+  padding: 3px 6px;
+  font-size: 0.66rem;
+  border-radius: 8px;
+  white-space: nowrap;
 }
 
 th {
@@ -1072,10 +1338,9 @@ th {
   background: rgba(11, 18, 30, 0.55);
 }
 
-.recording-details-line {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
+.recording-details-annotations {
+  display: grid;
+  gap: 5px;
   font-size: 0.76rem;
   color: #a9bcdf;
   margin-bottom: 8px;
@@ -1091,24 +1356,58 @@ th {
   font-family: "IBM Plex Mono", monospace;
 }
 
+.recording-preview-list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  color: #95aed9;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.recording-preview-list li {
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  padding: 6px 8px;
+  border: 1px solid rgba(123, 145, 182, 0.28);
+  border-radius: 8px;
+  background: rgba(12, 20, 35, 0.7);
+  cursor: grab;
+}
+
+.recording-preview-list li.is-dragging {
+  opacity: 0.6;
+}
+
+.recording-preview-list li.drag-over {
+  border-color: #8eb5ff;
+  box-shadow: inset 0 0 0 1px rgba(142, 181, 255, 0.35);
+}
+
+.recording-preview-more {
+  color: #c1d5ff;
+  font-style: italic;
+}
+
 .recording-edit-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 6px;
 }
 
 .recording-edit-grid label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 0.74rem;
+  gap: 3px;
+  font-size: 0.68rem;
   color: #9bb0d7;
 }
 
 .recording-edit-grid input {
-  min-height: 34px;
-  padding: 7px 9px;
-  font-size: 0.78rem;
+  min-height: 28px;
+  padding: 5px 7px;
+  font-size: 0.72rem;
 }
 
 .toast {
@@ -1145,10 +1444,13 @@ th {
     display: grid;
   }
 
-  .panel-visual,
+  .panel-visual {
+    display: none;
+  }
+
   .key-guide-wrap,
   .symbol-legend-wrap {
-    display: none;
+    display: block;
   }
 
   .panel-hotspot {
@@ -1196,14 +1498,14 @@ th {
   .hint,
   .sync-info,
   .simulate-mini {
-    font-size: 0.92rem;
+    font-size: 0.86rem;
   }
 
   .form-grid label,
   .annotation-head label,
   .display-fields label,
   .compact-form label {
-    font-size: 0.92rem;
+    font-size: 0.86rem;
   }
 
   input,
@@ -1219,8 +1521,8 @@ th {
   }
 
   .btn {
-    font-size: 0.98rem;
-    min-height: 48px;
+    font-size: 0.9rem;
+    min-height: 40px;
   }
 
   .sigrok-log-title {
@@ -1231,81 +1533,121 @@ th {
     font-size: 0.86rem;
   }
 
-  .mobile-buttons-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .mobile-symbols-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .card-annotation .mobile-buttons-grid,
+  .card-annotation .mobile-symbols-grid {
+    grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
   }
 
   .recording-edit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wizard-panel h3 {
+    font-size: 0.94rem;
+  }
+
+  .capture-basics-form {
     grid-template-columns: 1fr;
+  }
+
+  .card-annotation .wizard-step,
+  .card-annotation .wizard-hint {
+    font-size: 0.84rem;
+  }
+
+  body {
+    padding-bottom: 110px;
+  }
+
+  .toast {
+    bottom: 116px;
   }
 }
 
 @media (max-width: 430px) {
   body.view-mode-mobile .topbar {
-    padding: 10px;
+    padding: 7px 8px;
   }
 
   body.view-mode-mobile .topbar h1 {
-    font-size: 1.02rem;
+    font-size: 0.94rem;
     letter-spacing: 0.2px;
   }
 
   body.view-mode-mobile .statusline {
-    gap: 3px;
+    gap: 5px;
+    font-size: 0.76rem;
+  }
+
+  body.view-mode-mobile #statusText {
+    max-width: 42vw;
   }
 
   body.view-mode-mobile .layout {
     width: min(100vw, 430px);
-    margin: 112px auto 18px;
+    margin: 84px auto 18px;
     gap: 9px;
   }
 
   body.view-mode-mobile .card {
     border-radius: 12px;
-    padding: 9px;
+    padding: 8px;
   }
 
   body.view-mode-mobile .card-recording .compact-form {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 6px;
+  }
+
+  body.view-mode-mobile .card-recording .capture-basics-form {
+    grid-template-columns: 1fr;
   }
 
   body.view-mode-mobile .card-recording .button-row {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 7px;
   }
 
-  body.view-mode-mobile .mobile-buttons-grid {
-    grid-template-columns: 1fr 1fr;
+  body.view-mode-mobile .card-annotation .mobile-buttons-grid {
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
     gap: 7px;
+    justify-items: stretch;
   }
 
-  body.view-mode-mobile .mobile-symbols-grid {
-    grid-template-columns: 1fr 1fr;
+  body.view-mode-mobile .card-annotation .mobile-symbols-grid {
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
     gap: 7px;
+    justify-items: stretch;
   }
 
-  body.view-mode-mobile .mobile-panel-btn {
-    min-height: 114px;
-    padding: 9px 7px;
+  body.view-mode-mobile .card-annotation .mobile-panel-btn {
+    min-height: 50px;
+    padding: 6px 7px;
     gap: 7px;
-    font-size: clamp(1.08rem, 4.4vw, 1.24rem);
+    font-size: clamp(0.88rem, 3.5vw, 0.98rem);
   }
 
-  body.view-mode-mobile .mobile-symbol-chip {
-    min-height: 92px;
-    padding: 9px;
+  body.view-mode-mobile .card-annotation .mobile-symbol-chip {
+    min-height: 48px;
+    padding: 6px 7px;
     gap: 7px;
-    font-size: clamp(1.02rem, 4.1vw, 1.16rem);
+    font-size: clamp(0.84rem, 3.3vw, 0.94rem);
   }
 
   body.view-mode-mobile .card-recording .btn {
-    min-height: 80px;
-    font-size: clamp(1.02rem, 4vw, 1.14rem);
+    min-height: 38px;
+    font-size: clamp(0.82rem, 3vw, 0.9rem);
+    padding: 6px 8px;
+  }
+
+  body.view-mode-mobile .panel-keys h3,
+  body.view-mode-mobile .display-state h3 {
+    display: none;
+  }
+
+  body.view-mode-mobile .card-annotation .wizard-steps {
+    grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
+    gap: 5px;
   }
 
   body.view-mode-mobile .statusline {
@@ -1318,22 +1660,38 @@ th {
   body.view-mode-mobile .display-fields input,
   body.view-mode-mobile .display-fields select,
   body.view-mode-mobile .display-fields textarea {
-    min-height: 44px;
-    padding: 9px;
+    min-height: 38px;
+    padding: 7px 8px;
+  }
+
+  .display-actions-row .btn {
+    font-size: 0.68rem;
+    min-height: 28px;
+    padding: 5px 6px;
+  }
+
+  .recording-edit-grid label {
+    font-size: 0.64rem;
+  }
+
+  .recording-edit-grid input {
+    min-height: 26px;
+    padding: 4px 6px;
+    font-size: 0.68rem;
   }
 }
 
 @media (max-width: 390px) {
   body.view-mode-mobile .topbar {
-    padding: 9px 8px;
+    padding: 6px 7px;
   }
 
   body.view-mode-mobile .topbar h1 {
-    font-size: 0.96rem;
+    font-size: 0.9rem;
   }
 
   body.view-mode-mobile .layout {
-    margin: 104px auto 16px;
+    margin: 80px auto 16px;
     gap: 8px;
   }
 
@@ -1347,6 +1705,11 @@ th {
     margin-bottom: 8px;
   }
 
+  body.view-mode-mobile .panel-keys h3,
+  body.view-mode-mobile .display-state h3 {
+    display: none;
+  }
+
   body.view-mode-mobile .hint,
   body.view-mode-mobile .sync-info,
   body.view-mode-mobile .simulate-mini {
@@ -1354,73 +1717,110 @@ th {
   }
 
   body.view-mode-mobile .card-recording .button-row,
-  body.view-mode-mobile .mobile-buttons-grid,
-  body.view-mode-mobile .mobile-symbols-grid {
+  body.view-mode-mobile .card-annotation .mobile-buttons-grid,
+  body.view-mode-mobile .card-annotation .mobile-symbols-grid {
     gap: 6px;
   }
 
-  body.view-mode-mobile .mobile-panel-btn {
-    min-height: 106px;
-    font-size: 1.04rem;
+  body.view-mode-mobile .card-annotation .mobile-panel-btn {
+    min-height: 46px;
+    font-size: 0.86rem;
   }
 
-  body.view-mode-mobile .mobile-panel-btn img {
-    width: 72px;
-    height: 44px;
+  body.view-mode-mobile .card-annotation .mobile-panel-btn img {
+    width: 36px;
+    height: 22px;
   }
 
-  body.view-mode-mobile .mobile-symbol-chip {
-    min-height: 86px;
-    font-size: 1rem;
+  body.view-mode-mobile .card-annotation .mobile-symbol-chip {
+    min-height: 44px;
+    font-size: 0.84rem;
   }
 
-  body.view-mode-mobile .mobile-symbol-chip img {
-    width: 52px;
-    height: 36px;
+  body.view-mode-mobile .card-annotation .mobile-symbol-chip img {
+    width: 30px;
+    height: 20px;
   }
 
   body.view-mode-mobile .card-recording .btn {
-    min-height: 74px;
-    font-size: 1rem;
-    padding: 8px;
+    min-height: 36px;
+    font-size: 0.84rem;
+    padding: 7px 8px;
   }
 
   body.view-mode-mobile .statusline {
-    font-size: 0.95rem;
+    font-size: 0.74rem;
+  }
+
+  .recording-edit-grid label {
+    font-size: 0.62rem;
+  }
+
+  .recording-edit-grid input {
+    min-height: 24px;
+    padding: 3px 5px;
+    font-size: 0.64rem;
+  }
+
+  .display-actions-row .btn {
+    font-size: 0.64rem;
+    min-height: 26px;
+    padding: 4px 5px;
+  }
+
+  #recordingsBody .btn {
+    min-height: 24px;
+    padding: 2px 5px;
+    font-size: 0.62rem;
+  }
+
+  #recordingsBody .recording-action-optional {
+    display: none;
   }
 }
 
 /* Final mobile guardrails: enforce readable iOS PWA sizes in mobile view. */
 @media (max-width: 430px) {
-  body.view-mode-mobile .mobile-panel-btn {
-    font-size: 1.12rem !important;
-    min-height: 112px !important;
+  body.view-mode-mobile .card-annotation .mobile-panel-btn {
+    font-size: 0.9rem !important;
+    min-height: 48px !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 
-  body.view-mode-mobile .mobile-panel-btn img {
-    width: 72px !important;
-    height: 44px !important;
+  body.view-mode-mobile .card-annotation .mobile-panel-btn img {
+    width: 36px !important;
+    height: 22px !important;
   }
 
-  body.view-mode-mobile .mobile-symbol-chip {
-    font-size: 1.04rem !important;
-    min-height: 88px !important;
+  body.view-mode-mobile .card-annotation .mobile-symbol-chip {
+    font-size: 0.84rem !important;
+    min-height: 44px !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 
-  body.view-mode-mobile .mobile-symbol-chip img {
-    width: 52px !important;
-    height: 36px !important;
+  body.view-mode-mobile .card-annotation .mobile-symbol-chip img {
+    width: 30px !important;
+    height: 20px !important;
+  }
+
+  body.view-mode-mobile .card-annotation .mobile-buttons-grid,
+  body.view-mode-mobile .card-annotation .mobile-symbols-grid {
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)) !important;
+    justify-items: stretch !important;
   }
 
   body.view-mode-mobile .card-recording .btn {
-    font-size: 1.04rem !important;
-    min-height: 76px !important;
+    font-size: 0.84rem !important;
+    min-height: 36px !important;
   }
+
 
   body.view-mode-mobile .statusline,
   body.view-mode-mobile .hint,
   body.view-mode-mobile .sync-info,
   body.view-mode-mobile .simulate-mini {
-    font-size: 0.98rem !important;
+    font-size: 0.84rem !important;
   }
 }
